@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include "header/cimg/CImg.h"
+#include "header/DrawCalculations.h"
 
 using namespace cimg_library;
 
@@ -20,11 +21,15 @@ int main()
     CImg<unsigned int> bg(w, h, 1, 3, 255);
 
     bg.draw_rectangle(0, 0, w, h, black, 1);
-    bg.draw_point(10, 10, bluegreen);
 
-    bg.draw_circle(w/2, h/2, 100, bluegreen);
+    int xPos = w/2;
+    int yPos = h/2;
+
+    int r = 100;
+    
+    DrawCalculations c;
+
+    c.drawCicel(&bg, xPos, yPos, r, bluegreen);
 
     bg.display();
-
-    //bg.save("file.png");
 }

@@ -18,9 +18,15 @@
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="source\DrawCalculations.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\cimg\CImg.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="header\DrawCalculations.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
