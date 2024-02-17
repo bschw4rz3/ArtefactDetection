@@ -128,9 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="source\DrawCalculations.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\cimg\CImg.h" />
+    <ClInclude Include="header\DrawCalculations.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
