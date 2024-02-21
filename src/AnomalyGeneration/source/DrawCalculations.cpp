@@ -32,7 +32,7 @@ void DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int
     bg->draw_line(xPos - firstX, yPos - firstY, xPos + lastX, yPos + lastY, color);
 }
 
-void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, const unsigned char (&color)[3])
+void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeOutX, double fadeOutY, const unsigned char (&color)[3])
 {
     int writtenPixeles = 0;
     double shouldWritePixels = 0;
