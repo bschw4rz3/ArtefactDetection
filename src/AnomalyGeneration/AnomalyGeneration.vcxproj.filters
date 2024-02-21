@@ -13,13 +13,25 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Headerdateien\Services">
+      <UniqueIdentifier>{40900eac-906b-44b4-ae52-1a1492de8413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Services">
+      <UniqueIdentifier>{150cc0bb-5fa7-471c-860f-051f60802fd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Models">
+      <UniqueIdentifier>{e7113b6f-ad69-46b3-99cb-8d867afb3a9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Models">
+      <UniqueIdentifier>{81d6beb4-3441-4f03-9fa5-2b91be742fd0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="source\DrawCalculations.cpp">
-      <Filter>Quelldateien</Filter>
+      <Filter>Quelldateien\Services</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -27,7 +39,7 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="header\DrawCalculations.h">
-      <Filter>Headerdateien</Filter>
+      <Filter>Headerdateien\Services</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
