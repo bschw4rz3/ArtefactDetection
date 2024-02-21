@@ -29,7 +29,7 @@ int main()
     
     DrawCalculations c;
 
-    c.drawCicel(&bg, xPos, yPos, r, bluegreen);
+    c.drawCicelCloud(&bg, xPos, yPos, r, 20, 10.0, 0, bluegreen);
 
     bg.display();
 }
