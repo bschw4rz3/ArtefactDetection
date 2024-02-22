@@ -12,7 +12,7 @@ using namespace cimg_library;
 
 int main()
 {
-    int w = 300;
+    int w = 500;
     int h = 400;
 
     const unsigned char bluegreen[] = {0, 170, 255};
@@ -25,15 +25,11 @@ int main()
     int xPos = w/2;
     int yPos = h/2;
 
-    int r = 100;
+    int r = 150;
     
     DrawCalculations c;
 
-    c.drawCicelCloud(&bg, xPos, yPos, r, 10, 20.0, 10, 0, 0, bluegreen);
-    c.drawCicelCloud(&bg, xPos, yPos, 80, 10, 20.0, 10, 0, 0, bluegreen);
-    c.drawCicelCloud(&bg, xPos, yPos, 60, 10, 20.0, 10, 0, 0, bluegreen);
-    c.drawCicelCloud(&bg, xPos, yPos, 40, 10, 20.0, 10, 0, 0, bluegreen);
-    c.drawCicelCloud(&bg, xPos, yPos, 20, 10, 20.0, 10, 0, 0, bluegreen);
+    c.drawCicelCloud(&bg, xPos, yPos, r, 1.0, 1.0, 0, 0.0, 1.0, bluegreen);
 
     bg.display();
 }

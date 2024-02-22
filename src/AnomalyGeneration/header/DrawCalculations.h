@@ -3,6 +3,8 @@
 
 #pragma warning(disable:4146)
 
+#include <iostream>
+#include <format>
 #include <cstdlib>
 #include <math.h>
 #include "corecrt_math_defines.h"
@@ -17,8 +19,11 @@ public:
 	void drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeOutX, double fadeOutY, const unsigned char (&color)[3]);
 
 private:
-	void drawPointFromCloud(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char (&color)[3]);
+	void drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char (&color)[3]);
+	void drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char (&color)[3]);
+
 	int random(int steuerung, double pixelDistribution);
+	double randomOneScaled();
 };
 
 #endif // _DRAWCALCULATIONS_
