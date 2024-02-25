@@ -33,10 +33,10 @@ int main()
     DrawCircelCalculations drawCircelCalculations(&randomService);
     DrawCalculations c(&drawCircelCalculations);
 
-    c.drawCicelCloud(&bg, xPos, yPos, r, 15.0, 30.0, 1.0, 0.75, 0.2, bluegreen);
-    c.drawCicelCloud(&bg, xPos, yPos, r-20, 15.0, 30.0, 1.0, 0.75, 0.2, bluegreen);
-    c.drawCicelCloud(&bg, xPos, yPos, r-40, 15.0, 30.0, 1.0, 0.75, 0.2, bluegreen);
-    c.drawCicelCloud(&bg, xPos, yPos, r-60, 15.0, 30.0, 1.0, 0.75, 0.2, bluegreen);
+    c.drawCicelCloud(&bg, xPos, yPos, r, 20.0, 1, 1.0, 0.75, 0.5, 250, bluegreen);
+    c.drawCicelCloud(&bg, xPos, yPos, r-20, 20.0, 1, 1.0, 0.75, 0.5, 250, bluegreen);
+    c.drawCicelCloud(&bg, xPos, yPos, r-40, 20.0, 1, 1.0, 0.75, 0.5, 250, bluegreen);
+    c.drawCicelCloud(&bg, xPos, yPos, r-60, 20.0, 1, 1.0, 0.75, 0.5, 250, bluegreen);
 
     bg.display();
 }

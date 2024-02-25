@@ -37,7 +37,7 @@ void DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int
     bg->draw_line(xPos - firstX, yPos - firstY, xPos + lastX, yPos + lastY, color);
 }
 
-void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, const unsigned char (&color)[3])
+void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char (&color)[3])
 {
     double fadeOutFactor = 0;
 
@@ -64,9 +64,9 @@ void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos
 
     double factorSteps = abs(fadeOutY) / (sectorCount * writePixelPerSector);
 
-    double lastFadeFactor = this->drawCircelCalculations->drawEastCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorEast, factorSteps * 0.25, 0, 270, color);
-    this->drawCircelCalculations->drawSouthCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, 270, color);
-    lastFadeFactor = this->drawCircelCalculations->drawNorthCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, 270, color);
-    this->drawCircelCalculations->drawWestCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorWest, factorSteps*1.75, lastFadeFactor, 270, color);
+    double lastFadeFactor = this->drawCircelCalculations->drawEastCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorEast, factorSteps * 0.25, 0, rotation, color);
+    this->drawCircelCalculations->drawSouthCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
+    lastFadeFactor = this->drawCircelCalculations->drawNorthCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
+    this->drawCircelCalculations->drawWestCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorWest, factorSteps*1.75, lastFadeFactor, rotation, color);
     
 }
