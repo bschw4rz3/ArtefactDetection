@@ -129,10 +129,14 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="source\DrawCalculations.cpp" />
+    <ClCompile Include="source\DrawCircelCalculations.cpp" />
+    <ClCompile Include="source\RandomService.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\cimg\CImg.h" />
     <ClInclude Include="header\DrawCalculations.h" />
+    <ClInclude Include="header\DrawCircelCalculations.h" />
+    <ClInclude Include="header\RandomService.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

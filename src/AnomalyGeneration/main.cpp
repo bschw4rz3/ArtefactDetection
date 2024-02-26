@@ -7,6 +7,7 @@
 #include <iostream>
 #include "header/cimg/CImg.h"
 #include "header/DrawCalculations.h"
+#include "header/RandomService.h"
 
 using namespace cimg_library;
 
@@ -27,9 +28,15 @@ int main()
 
     int r = 150;
     
-    DrawCalculations c;
+    RandomService randomService;
 
-    c.drawCicelCloud(&bg, xPos, yPos, r, 1.0, 1.0, 0, 0.0, 1.0, bluegreen);
+    DrawCircelCalculations drawCircelCalculations(&randomService);
+    DrawCalculations c(&drawCircelCalculations);
+
+    c.drawCicelCloud(&bg, xPos, yPos, r, 20.0, 1, 1.0, 0.75, 0.5, 250, bluegreen);
+    c.drawCicelCloud(&bg, xPos, yPos, r-20, 20.0, 1, 1.0, 0.75, 0.5, 250, bluegreen);
+    c.drawCicelCloud(&bg, xPos, yPos, r-40, 20.0, 1, 1.0, 0.75, 0.5, 250, bluegreen);
+    c.drawCicelCloud(&bg, xPos, yPos, r-60, 20.0, 1, 1.0, 0.75, 0.5, 250, bluegreen);
 
     bg.display();
 }

@@ -33,12 +33,24 @@
     <ClCompile Include="source\DrawCalculations.cpp">
       <Filter>Quelldateien\Services</Filter>
     </ClCompile>
+    <ClCompile Include="source\DrawCircelCalculations.cpp">
+      <Filter>Quelldateien\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="source\RandomService.cpp">
+      <Filter>Quelldateien\Services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\cimg\CImg.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="header\DrawCalculations.h">
+      <Filter>Headerdateien\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="header\DrawCircelCalculations.h">
+      <Filter>Headerdateien\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="header\RandomService.h">
       <Filter>Headerdateien\Services</Filter>
     </ClInclude>
   </ItemGroup>

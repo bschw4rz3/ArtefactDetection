@@ -1,5 +1,10 @@
 #include "..\header\DrawCalculations.h"
 
+DrawCalculations::DrawCalculations(DrawCircelCalculations* drawCircelCalculations)
+{
+    this->drawCircelCalculations = drawCircelCalculations;
+}
+
 void DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int r, const unsigned char (&color)[3])
 {
     int lastX = 0;
@@ -32,190 +37,36 @@ void DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int
     bg->draw_line(xPos - firstX, yPos - firstY, xPos + lastX, yPos + lastY, color);
 }
 
-void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeOutX, double fadeOutY, const unsigned char (&color)[3])
+void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char (&color)[3])
 {
-    int writtenPixeles = 0;
-    double shouldWritePixels = 0;
-
-    double part = r / 4*M_PI;
     double fadeOutFactor = 0;
 
-    int interationCount = part*2;
+    double part = r / 4 * M_PI;
+    double interationCount = part*2;
     int writePixelPerSector = pixelCountPerBoarderPixel * interationCount;
 
-
-    // south
-    double factorSteps = abs(fadeOutY)/(double)interationCount;
-
-    if(fadeOutY < 0)
+    double sectorEast = (fadeFromTo * 3)- 2.0;
+    
+    if (sectorEast < 0)
     {
-        fadeOutFactor = abs(fadeOutY);
-    }
-    else if(fadeOutY > 0)
-    {
-        fadeOutFactor = 0.0;
-    }
-    else
-    {
-        fadeOutFactor = 1.0;
+        sectorEast = 0;
     }
     
-    for(int x = -part;x <= part;x++)
+    double sectorMidd = (fadeFromTo * 3) - 1.0 - sectorEast;
+
+    if (sectorMidd < 0)
     {
-        shouldWritePixels += (pixelCountPerBoarderPixel * fadeOutFactor);
-
-        int pixelCount = (shouldWritePixels - writtenPixeles);
-        
-        int y = round(sqrt(pow(r,2)-pow(x,2)));
-        this->drawCicelFromPointCloudPositiv(bg, x, y, xPos, yPos, steuerung, pixelCount, pixelDistribution, color);
-
-        writtenPixeles = writtenPixeles + pixelCount;
-
-        fadeOutFactor += factorSteps * (abs(fadeOutY)/fadeOutY);
+        sectorMidd = 0;
     }
+
+    double sectorWest = (fadeFromTo * 3) - (sectorMidd+sectorEast);
+    double sectorCount = sectorEast != 0 ? 1 : 0 + sectorMidd != 0 ? 2 : 0 + sectorWest != 0 ? 1 : 0;
+
+    double factorSteps = abs(fadeOutY) / (sectorCount * writePixelPerSector);
+
+    double lastFadeFactor = this->drawCircelCalculations->drawEastCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorEast, factorSteps * 0.25, 0, rotation, color);
+    this->drawCircelCalculations->drawSouthCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
+    lastFadeFactor = this->drawCircelCalculations->drawNorthCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
+    this->drawCircelCalculations->drawWestCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorWest, factorSteps*1.75, lastFadeFactor, rotation, color);
     
-    // west
-    if(fadeOutY > 0)
-    {
-        fadeOutFactor = fadeOutY-0.5;
-    }
-    else if(fadeOutY < 0)
-    {
-        fadeOutFactor = 0.0;
-    }
-    else
-    {
-        fadeOutFactor = 1.0;
-    }
-
-    if(fadeOutFactor > 0)
-    {
-        for(int y = -part;y <= part;y++)
-        {   
-            shouldWritePixels += (pixelCountPerBoarderPixel * fadeOutFactor);
-
-            int pixelCount = (shouldWritePixels - writtenPixeles);
-
-            int x = round(sqrt(pow(r,2) - pow(y, 2)));
-            this->drawCicelFromPointCloudNegativ(bg, x, y, xPos, yPos, steuerung, pixelCount, pixelDistribution, color);
-
-            writtenPixeles = writtenPixeles + (pixelCount);
-
-            if(y == 0)
-            {
-                y = 1;
-            }
-
-            fadeOutFactor += factorSteps * (abs(fadeOutY)/fadeOutY) * (abs(y)/y);
-        }   
-    }
-
-    // north
-    if(fadeOutY > 0)
-    {
-        fadeOutFactor = abs(fadeOutY);
-    }
-    else if(fadeOutY < 0)
-    {
-        fadeOutFactor = 0.0;
-    }
-    else
-    {
-        fadeOutFactor = 1.0;
-    }
-
-    for(int x = -part;x <= part;x++)
-    {
-        shouldWritePixels += (pixelCountPerBoarderPixel * fadeOutFactor);
-
-        int pixelCount = (shouldWritePixels - writtenPixeles);
-
-        int y = round(sqrt(pow(r,2)-pow(x,2)));
-        this->drawCicelFromPointCloudNegativ(bg, x, y, xPos, yPos, steuerung, pixelCount, pixelDistribution, color);
-
-        writtenPixeles = writtenPixeles + pixelCount;
-
-        fadeOutFactor -= factorSteps * (abs(fadeOutY)/fadeOutY);
-    }
-
-    // east
-    if(fadeOutY < 0)
-    {
-        fadeOutFactor = 0.0;
-    }
-    else if(fadeOutY > 0)
-    {
-        fadeOutFactor = fadeOutY;
-    }
-    else
-    {
-        fadeOutFactor = 1.0;
-    }
-
-    for(int y = -part;y <= part;y++)
-    {   
-        shouldWritePixels += (pixelCountPerBoarderPixel * fadeOutFactor);
-
-        int pixelCount = (shouldWritePixels - writtenPixeles);
-
-        int x = round(sqrt(pow(r,2) - pow(y, 2)));
-        this->drawCicelFromPointCloudPositiv(bg, x, y, xPos, yPos, steuerung, pixelCount, pixelDistribution, color);
-
-        writtenPixeles = writtenPixeles + pixelCount;
-
-        if(y == 0)
-        {
-            y = 1;
-        }
-
-        fadeOutFactor += factorSteps * (abs(fadeOutY)/fadeOutY) * (abs(y)/y);
-    }
-}
-
-void DrawCalculations::drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char (&color)[3])
-{
-    for(int i = 0; i < pixelCount; i++)
-    {
-        int randomX = this->random(steuerung, pixelDistribution);
-        int randomY = this->random(steuerung, pixelDistribution);
-
-        bg->draw_point(xPos + x + randomX, yPos + y + randomY, color);
-    }
-}
-
-void DrawCalculations::drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char (&color)[3])
-{
-    for(int i = 0; i < pixelCount; i++)
-    {
-        int randomX = this->random(steuerung, pixelDistribution);
-        int randomY = this->random(steuerung, pixelDistribution);
-
-        bg->draw_point(xPos - x + randomX, yPos - y + randomY, color);
-    }
-}
-
-int DrawCalculations::random(int steuerung, double pixelDistribution)
-{
-    if(steuerung == 0)
-    {
-        return 0;
-    }
-
-    double random = std::rand();
-    double scaledRandom = random / ((RAND_MAX + 1u) / 2) - (1);
-
-    double o = sqrt(sqrt(pixelDistribution));
-    double x = scaledRandom;
-
-    double result = x;
-    result = round(pow(x, pixelDistribution) * pow(x, pixelDistribution) * x * (steuerung/2));
-
-    return result;
-}
-
-double DrawCalculations::randomOneScaled()
-{    
-    double random = std::rand();
-    double result = random / (RAND_MAX + 1u);
-    return result;
 }

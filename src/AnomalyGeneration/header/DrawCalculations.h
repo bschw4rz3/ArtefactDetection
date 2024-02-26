@@ -12,18 +12,19 @@
 #include "cimg/CImg.h"
 using namespace cimg_library;
 
+#include "DrawCircelCalculations.h"
+#include "RandomService.h"
+
 class DrawCalculations
 {
-public:
-	void drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int r, const unsigned char (&color)[3]);
-	void drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeOutX, double fadeOutY, const unsigned char (&color)[3]);
-
 private:
-	void drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char (&color)[3]);
-	void drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char (&color)[3]);
+	DrawCircelCalculations* drawCircelCalculations;
 
-	int random(int steuerung, double pixelDistribution);
-	double randomOneScaled();
+public:
+	DrawCalculations(DrawCircelCalculations* drawCircelCalculations);
+
+	void drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int r, const unsigned char (&color)[3]);
+	void drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char (&color)[3]);
 };
 
 #endif // _DRAWCALCULATIONS_
