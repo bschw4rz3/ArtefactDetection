@@ -70,3 +70,20 @@ void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos
     this->drawCircelCalculations->drawWestCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorWest, factorSteps*1.75, lastFadeFactor, rotation, color);
     
 }
+
+void DrawCalculations::drawMultipleCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int rotationInterval, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char(&color)[3])
+{
+    int radus = r;
+
+    while (radus > 0)
+    {
+        this->drawCicelCloud(bg, xPos, yPos, radus, steuerung, pixelCountPerBoarderPixel, pixelDistribution, fadeFromTo, fadeOutY, rotation, color);
+
+        radus -= rotationInterval;
+    }
+}
+
+void DrawCalculations::drawRectPart(CImg<unsigned int>* bg)
+{
+    bg->draw_rectangle()
+}
