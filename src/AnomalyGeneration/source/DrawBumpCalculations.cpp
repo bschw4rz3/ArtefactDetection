@@ -10,14 +10,14 @@ void DrawBumpCalculations::drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPos
 {
 	double randomNumber = this->randomSerivce->randomOneScaled();
 
-	if (randomNumber < 0.2)
+	if (randomNumber < 0.75)
 	{
 		double randomSteuerungX = this->randomSerivce->random(boarderDamageSteuerung, pixelDistribution);
 		double randomSteuerungY = this->randomSerivce->random(boarderDamageSteuerung, pixelDistribution);
 
 		bg->draw_point(round(position.x + randomSteuerungX), round(position.y + randomSteuerungY), color);
 	}
-	else if (randomNumber < 0.5)
+	else if (randomNumber < 1.0)
 	{
 		double randomSteuerungX = this->randomSerivce->random(boarderDamageSteuerung, pixelDistribution);
 		double randomSteuerungY = this->randomSerivce->random(boarderDamageSteuerung, pixelDistribution);

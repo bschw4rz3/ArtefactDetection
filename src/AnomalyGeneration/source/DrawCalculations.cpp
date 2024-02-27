@@ -146,3 +146,11 @@ void DrawCalculations::drawRectPart(CImg<unsigned int>* bg, PixelPosition positi
         }
     }
 }
+
+void DrawCalculations::drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPosition position, double boarderDamageSteuerung, double boarderPixelDistribution, int maximalCountOfBumbs, const unsigned char(&color)[3])
+{
+    for (int i = 0; i < maximalCountOfBumbs; i++)
+    {
+        this->drawBumpCalculations->drawLiddelRandomBumb(bg, position, boarderDamageSteuerung, boarderPixelDistribution, color);
+    }
+}

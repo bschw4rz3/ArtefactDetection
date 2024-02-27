@@ -31,6 +31,8 @@ public:
 	void drawMultipleCicelCloud(CImg<unsigned int>* bg, PixelPosition position, int r, int rotationInterval, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char(&color)[3]);
 
 	void drawRectPart(CImg<unsigned int>* bg, PixelPosition position, double spaceX, double spaceY, double boarderDamage, double boarderPixelDistribution, const unsigned char(&color)[3], const unsigned char(&boarderColor)[3]);
+
+	void drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPosition position, double boarderDamageSteuerung, double boarderPixelDistribution, int maximalCountOfBumbs, const unsigned char(&color)[3]);
 };
 
 #endif // _DRAWCALCULATIONS_
