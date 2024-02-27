@@ -37,7 +37,7 @@ void DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int
     bg->draw_line(xPos - firstX, yPos - firstY, xPos + lastX, yPos + lastY, color);
 }
 
-void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char (&color)[3])
+void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char (&color)[3])
 {
     double fadeOutFactor = 0;
 
@@ -64,26 +64,37 @@ void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos
 
     double factorSteps = abs(fadeOutY) / (sectorCount * writePixelPerSector);
 
-    double lastFadeFactor = this->drawCircelCalculations->drawEastCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorEast, factorSteps * 0.25, 0, rotation, color);
-    this->drawCircelCalculations->drawSouthCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
-    lastFadeFactor = this->drawCircelCalculations->drawNorthCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
-    this->drawCircelCalculations->drawWestCircelPart(bg, xPos, yPos, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorWest, factorSteps*1.75, lastFadeFactor, rotation, color);
+    double lastFadeFactor = this->drawCircelCalculations->drawEastCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorEast, factorSteps * 0.25, 0, rotation, color);
+    this->drawCircelCalculations->drawSouthCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
+    lastFadeFactor = this->drawCircelCalculations->drawNorthCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
+    this->drawCircelCalculations->drawWestCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorWest, factorSteps*1.75, lastFadeFactor, rotation, color);
     
 }
 
-void DrawCalculations::drawMultipleCicelCloud(CImg<unsigned int>* bg, int xPos, int yPos, int r, int rotationInterval, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char(&color)[3])
+void DrawCalculations::drawMultipleCicelCloud(CImg<unsigned int>* bg, PixelPosition position, int r, int rotationInterval, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char(&color)[3])
 {
     int radus = r;
 
     while (radus > 0)
     {
-        this->drawCicelCloud(bg, xPos, yPos, radus, steuerung, pixelCountPerBoarderPixel, pixelDistribution, fadeFromTo, fadeOutY, rotation, color);
+        this->drawCicelCloud(bg, position, radus, steuerung, pixelCountPerBoarderPixel, pixelDistribution, fadeFromTo, fadeOutY, rotation, color);
 
         radus -= rotationInterval;
     }
 }
 
-void DrawCalculations::drawRectPart(CImg<unsigned int>* bg)
+void DrawCalculations::drawRectPart(CImg<unsigned int>* bg, PixelPosition position, double spaceX, double spaceY, const unsigned char(&color)[3])
 {
-    bg->draw_rectangle()
+    CImg<unsigned int> points(4, 2);
+
+    int thePoints[] = {
+        position.x-spaceX,position.x+spaceX, position.x+spaceX, position.x-spaceX, position.y-spaceY, position.y-spaceY, position.y+spaceY, position.y+spaceY
+    };
+
+    int *iterator = thePoints;
+
+    cimg_forXY(points,x,y)
+        points(x,y) = *iterator++;
+
+    bg->draw_polygon(points, color);
 }

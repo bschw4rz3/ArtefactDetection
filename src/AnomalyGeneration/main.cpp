@@ -13,11 +13,12 @@ using namespace cimg_library;
 
 int main()
 {
-    int w = 500;
-    int h = 400;
+    int w = 600;
+    int h = 500;
 
     const unsigned char bluegreen[] = {0, 170, 255};
     const unsigned char black[] = {0, 0, 0};
+    const unsigned char withe[] = {255, 255, 255};
 
     CImg<unsigned int> bg(w, h, 1, 3, 255);
 
@@ -30,10 +31,13 @@ int main()
     
     RandomService randomService;
 
-    DrawCircelCalculations drawCircelCalculations(&randomService);
+    CalculationService calculationService;
+    DrawCircelCalculations drawCircelCalculations(&calculationService, &randomService);
     DrawCalculations c(&drawCircelCalculations);
 
-    c.drawMultipleCicelCloud(&bg, xPos, yPos, r, 20, 20.0, 1, 2.0, 0.75, 0.5, 250, bluegreen);
+    c.drawRectPart(&bg, PixelPosition(xPos, yPos), 200, 200, withe);
+
+    c.drawMultipleCicelCloud(&bg, PixelPosition(xPos, yPos), r, 20, 20.0, 1, 2.0, 0.75, 0.5, 250, bluegreen);
 
     bg.display();
 }

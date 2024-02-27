@@ -1,12 +1,13 @@
 #include "../header/DrawCircelCalculations.h"
 
 
-DrawCircelCalculations::DrawCircelCalculations(RandomService* randomService)
+DrawCircelCalculations::DrawCircelCalculations(CalculationService* calculationService, RandomService* randomService)
 {
+    this->calculationService = calculationService;
     this->randomService = randomService;
 }
 
-double DrawCircelCalculations::drawSouthCircelPart(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, 
+double DrawCircelCalculations::drawSouthCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, 
     double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3])
 {
     int writtenPixeles = 0;
@@ -21,7 +22,7 @@ double DrawCircelCalculations::drawSouthCircelPart(CImg<unsigned int>* bg, int x
     double fadeFrom = (fadeFromTo * 2) - 1.0;
     double fadeTo = (fadeFromTo * 2) - fadeFrom;
 
-    double anglePI = angle / 180 * M_PI;
+    double anglePI = this->calculationService->toRadiant(angle);
 
     for (int x = part* fadeFrom; x >= -part* fadeTo; x--)
     {
@@ -31,10 +32,9 @@ double DrawCircelCalculations::drawSouthCircelPart(CImg<unsigned int>* bg, int x
 
         int y = round(sqrt(pow(r, 2) - pow(x, 2)));
 
-        double angledX = round(x * cos(anglePI) - y * sin(anglePI));
-        double angledY = round(x * sin(anglePI) + y * cos(anglePI));
+        PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudPositiv(bg, angledX, angledY, xPos, yPos, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudPositiv(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
 
         writtenPixeles = writtenPixeles + pixelCount;
 
@@ -44,7 +44,7 @@ double DrawCircelCalculations::drawSouthCircelPart(CImg<unsigned int>* bg, int x
     return fadeOutFactor;
 }
 
-double DrawCircelCalculations::drawWestCircelPart(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
+double DrawCircelCalculations::drawWestCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
     double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3])
 {
     int writtenPixeles = 0;
@@ -53,8 +53,8 @@ double DrawCircelCalculations::drawWestCircelPart(CImg<unsigned int>* bg, int xP
     double fadeOutFactor = beginFadeOutFactor;
 
     double part = r / 4 * M_PI;
-
-    double anglePI = angle / 180 * M_PI;
+    
+    double anglePI = this->calculationService->toRadiant(angle);
 
     int interationCount = part * 2;
 
@@ -66,10 +66,9 @@ double DrawCircelCalculations::drawWestCircelPart(CImg<unsigned int>* bg, int xP
 
         int x = round(sqrt(pow(r, 2) - pow(y, 2)));
 
-        double angledX = round(x * cos(anglePI) - y * sin(anglePI));
-        double angledY = round(x * sin(anglePI) + y * cos(anglePI));
+        PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudNegativ(bg, angledX, angledY, xPos, yPos, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudNegativ(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
 
         writtenPixeles = writtenPixeles + (pixelCount);
 
@@ -86,7 +85,7 @@ double DrawCircelCalculations::drawWestCircelPart(CImg<unsigned int>* bg, int xP
     return fadeOutFactor;
 }
 
-double DrawCircelCalculations::drawNorthCircelPart(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
+double DrawCircelCalculations::drawNorthCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
     double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3])
 {
     int writtenPixeles = 0;
@@ -98,7 +97,7 @@ double DrawCircelCalculations::drawNorthCircelPart(CImg<unsigned int>* bg, int x
 
     int interationCount = part * 2;
 
-    double anglePI = angle / 180 * M_PI;
+    double anglePI = this->calculationService->toRadiant(angle);
 
     double fadeFrom = (fadeFromTo * 2) - 1.0;
     double fadeTo = (fadeFromTo * 2) - fadeFrom;
@@ -111,10 +110,9 @@ double DrawCircelCalculations::drawNorthCircelPart(CImg<unsigned int>* bg, int x
 
         int y = round(sqrt(pow(r, 2) - pow(x, 2)));
 
-        double angledX = round(x * cos(anglePI) - y * sin(anglePI));
-        double angledY = round(x * sin(anglePI) + y * cos(anglePI));
+        PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudNegativ(bg, angledX, angledY, xPos, yPos, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudNegativ(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
 
         writtenPixeles = writtenPixeles + pixelCount;
 
@@ -124,7 +122,7 @@ double DrawCircelCalculations::drawNorthCircelPart(CImg<unsigned int>* bg, int x
     return fadeOutFactor;
 }
 
-double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
+double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
     double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3])
 {
     int writtenPixeles = 0;
@@ -134,7 +132,7 @@ double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, int xP
 
     int interationCount = part * 2;
 
-    double anglePI = angle / 180 * M_PI;
+    double anglePI = this->calculationService->toRadiant(angle);
     
     int countOfInterations = part - (part * (1.0 - fadeFromTo));
     double fadeOutFactor = beginFadeOutFactor + (countOfInterations* factorSteps);
@@ -147,10 +145,9 @@ double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, int xP
 
         int x = round(sqrt(pow(r, 2) - pow(y, 2)));
 
-        double angledX = round(x * cos(anglePI) - y * sin(anglePI));
-        double angledY = round(x * sin(anglePI) + y * cos(anglePI));
+        PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudPositiv(bg, angledX, angledY, xPos, yPos, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudPositiv(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
 
         writtenPixeles = writtenPixeles + pixelCount;
 
@@ -169,10 +166,9 @@ double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, int xP
 
         int x = round(sqrt(pow(r, 2) - pow(y, 2)));
 
-        double angledX = round(x * cos(anglePI) - y * sin(anglePI));
-        double angledY = round(x * sin(anglePI) + y * cos(anglePI));
+        PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudPositiv(bg, angledX, angledY, xPos, yPos, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudPositiv(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
 
         writtenPixeles = writtenPixeles + pixelCount;
 
@@ -183,7 +179,7 @@ double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, int xP
     
 }
 
-void DrawCircelCalculations::drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, 
+void DrawCircelCalculations::drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, 
     const unsigned char(&color)[3])
 {
     for (int i = 0; i < pixelCount; i++)
@@ -191,11 +187,11 @@ void DrawCircelCalculations::drawCicelFromPointCloudPositiv(CImg<unsigned int>* 
         int randomX = this->randomService->random(steuerung, pixelDistribution);
         int randomY = this->randomService->random(steuerung, pixelDistribution);
 
-        bg->draw_point(xPos + x + randomX, yPos + y + randomY, color);
+        bg->draw_point(deltaPos.x + position.x + randomX, deltaPos.y + position.y + randomY, color);
     }
 }
 
-void DrawCircelCalculations::drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, 
+void DrawCircelCalculations::drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, 
     const unsigned char(&color)[3])
 {
     for (int i = 0; i < pixelCount; i++)
@@ -203,6 +199,6 @@ void DrawCircelCalculations::drawCicelFromPointCloudNegativ(CImg<unsigned int>* 
         int randomX = this->randomService->random(steuerung, pixelDistribution);
         int randomY = this->randomService->random(steuerung, pixelDistribution);
 
-        bg->draw_point(xPos - x + randomX, yPos - y + randomY, color);
+        bg->draw_point(deltaPos.x - position.x + randomX, deltaPos.y - position.y + randomY, color);
     }
 }

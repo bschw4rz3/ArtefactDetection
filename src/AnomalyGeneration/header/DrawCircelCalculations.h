@@ -10,29 +10,32 @@
 using namespace cimg_library;
 
 #include "RandomService.h"
+#include "PixelPosition.h"
+#include "CalculationService.h"
 
 class DrawCircelCalculations {
 private:
+	CalculationService* calculationService;
 	RandomService* randomService;
 
 public:
-	DrawCircelCalculations(RandomService* randomService);
+	DrawCircelCalculations(CalculationService* calculationService, RandomService* randomService);
 
-	double drawSouthCircelPart(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, 
+	double drawSouthCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, 
 		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3]);
 	
-	double drawWestCircelPart(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
+	double drawWestCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
 		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3]);
 
-	double drawNorthCircelPart(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
+	double drawNorthCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
 		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3]);
 
-	double drawEastCircelPart(CImg<unsigned int>* bg, int xPos, int yPos, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
+	double drawEastCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
 		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3]);
 
 private:
-	void drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char(&color)[3]);
-	void drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, int x, int y, int xPos, int yPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char(&color)[3]);
+	void drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char(&color)[3]);
+	void drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char(&color)[3]);
 
 
 };

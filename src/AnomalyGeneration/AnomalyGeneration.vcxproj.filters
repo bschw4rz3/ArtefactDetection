@@ -39,6 +39,9 @@
     <ClCompile Include="source\RandomService.cpp">
       <Filter>Quelldateien\Services</Filter>
     </ClCompile>
+    <ClCompile Include="source\CalculationService.cpp">
+      <Filter>Quelldateien\Services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\cimg\CImg.h">
@@ -51,6 +54,12 @@
       <Filter>Headerdateien\Services</Filter>
     </ClInclude>
     <ClInclude Include="header\RandomService.h">
+      <Filter>Headerdateien\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="header\PixelPosition.h">
+      <Filter>Headerdateien\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="header\CalculationService.h">
       <Filter>Headerdateien\Services</Filter>
     </ClInclude>
   </ItemGroup>
