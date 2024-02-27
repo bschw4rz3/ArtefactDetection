@@ -8,6 +8,7 @@
 #include "header/cimg/CImg.h"
 #include "header/DrawCalculations.h"
 #include "header/RandomService.h"
+#include "header/DrawBumpCalculations.h"
 
 using namespace cimg_library;
 
@@ -33,11 +34,14 @@ int main()
 
     CalculationService calculationService;
     DrawCircelCalculations drawCircelCalculations(&calculationService, &randomService);
-    DrawCalculations c(&drawCircelCalculations);
+    DrawBumpCalculations drawBumpCalculations(&randomService);
+    DrawCalculations c(&drawCircelCalculations, &drawBumpCalculations);
 
-    c.drawRectPart(&bg, PixelPosition(xPos, yPos), 200, 200, withe);
+    c.drawRectPart(&bg, PixelPosition(xPos, yPos), 200, 200, 10, 1, withe, black);
 
-    c.drawMultipleCicelCloud(&bg, PixelPosition(xPos, yPos), r, 20, 20.0, 1, 2.0, 0.75, 0.5, 250, bluegreen);
+
+
+    c.drawMultipleCicelCloud(&bg, PixelPosition(xPos, yPos), r, 20, 20.0, 1, 2.0, 0.75, 0.5, 250, black);
 
     bg.display();
 }

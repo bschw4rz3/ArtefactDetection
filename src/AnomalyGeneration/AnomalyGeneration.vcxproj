@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="source\CalculationService.cpp" />
+    <ClCompile Include="source\DrawBumpCalculations.cpp" />
     <ClCompile Include="source\DrawCalculations.cpp" />
     <ClCompile Include="source\DrawCircelCalculations.cpp" />
     <ClCompile Include="source\RandomService.cpp" />
@@ -136,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="header\CalculationService.h" />
     <ClInclude Include="header\cimg\CImg.h" />
+    <ClInclude Include="header\DrawBumpCalculations.h" />
     <ClInclude Include="header\DrawCalculations.h" />
     <ClInclude Include="header\DrawCircelCalculations.h" />
     <ClInclude Include="header\PixelPosition.h" />

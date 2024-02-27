@@ -1,8 +1,9 @@
 #include "..\header\DrawCalculations.h"
 
-DrawCalculations::DrawCalculations(DrawCircelCalculations* drawCircelCalculations)
+DrawCalculations::DrawCalculations(DrawCircelCalculations* drawCircelCalculations, DrawBumpCalculations* drawBumpCalculations)
 {
     this->drawCircelCalculations = drawCircelCalculations;
+    this->drawBumpCalculations = drawBumpCalculations;
 }
 
 void DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int r, const unsigned char (&color)[3])
@@ -83,12 +84,17 @@ void DrawCalculations::drawMultipleCicelCloud(CImg<unsigned int>* bg, PixelPosit
     }
 }
 
-void DrawCalculations::drawRectPart(CImg<unsigned int>* bg, PixelPosition position, double spaceX, double spaceY, const unsigned char(&color)[3])
+void DrawCalculations::drawRectPart(CImg<unsigned int>* bg, PixelPosition position, double spaceX, double spaceY, double boarderDamageSteuerung, double boarderPixelDistribution, const unsigned char(&color)[3], const unsigned char(&boarderColor)[3])
 {
     CImg<unsigned int> points(4, 2);
 
+    PixelPosition topLeft(position.x + spaceX, position.y - spaceY);
+    PixelPosition topRight(position.x + spaceX, position.y + spaceY);
+    PixelPosition buttomRight(position.x - spaceX, position.y + spaceY);
+    PixelPosition buttomLeft(position.x - spaceX, position.y - spaceY);
+
     int thePoints[] = {
-        position.x-spaceX,position.x+spaceX, position.x+spaceX, position.x-spaceX, position.y-spaceY, position.y-spaceY, position.y+spaceY, position.y+spaceY
+        buttomRight.x, buttomLeft.x, topLeft.x, topRight.x, buttomRight.y, buttomLeft.y, topLeft.y, topRight.y
     };
 
     int *iterator = thePoints;
@@ -97,4 +103,46 @@ void DrawCalculations::drawRectPart(CImg<unsigned int>* bg, PixelPosition positi
         points(x,y) = *iterator++;
 
     bg->draw_polygon(points, color);
+
+    PixelPosition boarders[4][2] = {
+        {topRight, topLeft},
+        {topRight, buttomRight},
+        {buttomRight, buttomLeft},
+        {topLeft, buttomLeft}
+    };
+
+    for (int i = 0;i < 4 ;i++)
+    {
+        PixelPosition start = boarders[i][0];
+        PixelPosition end = boarders[i][1];
+
+        int x = end.x- start.x;
+        int y = end.y- start.y;
+
+        int stepX = 0;
+        int stepY = 0;
+
+        if (x != 0)
+        {
+            stepX = abs(x) / x;
+        }
+        
+        if (y != 0)
+        {
+            stepY = abs(y) / y;
+        }
+
+        PixelPosition currentPosition(start.x, start.y);
+
+        while (currentPosition.y >= end.y and currentPosition.x >= end.x)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                this->drawBumpCalculations->drawLiddelRandomBumb(bg, currentPosition, boarderDamageSteuerung, boarderPixelDistribution, boarderColor);
+            }
+
+            currentPosition.x += stepX;
+            currentPosition.y += stepY;
+        }
+    }
 }
