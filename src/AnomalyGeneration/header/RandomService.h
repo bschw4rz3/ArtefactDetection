@@ -1,9 +1,13 @@
 #ifndef RandomService_h
 #define RandomService_h
 
-#include <math.h>
-#include <cstdlib>
-#include "corecrt_math_defines.h"
+#include <iostream>
+#include <random>
+#include <iostream> 
+#include <cstdlib> 
+#include <ctime> 
+
+using namespace std;
 
 class RandomService {
 

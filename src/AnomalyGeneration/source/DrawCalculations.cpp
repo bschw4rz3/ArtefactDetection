@@ -63,7 +63,7 @@ void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, PixelPosition posi
     double sectorWest = (fadeFromTo * 3) - (sectorMidd+sectorEast);
     double sectorCount = sectorEast != 0 ? 1 : 0 + sectorMidd != 0 ? 2 : 0 + sectorWest != 0 ? 1 : 0;
 
-    double factorSteps = abs(fadeOutY) / (sectorCount * writePixelPerSector);
+    double factorSteps = abs(fadeOutY) / (sectorCount);
 
     double lastFadeFactor = this->drawCircelCalculations->drawEastCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorEast, factorSteps * 0.25, 0, rotation, color);
     this->drawCircelCalculations->drawSouthCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);

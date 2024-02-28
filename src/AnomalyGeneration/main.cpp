@@ -44,7 +44,7 @@ int main()
     c.drawLiddelRandomBumb(&bg, PixelPosition(200, 150), 5, 1.0, 10, black);
     c.drawLiddelRandomBumb(&bg, PixelPosition(150, 200), 5, 1.0, 10, black);
 
-    c.drawMultipleCicelCloud(&bg, PixelPosition(xPos, yPos), r, 20, 20.0, 1, 2.0, 0.75, 0.5, 250, black);
+    c.drawMultipleCicelCloud(&bg, PixelPosition(xPos, yPos), r, 20, 20.0, 0.05, 1.0, 0.75, 0.5, 250, black);
 
     bg.display();
 }
