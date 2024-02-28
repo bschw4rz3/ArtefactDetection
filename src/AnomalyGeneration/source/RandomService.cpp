@@ -17,9 +17,11 @@ int RandomService::random(int steuerung, double pixelDistribution)
     double x = scaledRandom/(((double)steuerung)/2);
 
     double result = x;
-    result = round(pow(x, pixelDistribution)*pow(x, pixelDistribution)*x*(((double)steuerung)/2));
+    result = pow(x, pixelDistribution)*pow(x, pixelDistribution)*x;
 
-    return result;
+    double scaledResult = round(result*(((double)steuerung)/2));
+
+    return scaledResult;
 }
 
 double RandomService::randomOneScaled()
@@ -27,6 +29,15 @@ double RandomService::randomOneScaled()
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(0.0, 1.0);
+
+    return dist(mt);
+}
+
+double RandomService::randomOnePosAndNegScaled()
+{
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> dist(-1.0, 1.0);
 
     return dist(mt);
 }

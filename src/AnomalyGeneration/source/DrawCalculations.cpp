@@ -154,3 +154,8 @@ void DrawCalculations::drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPositio
         this->drawBumpCalculations->drawLiddelRandomBumb(bg, position, boarderDamageSteuerung, boarderPixelDistribution, color);
     }
 }
+
+void DrawCalculations::drawScratch(CImg<unsigned int>* bg, PixelPosition from, PixelPosition to, double bright, int count, int randomPixels, const unsigned char(&color)[3])
+{
+    this->drawBumpCalculations->drawScratch(bg, from, to, bright, count, randomPixels, color);
+}

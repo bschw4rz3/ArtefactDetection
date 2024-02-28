@@ -19,6 +19,11 @@ public:
 
 public:
 	void drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPosition position, double boarderDamageSteuerung, double pixelDistribution, const unsigned char(&color)[3]);
+	void drawRandomPixel(CImg<unsigned int>* bg, PixelPosition position, double steuerung, double pixelDistribution, const unsigned char(&color)[3]);
+	void drawScratch(CImg<unsigned int>* bg, PixelPosition from, PixelPosition to, double bright, int count, int randomPixelsPerLine, const unsigned char(&color)[3]);
+
+private:
+	void drawRandomCircel(CImg<unsigned int>* bg, PixelPosition position, double steuerung, double pixelDistribution, const unsigned char(&color)[3]);
 };
 
 #endif

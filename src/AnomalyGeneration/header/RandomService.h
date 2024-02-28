@@ -14,6 +14,7 @@ class RandomService {
 public:
 	int random(int steuerung, double pixelDistribution);
 	double randomOneScaled();
+	double randomOnePosAndNegScaled();
 };
 
 #endif

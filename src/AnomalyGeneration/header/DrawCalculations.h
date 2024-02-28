@@ -33,6 +33,7 @@ public:
 	void drawRectPart(CImg<unsigned int>* bg, PixelPosition position, double spaceX, double spaceY, double boarderDamage, double boarderPixelDistribution, const unsigned char(&color)[3], const unsigned char(&boarderColor)[3]);
 
 	void drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPosition position, double boarderDamageSteuerung, double boarderPixelDistribution, int maximalCountOfBumbs, const unsigned char(&color)[3]);
+	void drawScratch(CImg<unsigned int>* bg, PixelPosition from, PixelPosition to, double bright, int count, int randomPixels, const unsigned char(&color)[3]);
 };
 
 #endif // _DRAWCALCULATIONS_
