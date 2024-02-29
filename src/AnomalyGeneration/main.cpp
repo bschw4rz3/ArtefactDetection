@@ -49,7 +49,19 @@ int main()
     c.drawScratch(&bg, PixelPosition(130, 100), PixelPosition(130, 200), 3, 2, 10, black);
 
     //c.drawMultipleCicelCloud(&bg, PixelPosition(xPos, yPos), r, 20, 20.0, 0.05, 1.0, 0.75, 0.5, 250, black);
+
+    
     c.drawMultipleCicelCloud(&bg, PixelPosition(xPos+100, yPos+100), r, 20, 20.0, 0.5, 1.0, 0.5, 0.5, 230, black);
 
+    r = 50;
+
+    c.drawRect(&bg, PixelPosition(xPos-150, yPos+150), r, r, black);
+    c.drawMultipleCicelCloud(&bg, PixelPosition(xPos-150, yPos+150), r, 15, 10.0, 1.0, 1.0, 0.5, 0.5, 290, withe);
+
+
+    CImg<unsigned char> tmp = CImg<unsigned char>(200, 200, 1, 4);
+    tmp = bg.get_crop(200, 200, 0, 0, 400, 400, 0, 3);
+
     bg.display();
+    tmp.display();
 }

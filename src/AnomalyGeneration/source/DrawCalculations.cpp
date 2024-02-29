@@ -93,16 +93,7 @@ void DrawCalculations::drawRectPart(CImg<unsigned int>* bg, PixelPosition positi
     PixelPosition buttomRight(position.x - spaceX, position.y + spaceY);
     PixelPosition buttomLeft(position.x - spaceX, position.y - spaceY);
 
-    int thePoints[] = {
-        buttomRight.x, buttomLeft.x, topLeft.x, topRight.x, buttomRight.y, buttomLeft.y, topLeft.y, topRight.y
-    };
-
-    int *iterator = thePoints;
-
-    cimg_forXY(points,x,y)
-        points(x,y) = *iterator++;
-
-    bg->draw_polygon(points, color);
+    this->drawRect(bg, position, spaceX, spaceY, color);
 
     PixelPosition boarders[4][2] = {
         {topRight, topLeft},
@@ -158,4 +149,25 @@ void DrawCalculations::drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPositio
 void DrawCalculations::drawScratch(CImg<unsigned int>* bg, PixelPosition from, PixelPosition to, double bright, int count, int randomPixels, const unsigned char(&color)[3])
 {
     this->drawBumpCalculations->drawScratch(bg, from, to, bright, count, randomPixels, color);
+}
+
+void DrawCalculations::drawRect(CImg<unsigned int>* bg, PixelPosition position, double spaceX, double spaceY, const unsigned char(&color)[3])
+{
+    CImg<unsigned int> points(4, 2);
+
+    PixelPosition topLeft(position.x + spaceX, position.y - spaceY);
+    PixelPosition topRight(position.x + spaceX, position.y + spaceY);
+    PixelPosition buttomRight(position.x - spaceX, position.y + spaceY);
+    PixelPosition buttomLeft(position.x - spaceX, position.y - spaceY);
+
+    int thePoints[] = {
+        buttomRight.x, buttomLeft.x, topLeft.x, topRight.x, buttomRight.y, buttomLeft.y, topLeft.y, topRight.y
+    };
+
+    int *iterator = thePoints;
+
+    cimg_forXY(points,x,y)
+        points(x,y) = *iterator++;
+
+    bg->draw_polygon(points, color);
 }
