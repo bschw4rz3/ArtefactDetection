@@ -135,6 +135,7 @@
     <ClCompile Include="source\RandomService.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\Anomaly.h" />
     <ClInclude Include="header\CalculationService.h" />
     <ClInclude Include="header\cimg\CImg.h" />
     <ClInclude Include="header\DrawBumpCalculations.h" />

@@ -68,6 +68,9 @@
     <ClInclude Include="header\DrawBumpCalculations.h">
       <Filter>Headerdateien\Services</Filter>
     </ClInclude>
+    <ClInclude Include="header\Anomaly.h">
+      <Filter>Headerdateien\Models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

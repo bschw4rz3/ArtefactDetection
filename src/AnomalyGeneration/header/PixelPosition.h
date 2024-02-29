@@ -4,6 +4,12 @@
 class PixelPosition
 {
 public:
+	PixelPosition()
+	{
+		this->x = 0;
+		this->y = 0;
+	}
+
 	PixelPosition(int x, int y)
 	{
 		this->x = x;

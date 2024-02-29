@@ -9,13 +9,16 @@
 #include "header/DrawCalculations.h"
 #include "header/RandomService.h"
 #include "header/DrawBumpCalculations.h"
+#include "header/Anomaly.h"
 
 using namespace cimg_library;
 
 int main()
 {
-    int w = 600;
-    int h = 500;
+    int w = 500;
+    int h = 450;
+
+    std::vector<Anomaly> anomalyList;
 
     const unsigned char bluegreen[] = {0, 170, 255};
     const unsigned char black[] = {0, 0, 0};
@@ -39,19 +42,24 @@ int main()
 
     c.drawRectPart(&bg, PixelPosition(xPos, yPos), 200, 200, 10, 1, withe, black);
 
-    c.drawLiddelRandomBumb(&bg, PixelPosition(150, 100), 5, 1.0, 10, black);
-    c.drawLiddelRandomBumb(&bg, PixelPosition(150, 150), 5, 1.0, 10, black);
-    c.drawLiddelRandomBumb(&bg, PixelPosition(200, 150), 5, 1.0, 10, black);
-    c.drawLiddelRandomBumb(&bg, PixelPosition(150, 200), 5, 1.0, 10, black);
-
-    c.drawScratch(&bg, PixelPosition(300, 300), PixelPosition(350, 400), 10, 10, 10, black);
-    c.drawScratch(&bg, PixelPosition(200, 100), PixelPosition(350, 50), 20, 5, 10000, black);
-    c.drawScratch(&bg, PixelPosition(130, 100), PixelPosition(130, 200), 3, 2, 10, black);
-
-    //c.drawMultipleCicelCloud(&bg, PixelPosition(xPos, yPos), r, 20, 20.0, 0.05, 1.0, 0.75, 0.5, 250, black);
+    int size = 5;
+    PixelPosition position(150, 100);
+    c.drawLiddelRandomBumb(&bg, position, size, 1.0, 10, black);
+    anomalyList.push_back(Anomaly(PixelPosition(position.x-size, position.x-size), PixelPosition(position.x+size, position.x+size), AnomalyType::MinorDefect));
 
     
-    c.drawMultipleCicelCloud(&bg, PixelPosition(xPos+100, yPos+100), r, 20, 20.0, 0.5, 1.0, 0.5, 0.5, 230, black);
+    PixelPosition positionFrom(200, 100);
+    PixelPosition positionTo(350, 50);
+    int brigth = 20;
+    c.drawScratch(&bg, positionFrom, positionTo, brigth, 5, 10000, black);
+    anomalyList.push_back(Anomaly(PixelPosition(positionFrom.x-brigth, positionFrom.x-brigth), PixelPosition(positionTo.x+brigth, positionTo.x+brigth), AnomalyType::Defect));
+
+
+    int radius = 150;
+    int rotationInterval = 20;
+    PixelPosition position(100, 100);    
+    c.drawMultipleCicelCloud(&bg, PixelPosition(position.x+100, position.y+100), radius, rotationInterval, 20.0, 0.5, 1.0, 0.5, 0.5, 230, black);
+    anomalyList.push_back(Anomaly(PixelPosition(position.x-radius, position.x-radius), PixelPosition(position.x+radius, position.x+radius), AnomalyType::Artefact));
 
     r = 50;
 
@@ -68,7 +76,7 @@ int main()
         for(int y = 0;y<h;y+=hy)
         {
             CImg<unsigned char> tmp = CImg<unsigned char>(200, 200, 1, 4);
-            tmp = bg.get_crop(x, y, 0, 0, x+wx, y+hy, 0, 3);
+            tmp = bg.get_crop(x, y, 0, 0, x+wx-1, y+hy-1, 0, 3);
             
             tmp.display();
         }
