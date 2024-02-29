@@ -58,10 +58,24 @@ int main()
     c.drawRect(&bg, PixelPosition(xPos-150, yPos+150), r, r, black);
     c.drawMultipleCicelCloud(&bg, PixelPosition(xPos-150, yPos+150), r, 15, 10.0, 1.0, 1.0, 0.5, 0.5, 290, withe);
 
-
-    CImg<unsigned char> tmp = CImg<unsigned char>(200, 200, 1, 4);
-    tmp = bg.get_crop(200, 200, 0, 0, 400, 400, 0, 3);
-
     bg.display();
-    tmp.display();
+
+    int wx = 200;
+    int hy = 200;
+
+    for(int x = 0;x<w;x+=wx)
+    {
+        for(int y = 0;y<h;y+=hy)
+        {
+            CImg<unsigned char> tmp = CImg<unsigned char>(200, 200, 1, 4);
+            tmp = bg.get_crop(x, y, 0, 0, x+wx, y+hy, 0, 3);
+            
+            tmp.display();
+        }
+    }
+
+
+    
+
+    
 }
