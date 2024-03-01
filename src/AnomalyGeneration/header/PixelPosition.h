@@ -19,6 +19,37 @@ public:
 public:
 	int x;
 	int y;
+
+public:
+	bool operator==(PixelPosition other) noexcept
+	{
+		return this->x == other.x && this->y == other.y;
+	}
+
+	bool operator!=(PixelPosition other) noexcept
+	{
+		return this->x != other.x && this->y != other.y;
+	}
+	
+	bool operator>(PixelPosition other) noexcept
+	{
+		return this->x > other.x && this->y > other.y;
+	}
+	
+	bool operator<(PixelPosition other) noexcept
+	{
+		return this->x < other.x && this->y < other.y;
+	}
+	
+	bool operator>=(PixelPosition other) noexcept
+	{
+		return this->x >= other.x && this->y >= other.y;
+	}
+	
+	bool operator<=(PixelPosition other) noexcept
+	{
+		return this->x <= other.x && this->y <= other.y;
+	}
 };
 
 #endif
