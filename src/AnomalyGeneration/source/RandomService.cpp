@@ -24,6 +24,15 @@ int RandomService::random(int steuerung, double pixelDistribution)
     return scaledResult;
 }
 
+double RandomService::randomFromTo(double from, double to)
+{
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> dist(from, to);
+
+    return dist(mt);
+}
+
 double RandomService::randomOneScaled()
 {
     std::random_device rd;

@@ -13,6 +13,8 @@ class RandomService {
 
 public:
 	int random(int steuerung, double pixelDistribution);
+	double randomFromTo(double from, double to);
+
 	double randomOneScaled();
 	double randomOnePosAndNegScaled();
 };

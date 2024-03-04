@@ -24,6 +24,11 @@ public:
 
 		this->anomalyType = anomalyType;
 	}
+
+	bool operator==(AnomalyType other) noexcept
+	{
+		return (int) this == (int) other;
+	}
 };
 
 #endif
