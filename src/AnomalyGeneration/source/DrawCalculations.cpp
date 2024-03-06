@@ -6,8 +6,10 @@ DrawCalculations::DrawCalculations(DrawCircelCalculations* drawCircelCalculation
     this->drawBumpCalculations = drawBumpCalculations;
 }
 
-void DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int r, const unsigned char (&color)[3])
+std::vector<PixelPosition> DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int r, const unsigned char (&color)[3])
 {
+    std::vector<PixelPosition> pixelList;
+
     int lastX = 0;
     int lastY = 0;
 
@@ -28,6 +30,11 @@ void DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int
         {
             bg->draw_line(xPos + x, yPos + y, xPos + lastX, yPos + lastY, color);
             bg->draw_line(xPos - x, yPos - y, xPos - lastX, yPos - lastY, color);
+
+            pixelList.push_back(PixelPosition(xPos + x, yPos + y));
+            pixelList.push_back(PixelPosition(xPos + lastX, yPos + lastY));
+            pixelList.push_back(PixelPosition(xPos - x, yPos - y));
+            pixelList.push_back(PixelPosition(xPos - lastX, yPos - lastY));
         }
 
         lastX = x;
@@ -36,10 +43,19 @@ void DrawCalculations::drawCicel(CImg<unsigned int>* bg, int xPos, int yPos, int
 
     bg->draw_line(xPos + firstX, yPos + firstY, xPos - lastX, yPos - lastY, color);
     bg->draw_line(xPos - firstX, yPos - firstY, xPos + lastX, yPos + lastY, color);
+
+    pixelList.push_back(PixelPosition(xPos + firstX, yPos + firstY));
+    pixelList.push_back(PixelPosition(xPos - lastX, yPos - lastY));
+    pixelList.push_back(PixelPosition(xPos - firstX, yPos - firstY));
+    pixelList.push_back(PixelPosition(xPos + lastX, yPos + lastY));
+
+    return pixelList;
 }
 
-void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char (&color)[3])
+std::vector<PixelPosition> DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char (&color)[3])
 {
+    std::vector<PixelPosition> pixelList;
+
     double fadeOutFactor = 0;
 
     double part = r / 4 * M_PI;
@@ -65,23 +81,32 @@ void DrawCalculations::drawCicelCloud(CImg<unsigned int>* bg, PixelPosition posi
 
     double factorSteps = abs(fadeOutY) / (sectorCount);
 
-    double lastFadeFactor = this->drawCircelCalculations->drawEastCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorEast, factorSteps * 0.25, 0, rotation, color);
-    this->drawCircelCalculations->drawSouthCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
-    lastFadeFactor = this->drawCircelCalculations->drawNorthCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color);
-    this->drawCircelCalculations->drawWestCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorWest, factorSteps*1.75, lastFadeFactor, rotation, color);
+    double lastFadeFactor = this->drawCircelCalculations->drawEastCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorEast, factorSteps * 0.25, 0, rotation, color, &pixelList);
+    this->drawCircelCalculations->drawSouthCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color, &pixelList);
+    lastFadeFactor = this->drawCircelCalculations->drawNorthCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorMidd, factorSteps * 0.75, lastFadeFactor, rotation, color, &pixelList);
+    this->drawCircelCalculations->drawWestCircelPart(bg, position, r, steuerung, pixelCountPerBoarderPixel, pixelDistribution, sectorWest, factorSteps*1.75, lastFadeFactor, rotation, color, &pixelList);
     
+    return pixelList;
 }
 
-void DrawCalculations::drawMultipleCicelCloud(CImg<unsigned int>* bg, PixelPosition position, int r, int rotationInterval, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char(&color)[3])
+std::vector<PixelPosition> DrawCalculations::drawMultipleCicelCloud(CImg<unsigned int>* bg, PixelPosition position, int r, int rotationInterval, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, double fadeFromTo, double fadeOutY, double rotation, const unsigned char(&color)[3])
 {
+    std::vector<PixelPosition> totalPixelList;
     int radus = r;
 
     while (radus > 0)
     {
-        this->drawCicelCloud(bg, position, radus, steuerung, pixelCountPerBoarderPixel, pixelDistribution, fadeFromTo, fadeOutY, rotation, color);
+        std::vector<PixelPosition> pixelList = this->drawCicelCloud(bg, position, radus, steuerung, pixelCountPerBoarderPixel, pixelDistribution, fadeFromTo, fadeOutY, rotation, color);
+
+        for(int i = 0;i< pixelList.size();i++)
+        {
+            totalPixelList.push_back(pixelList[i]);
+        }
 
         radus -= rotationInterval;
     }
+
+    return totalPixelList;
 }
 
 void DrawCalculations::drawRectPart(CImg<unsigned int>* bg, PixelPosition position, double spaceX, double spaceY, double boarderDamageSteuerung, double boarderPixelDistribution, const unsigned char(&color)[3], const unsigned char(&boarderColor)[3])
@@ -138,17 +163,24 @@ void DrawCalculations::drawRectPart(CImg<unsigned int>* bg, PixelPosition positi
     }
 }
 
-void DrawCalculations::drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPosition position, double boarderDamageSteuerung, double boarderPixelDistribution, int maximalCountOfBumbs, const unsigned char(&color)[3])
+std::vector<PixelPosition> DrawCalculations::drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPosition position, double boarderDamageSteuerung, double boarderPixelDistribution, int maximalCountOfBumbs, const unsigned char(&color)[3])
 {
+    std::vector<PixelPosition> pixelList;
+
     for (int i = 0; i < maximalCountOfBumbs; i++)
     {
-        this->drawBumpCalculations->drawLiddelRandomBumb(bg, position, boarderDamageSteuerung, boarderPixelDistribution, color);
+        this->drawBumpCalculations->drawLiddelRandomBumb(bg, position, boarderDamageSteuerung, boarderPixelDistribution, color, &pixelList);
     }
+
+    return pixelList;
 }
 
-void DrawCalculations::drawScratch(CImg<unsigned int>* bg, PixelPosition from, PixelPosition to, double bright, int count, int randomPixels, const unsigned char(&color)[3])
+std::vector<PixelPosition> DrawCalculations::drawScratch(CImg<unsigned int>* bg, PixelPosition from, PixelPosition to, double bright, int count, int randomPixels, const unsigned char(&color)[3])
 {
-    this->drawBumpCalculations->drawScratch(bg, from, to, bright, count, randomPixels, color);
+    std::vector<PixelPosition> pixelList;
+    this->drawBumpCalculations->drawScratch(bg, from, to, bright, count, randomPixels, color, &pixelList);
+
+    return pixelList;
 }
 
 void DrawCalculations::drawRect(CImg<unsigned int>* bg, PixelPosition position, double spaceX, double spaceY, const unsigned char(&color)[3])

@@ -22,20 +22,22 @@ public:
 	DrawCircelCalculations(CalculationService* calculationService, RandomService* randomService);
 
 	double drawSouthCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, 
-		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3]);
+		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList);
 	
 	double drawWestCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
-		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3]);
+		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList);
 
 	double drawNorthCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
-		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3]);
+		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList);
 
 	double drawEastCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
-		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3]);
+		double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList);
 
 private:
-	void drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char(&color)[3]);
-	void drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, const unsigned char(&color)[3]);
+	void drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, 
+		const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList);
+	void drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, 
+		const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList);
 
 
 };

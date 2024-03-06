@@ -5,21 +5,23 @@ DrawBumpCalculations::DrawBumpCalculations(RandomService* randomSerivce)
 	this->randomSerivce = randomSerivce;
 }
 
-void DrawBumpCalculations::drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPosition position, double boarderDamageSteuerung, double pixelDistribution, const unsigned char(&color)[3])
+void DrawBumpCalculations::drawLiddelRandomBumb(CImg<unsigned int>* bg, PixelPosition position, double boarderDamageSteuerung, double pixelDistribution, 
+	const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList)
 {
 	double randomNumber = this->randomSerivce->randomOneScaled();
 
 	if (randomNumber < 0.75)
 	{
-		this->drawRandomPixel(bg, position, boarderDamageSteuerung, pixelDistribution, color);
+		this->drawRandomPixel(bg, position, boarderDamageSteuerung, pixelDistribution, color, pixelList);
 	}
 	else if (randomNumber < 1.0)
 	{
-		this->drawRandomCircel(bg, position, boarderDamageSteuerung, pixelDistribution, color);
+		this->drawRandomCircel(bg, position, boarderDamageSteuerung, pixelDistribution, color, pixelList);
 	}	
 }
 
-void DrawBumpCalculations::drawScratch(CImg<unsigned int>* bg, PixelPosition from, PixelPosition to, double bright, int count, int randomPixelsPerLine, const unsigned char(&color)[3])
+void DrawBumpCalculations::drawScratch(CImg<unsigned int>* bg, PixelPosition from, PixelPosition to, double bright, int count, int randomPixelsPerLine, 
+	const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList)
 {
 	for(int i = 0;i < count;i++)
 	{
@@ -60,12 +62,12 @@ void DrawBumpCalculations::drawScratch(CImg<unsigned int>* bg, PixelPosition fro
 
 			PixelPosition current(currentX, currentY);
 
-			this->drawLiddelRandomBumb(bg, current, brightRandom, 2.0, color);
-			this->drawRandomCircel(bg, current, brightRandom, 2.0, color);
+			this->drawLiddelRandomBumb(bg, current, brightRandom, 2.0, color, pixelList);
+			this->drawRandomCircel(bg, current, brightRandom, 2.0, color, pixelList);
 
 			while(currentRandomPixels <= shouldHavePixels)
 			{
-				this->drawRandomPixel(bg, current, brightRandom, 2.0, color);
+				this->drawRandomPixel(bg, current, brightRandom, 2.0, color, pixelList);
 				currentRandomPixels++;
 			}
 
@@ -75,7 +77,8 @@ void DrawBumpCalculations::drawScratch(CImg<unsigned int>* bg, PixelPosition fro
 	}
 }
 
-void DrawBumpCalculations::drawRandomCircel(CImg<unsigned int>* bg, PixelPosition position, double steuerung, double pixelDistribution, const unsigned char(&color)[3])
+void DrawBumpCalculations::drawRandomCircel(CImg<unsigned int>* bg, PixelPosition position, double steuerung, double pixelDistribution, const unsigned char(&color)[3], 
+	std::vector<PixelPosition>* pixelList)
 {
 	double randomSteuerungX = this->randomSerivce->random(steuerung, pixelDistribution);
 	double randomSteuerungY = this->randomSerivce->random(steuerung, pixelDistribution);
@@ -83,12 +86,27 @@ void DrawBumpCalculations::drawRandomCircel(CImg<unsigned int>* bg, PixelPositio
 	double circleWidth = this->randomSerivce->random(steuerung, pixelDistribution);
 
 	bg->draw_circle(round(position.x + randomSteuerungX), round(position.y + randomSteuerungY), circleWidth, color);
+
+	if(pixelList != NULL)
+	{
+		pixelList->push_back(PixelPosition(round(position.x + randomSteuerungX), round(position.y + randomSteuerungY)));
+		pixelList->push_back(PixelPosition(round(position.x + randomSteuerungX + circleWidth), round(position.y + randomSteuerungY + circleWidth)));
+		pixelList->push_back(PixelPosition(round(position.x + randomSteuerungX - circleWidth), round(position.y + randomSteuerungY + circleWidth)));
+		pixelList->push_back(PixelPosition(round(position.x + randomSteuerungX - circleWidth), round(position.y + randomSteuerungY - circleWidth)));
+		pixelList->push_back(PixelPosition(round(position.x + randomSteuerungX + circleWidth), round(position.y + randomSteuerungY - circleWidth)));
+	}
 }
 
-void DrawBumpCalculations::drawRandomPixel(CImg<unsigned int>* bg, PixelPosition position, double steuerung, double pixelDistribution, const unsigned char(&color)[3])
+void DrawBumpCalculations::drawRandomPixel(CImg<unsigned int>* bg, PixelPosition position, double steuerung, double pixelDistribution, const unsigned char(&color)[3], 
+	std::vector<PixelPosition>* pixelList)
 {
 	double randomSteuerungX = this->randomSerivce->random(steuerung, pixelDistribution);
 	double randomSteuerungY = this->randomSerivce->random(steuerung, pixelDistribution);
 
 	bg->draw_point(round(position.x + randomSteuerungX), round(position.y + randomSteuerungY), color);
+
+	if(pixelList != NULL)
+	{
+		pixelList->push_back(PixelPosition(round(position.x + randomSteuerungX), round(position.y + randomSteuerungY)));
+	}
 }

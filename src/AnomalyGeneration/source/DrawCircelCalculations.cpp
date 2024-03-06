@@ -8,7 +8,7 @@ DrawCircelCalculations::DrawCircelCalculations(CalculationService* calculationSe
 }
 
 double DrawCircelCalculations::drawSouthCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution, 
-    double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3])
+    double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList)
 {
     int writtenPixeles = 0;
     double shouldWritePixels = 0;
@@ -34,7 +34,7 @@ double DrawCircelCalculations::drawSouthCircelPart(CImg<unsigned int>* bg, Pixel
 
         PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudPositiv(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudPositiv(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color, pixelList);
 
         writtenPixeles = writtenPixeles + pixelCount;
 
@@ -45,7 +45,7 @@ double DrawCircelCalculations::drawSouthCircelPart(CImg<unsigned int>* bg, Pixel
 }
 
 double DrawCircelCalculations::drawWestCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
-    double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3])
+    double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList)
 {
     int writtenPixeles = 0;
     double shouldWritePixels = 0;
@@ -68,7 +68,7 @@ double DrawCircelCalculations::drawWestCircelPart(CImg<unsigned int>* bg, PixelP
 
         PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudNegativ(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudNegativ(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color, pixelList);
 
         writtenPixeles = writtenPixeles + (pixelCount);
 
@@ -86,7 +86,7 @@ double DrawCircelCalculations::drawWestCircelPart(CImg<unsigned int>* bg, PixelP
 }
 
 double DrawCircelCalculations::drawNorthCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
-    double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3])
+    double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList)
 {
     int writtenPixeles = 0;
     double shouldWritePixels = 0;
@@ -112,7 +112,7 @@ double DrawCircelCalculations::drawNorthCircelPart(CImg<unsigned int>* bg, Pixel
 
         PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudNegativ(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudNegativ(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color, pixelList);
 
         writtenPixeles = writtenPixeles + pixelCount;
 
@@ -123,7 +123,7 @@ double DrawCircelCalculations::drawNorthCircelPart(CImg<unsigned int>* bg, Pixel
 }
 
 double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, PixelPosition position, int r, int steuerung, double pixelCountPerBoarderPixel, double pixelDistribution,
-    double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3])
+    double fadeFromTo, double factorSteps, double beginFadeOutFactor, double angle, const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList)
 {
     int writtenPixeles = 0;
     double shouldWritePixels = 0;
@@ -147,7 +147,7 @@ double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, PixelP
 
         PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudPositiv(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudPositiv(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color, pixelList);
 
         writtenPixeles = writtenPixeles + pixelCount;
 
@@ -168,7 +168,7 @@ double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, PixelP
 
         PixelPosition angledPosition = this->calculationService->rotation(PixelPosition(x,y), anglePI);
 
-        this->drawCicelFromPointCloudPositiv(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color);
+        this->drawCicelFromPointCloudPositiv(bg, angledPosition, position, steuerung, pixelCount, pixelDistribution, color, pixelList);
 
         writtenPixeles = writtenPixeles + pixelCount;
 
@@ -180,7 +180,7 @@ double DrawCircelCalculations::drawEastCircelPart(CImg<unsigned int>* bg, PixelP
 }
 
 void DrawCircelCalculations::drawCicelFromPointCloudPositiv(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, 
-    const unsigned char(&color)[3])
+    const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList)
 {
     for (int i = 0; i < pixelCount; i++)
     {
@@ -188,11 +188,12 @@ void DrawCircelCalculations::drawCicelFromPointCloudPositiv(CImg<unsigned int>* 
         int randomY = this->randomService->random(steuerung, pixelDistribution);
 
         bg->draw_point(deltaPos.x + position.x + randomX, deltaPos.y + position.y + randomY, color);
+        pixelList->push_back(PixelPosition(deltaPos.x + position.x + randomX, deltaPos.y + position.y + randomY));
     }
 }
 
 void DrawCircelCalculations::drawCicelFromPointCloudNegativ(CImg<unsigned int>* bg, PixelPosition position, PixelPosition deltaPos, int steuerung, int pixelCount, double pixelDistribution, 
-    const unsigned char(&color)[3])
+    const unsigned char(&color)[3], std::vector<PixelPosition>* pixelList)
 {
     for (int i = 0; i < pixelCount; i++)
     {
@@ -200,5 +201,6 @@ void DrawCircelCalculations::drawCicelFromPointCloudNegativ(CImg<unsigned int>* 
         int randomY = this->randomService->random(steuerung, pixelDistribution);
 
         bg->draw_point(deltaPos.x - position.x + randomX, deltaPos.y - position.y + randomY, color);
+        pixelList->push_back(PixelPosition(deltaPos.x - position.x + randomX, deltaPos.y - position.y + randomY));
     }
 }

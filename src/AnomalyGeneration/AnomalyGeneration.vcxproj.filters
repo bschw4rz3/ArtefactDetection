@@ -45,6 +45,9 @@
     <ClCompile Include="source\DrawBumpCalculations.cpp">
       <Filter>Quelldateien\Services</Filter>
     </ClCompile>
+    <ClCompile Include="source\Anomaly.cpp">
+      <Filter>Quelldateien\Models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\cimg\CImg.h">
