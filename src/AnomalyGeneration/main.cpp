@@ -64,7 +64,7 @@ int main()
     DrawBumpCalculations drawBumpCalculations(&randomService);
     DrawCalculations c(&drawCircelCalculations, &drawBumpCalculations);
 
-    c.drawRectPart(&bg, PixelPosition(xPos, yPos), 200, 200, 10, 1, withe, black);
+    c.drawRectPart(&bg, PixelPosition(xPos, yPos), (w/2)-50, (h/2)-50, 10, 1, withe, black);
     
     int countOfAnomalies = randomService.randomFromTo(0,10);
 
@@ -82,8 +82,8 @@ int main()
             double pixelStreung = randomService.randomFromTo(0,2.0);
 
             PixelPosition position(positionX, positionY);
-            c.drawLiddelRandomBumb(&bg, position, size, pixelStreung, pixelDistribution, black);
-            anomalyList.push_back(Anomaly(PixelPosition(position.x-size, position.y-size), PixelPosition(position.x+size, position.y+size), AnomalyType::MinorDefect));
+            std::vector<PixelPosition> pixels = c.drawLiddelRandomBumb(&bg, position, size, pixelStreung, pixelDistribution, black);
+            anomalyList.push_back(Anomaly(pixels, AnomalyType::MinorDefect));
         }
         else if(anomalyType < 0.8)
         {
@@ -98,8 +98,8 @@ int main()
             int countOfLines = randomService.randomFromTo(0,10);
             int pixelCount = randomService.randomFromTo(0,20000);
 
-            c.drawScratch(&bg, positionFrom, positionTo, brigth, countOfLines, pixelCount, black);
-            anomalyList.push_back(Anomaly(PixelPosition(positionFrom.x-brigth, positionFrom.y-brigth), PixelPosition(positionTo.x+brigth, positionTo.y+brigth), AnomalyType::Defect));
+            std::vector<PixelPosition> pixels = c.drawScratch(&bg, positionFrom, positionTo, brigth, countOfLines, pixelCount, black);
+            anomalyList.push_back(Anomaly(pixels, AnomalyType::Defect));
         }
         else if(anomalyType < 0.75)
         {
@@ -114,8 +114,8 @@ int main()
 
             PixelPosition position(positionX, positionY);    
             
-            c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, black);
-            anomalyList.push_back(Anomaly(PixelPosition(position.x-radius, position.y-radius), PixelPosition(position.x+radius, position.y+radius), AnomalyType::Artefact));
+            std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, black);
+            anomalyList.push_back(Anomaly(pixels, AnomalyType::Artefact));
         }
         else if(anomalyType < 1.0)
         {
@@ -131,8 +131,8 @@ int main()
             PixelPosition position(positionX, positionY);
 
             c.drawRect(&bg, position, radius, radius, black);
-            c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, withe);
-            anomalyList.push_back(Anomaly(PixelPosition(position.x-radius, position.y-radius), PixelPosition(position.x+radius, position.y+radius), AnomalyType::Artefact));
+            std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, withe);
+            anomalyList.push_back(Anomaly(pixels, AnomalyType::Artefact));
         }
     }
 
@@ -159,9 +159,9 @@ int main()
             CImg<unsigned char> tmp = bg.get_crop(imageFrom.x, imageFrom.y, 0, 0, imageTo.x, imageTo.y, 0, size_c);
             
             for(int i = 0;i<anomalyList.size();i++)
-            {
-                PixelPosition from = anomalyList[i].from;
-                PixelPosition to = anomalyList[i].to;
+            {/*
+                PixelPosition from = anomalyList[i].getFrom();
+                PixelPosition to = anomalyList[i].getTo();
 
                 int diffX = to.x - from.x;
                 int diffY = to.y - from.y;
@@ -174,7 +174,8 @@ int main()
                    (imageFrom <= to && to <= imageTo) ||
                    (imageFrom <= from2 && from2 <= imageTo) ||
                    (imageFrom <= to2 && to2 <= imageTo) ||
-                   (imageFrom <= middel && middel <= imageTo))
+                   (imageFrom <= middel && middel <= imageTo))*/
+                if(anomalyList[i].IsInImage(imageFrom, imageTo))
                 {
                     anomalyTypeList.push_back(anomalyList[i].anomalyType);
                 }
@@ -213,6 +214,7 @@ int main()
             unsigned char* buffer = tmp.data();
 
             CImg<unsigned char> tmpSave = CImg<unsigned char>(buffer, wx, hy, size_z, size_c, 255);
+            tmpSave.display();
             tmpSave.save_png(file);
 
             fclose(file);

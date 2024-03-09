@@ -1,6 +1,10 @@
 #ifndef Anomaly_H
 #define Anomaly_H
 
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
 #include "PixelPosition.h"
 
 enum AnomalyType {
@@ -12,23 +16,22 @@ enum AnomalyType {
 class Anomaly
 {
 public:
-	PixelPosition from;
-	PixelPosition to;
-
 	AnomalyType anomalyType;
+	std::vector<PixelPosition> pixelList;
+	
+public:
+	Anomaly(std::vector<PixelPosition> pixels, AnomalyType anomalyType);
 
-	Anomaly(PixelPosition from, PixelPosition to, AnomalyType anomalyType) 
-	{
-		this->from = from;
-		this->to = to;
+	PixelPosition getFrom();
+	PixelPosition getTo();
 
-		this->anomalyType = anomalyType;
-	}
+	bool IsInImage(PixelPosition imageFrom, PixelPosition imageTo);
 
-	bool operator==(AnomalyType other) noexcept
-	{
-		return (int) this == (int) other;
-	}
+private:
+	int getMaxX();
+	int getMaxY();
+	int getMinX();
+	int getMinY();
 };
 
 #endif
