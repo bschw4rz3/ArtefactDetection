@@ -50,6 +50,16 @@ public:
 	{
 		return this->x <= other.x && this->y <= other.y;
 	}
+
+	PixelPosition operator+(PixelPosition other) noexcept
+	{
+		return PixelPosition(other.x+this->x, other.y+this->y);
+	}
+
+	PixelPosition operator-(PixelPosition other) noexcept
+	{
+		return PixelPosition(other.x - this->x, other.y - this->y);
+	}
 };
 
 #endif

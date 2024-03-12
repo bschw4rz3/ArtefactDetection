@@ -130,9 +130,21 @@ int main()
 
             PixelPosition position(positionX, positionY);
 
-            c.drawRect(&bg, position, radius, radius, black);
             std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, withe);
-            anomalyList.push_back(Anomaly(pixels, AnomalyType::Artefact));
+            Anomaly anomaly(pixels, AnomalyType::Artefact);
+            
+            PixelPosition from = anomaly.getFrom();
+            PixelPosition to = anomaly.getTo();
+
+            PixelPosition diff = to-from;
+            double w = abs(diff.x / 2);
+            double h = abs(diff.y / 2);
+            PixelPosition rectPosition = from + diff;
+
+            c.drawRect(&bg, rectPosition, w, h, black);
+            c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, withe);
+
+            anomalyList.push_back(anomaly);
         }
     }
 
@@ -159,22 +171,7 @@ int main()
             CImg<unsigned char> tmp = bg.get_crop(imageFrom.x, imageFrom.y, 0, 0, imageTo.x, imageTo.y, 0, size_c);
             
             for(int i = 0;i<anomalyList.size();i++)
-            {/*
-                PixelPosition from = anomalyList[i].getFrom();
-                PixelPosition to = anomalyList[i].getTo();
-
-                int diffX = to.x - from.x;
-                int diffY = to.y - from.y;
-
-                PixelPosition middel(from.x+diffX, from.y+diffY);
-                PixelPosition from2(from.x, to.y);
-                PixelPosition to2(to.x, from.y);
-
-                if((imageFrom <= from && from <= imageTo) || 
-                   (imageFrom <= to && to <= imageTo) ||
-                   (imageFrom <= from2 && from2 <= imageTo) ||
-                   (imageFrom <= to2 && to2 <= imageTo) ||
-                   (imageFrom <= middel && middel <= imageTo))*/
+            {
                 if(anomalyList[i].IsInImage(imageFrom, imageTo))
                 {
                     anomalyTypeList.push_back(anomalyList[i].anomalyType);

@@ -17,7 +17,9 @@ int RandomService::random(int steuerung, double pixelDistribution)
     double x = scaledRandom/(((double)steuerung)/2);
 
     double result = x;
-    result = pow(x, pixelDistribution)*pow(x, pixelDistribution)*x;
+
+    double powX = pow(abs(x), pixelDistribution);
+    result = powX * powX *x;
 
     double scaledResult = round(result*(((double)steuerung)/2));
 
