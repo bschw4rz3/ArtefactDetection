@@ -187,7 +187,10 @@ void DrawCircelCalculations::drawCicelFromPointCloudPositiv(CImg<unsigned int>* 
         int randomX = this->randomService->random(steuerung, pixelDistribution);
         int randomY = this->randomService->random(steuerung, pixelDistribution);
 
-        bg->draw_point(deltaPos.x + position.x + randomX, deltaPos.y + position.y + randomY, color);
+        if(bg != NULL)
+        {
+            bg->draw_point(deltaPos.x + position.x + randomX, deltaPos.y + position.y + randomY, color);
+        }
         pixelList->push_back(PixelPosition(deltaPos.x + position.x + randomX, deltaPos.y + position.y + randomY));
     }
 }
@@ -200,7 +203,11 @@ void DrawCircelCalculations::drawCicelFromPointCloudNegativ(CImg<unsigned int>* 
         int randomX = this->randomService->random(steuerung, pixelDistribution);
         int randomY = this->randomService->random(steuerung, pixelDistribution);
 
-        bg->draw_point(deltaPos.x - position.x + randomX, deltaPos.y - position.y + randomY, color);
+        if (bg != NULL)
+        {
+            bg->draw_point(deltaPos.x - position.x + randomX, deltaPos.y - position.y + randomY, color);
+        }
+            
         pixelList->push_back(PixelPosition(deltaPos.x - position.x + randomX, deltaPos.y - position.y + randomY));
     }
 }

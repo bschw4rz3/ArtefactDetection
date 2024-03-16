@@ -21,13 +21,31 @@
 
 using namespace cimg_library;
 
-bool contains(std::vector<Anomaly> list, AnomalyType type)
+bool contains(std::vector<AnomalyType> list, AnomalyType type)
 {
     for(int i = 0;i < list.size();i++)
     {
-        if(list[i].anomalyType == type)
+        if(list[i] == type)
         {
             return true;
+        }
+    }
+
+    return false;
+}
+
+bool containsWithePixels(CImg<unsigned char> &tmp)
+{
+    for (int x = 0; x < tmp.width(); x++)
+    {
+        for (int y = 0; y < tmp.height(); y++)
+        {
+            unsigned char currentColor = tmp._data[y * tmp.width() + x];
+
+            if (currentColor == 0)
+            {
+                return true;
+            }
         }
     }
 
@@ -43,7 +61,7 @@ int main()
 
     const unsigned char bluegreen[] = {0, 170, 255};
     const unsigned char black[] = {0, 0, 0};
-    const unsigned char withe[] = {255, 255, 255};
+    const unsigned char withe[] = { 255, 255, 255 };
 
     const unsigned int size_z = 1;
     const unsigned int size_c = 3;
@@ -75,7 +93,7 @@ int main()
         int positionX = randomService.randomFromTo(0,w);
         int positionY = randomService.randomFromTo(0,h);
 
-        if(anomalyType < 0.5)
+        if(anomalyType < 0.25)
         {
             int size = randomService.randomFromTo(1,10);
             double pixelDistribution = randomService.randomFromTo(0,10);
@@ -85,7 +103,7 @@ int main()
             std::vector<PixelPosition> pixels = c.drawLiddelRandomBumb(&bg, position, size, pixelStreung, pixelDistribution, black);
             anomalyList.push_back(Anomaly(pixels, AnomalyType::MinorDefect));
         }
-        else if(anomalyType < 0.8)
+        else if(anomalyType < 0.5)
         {
             PixelPosition positionFrom(positionX, positionY);
             
@@ -130,7 +148,7 @@ int main()
 
             PixelPosition position(positionX, positionY);
 
-            std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, withe);
+            std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(NULL, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, withe);
             Anomaly anomaly(pixels, AnomalyType::Artefact);
             
             PixelPosition from = anomaly.getFrom();
@@ -139,10 +157,10 @@ int main()
             PixelPosition diff = to-from;
             double w = abs(diff.x / 2);
             double h = abs(diff.y / 2);
-            PixelPosition rectPosition = from + diff;
+            PixelPosition rectPosition(from.x + w, from.y + h);
 
             c.drawRect(&bg, rectPosition, w, h, black);
-            c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, withe);
+            c.drawPixelList(&bg, pixels, withe);
 
             anomalyList.push_back(anomaly);
         }
@@ -178,13 +196,18 @@ int main()
                 }
             }
 
+            if (!containsWithePixels(tmp))
+            {
+                continue;
+            }
+
             std::string path = "testdata/";
 
-            if(contains(anomalyList, AnomalyType::Defect) || contains(anomalyList, AnomalyType::MinorDefect))
+            if(contains(anomalyTypeList, AnomalyType::Defect) || contains(anomalyTypeList, AnomalyType::MinorDefect))
             {
                 path = path + "defect/";
             }
-            else if(contains(anomalyList, AnomalyType::Artefact))
+            else if(contains(anomalyTypeList, AnomalyType::Artefact))
             {
                 path = path + "artefact/";
             }

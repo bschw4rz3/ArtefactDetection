@@ -203,3 +203,12 @@ void DrawCalculations::drawRect(CImg<unsigned int>* bg, PixelPosition position, 
 
     bg->draw_polygon(points, color);
 }
+
+void DrawCalculations::drawPixelList(CImg<unsigned int>* bg, std::vector<PixelPosition> pixelList, const unsigned char(&color)[3])
+{
+    for (int i = 0; i < pixelList.size(); i++)
+    {
+        PixelPosition pixel = pixelList[i];
+        bg->draw_point(pixel.x, pixel.y, color);
+    }
+}
