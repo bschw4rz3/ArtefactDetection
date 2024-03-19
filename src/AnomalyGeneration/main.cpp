@@ -234,7 +234,7 @@ int main()
             unsigned char* buffer = tmp.data();
 
             CImg<unsigned char> tmpSave = CImg<unsigned char>(buffer, wx, hy, size_z, size_c, 255);
-            tmpSave.display();
+            //tmpSave.display();
             tmpSave.save_png(file);
 
             fclose(file);
