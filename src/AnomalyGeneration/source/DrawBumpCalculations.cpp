@@ -85,7 +85,10 @@ void DrawBumpCalculations::drawRandomCircel(CImg<unsigned int>* bg, PixelPositio
 
 	double circleWidth = this->randomSerivce->random(steuerung, pixelDistribution);
 
-	bg->draw_circle(round(position.x + randomSteuerungX), round(position.y + randomSteuerungY), circleWidth, color);
+	if (bg != NULL)
+	{
+		bg->draw_circle(round(position.x + randomSteuerungX), round(position.y + randomSteuerungY), circleWidth, color);
+	}
 
 	if(pixelList != NULL)
 	{
@@ -103,7 +106,10 @@ void DrawBumpCalculations::drawRandomPixel(CImg<unsigned int>* bg, PixelPosition
 	double randomSteuerungX = this->randomSerivce->random(steuerung, pixelDistribution);
 	double randomSteuerungY = this->randomSerivce->random(steuerung, pixelDistribution);
 
-	bg->draw_point(round(position.x + randomSteuerungX), round(position.y + randomSteuerungY), color);
+	if (bg != NULL)
+	{
+		bg->draw_point(round(position.x + randomSteuerungX), round(position.y + randomSteuerungY), color);
+	}
 
 	if(pixelList != NULL)
 	{
