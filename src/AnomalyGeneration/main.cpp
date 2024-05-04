@@ -13,7 +13,7 @@
 #include <iostream>
 #include <chrono>
 #include <string> 
-#include "header/cimg/CImg.h"
+#include "../../../Shared/cimg/CImg.h"
 #include "header/DrawCalculations.h"
 #include "header/RandomService.h"
 #include "header/DrawBumpCalculations.h"

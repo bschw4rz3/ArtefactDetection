@@ -19,10 +19,35 @@
     <Filter Include="Headerdateien\detectors\statistics">
       <UniqueIdentifier>{363b4966-d612-4559-9ab0-f4b9097d7e12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\events">
+      <UniqueIdentifier>{0f0247ae-ae48-4eae-8400-24504676bc81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\events">
+      <UniqueIdentifier>{cfd3246c-c07d-4916-aa4a-0d1b017cd625}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Binaries">
+      <UniqueIdentifier>{bbd4b7b0-46fd-4877-a9cc-44fc46877872}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="MyEventReceiver.cpp">
+      <Filter>Quelldateien\events</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyEventReceiver.h">
+      <Filter>Headerdateien\events</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\lib\Irrlicht.dll">
+      <Filter>Binaries</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\lib\fonthaettenschweiler.bmp">
+      <Filter>Ressourcendateien</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

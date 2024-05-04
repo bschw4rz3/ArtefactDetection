@@ -3,7 +3,7 @@
 
 #pragma warning(disable:4146)
 
-#include "cimg/CImg.h"
+#include "../../../Shared/cimg/CImg.h"
 using namespace cimg_library;
 
 #include "RandomService.h"

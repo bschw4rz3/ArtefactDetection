@@ -50,9 +50,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\cimg\CImg.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="header\DrawCalculations.h">
       <Filter>Headerdateien\Services</Filter>
     </ClInclude>

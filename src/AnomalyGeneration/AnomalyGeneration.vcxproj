@@ -138,7 +138,6 @@
   <ItemGroup>
     <ClInclude Include="header\Anomaly.h" />
     <ClInclude Include="header\CalculationService.h" />
-    <ClInclude Include="header\cimg\CImg.h" />
     <ClInclude Include="header\DrawBumpCalculations.h" />
     <ClInclude Include="header\DrawCalculations.h" />
     <ClInclude Include="header\DrawCircelCalculations.h" />
@@ -147,6 +146,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.vcxproj">
+      <Project>{f77671a4-6742-4209-bf98-cd53ffd43778}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
