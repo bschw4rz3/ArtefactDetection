@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -131,11 +131,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ColorLib.h" />
+    <ClCompile Include="ColorRGB.h" />
+    <ClCompile Include="ColorService.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyEventReceiver.cpp" />
+    <ClCompile Include="SuperPixelService.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColorService.h" />
     <ClInclude Include="MyEventReceiver.h" />
+    <ClInclude Include="SuperPixelEntry.h" />
+    <ClInclude Include="SuperPixelService.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\lib\Irrlicht.dll">
@@ -158,7 +165,21 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </CopyFileToFolders>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\libpng_native.redist.1.6.30\build\native\libpng_native.redist.targets" Condition="Exists('..\packages\libpng_native.redist.1.6.30\build\native\libpng_native.redist.targets')" />
+    <Import Project="..\packages\zlib_native.redist.1.2.11\build\native\zlib_native.redist.targets" Condition="Exists('..\packages\zlib_native.redist.1.2.11\build\native\zlib_native.redist.targets')" />
+    <Import Project="..\packages\libpng_native.1.6.30\build\native\libpng_native.targets" Condition="Exists('..\packages\libpng_native.1.6.30\build\native\libpng_native.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Dieses Projekt verweist auf mindestens ein NuGet-Paket, das auf diesem Computer fehlt. Verwenden Sie die Wiederherstellung von NuGet-Paketen, um die fehlenden Dateien herunterzuladen. Weitere Informationen finden Sie unter "http://go.microsoft.com/fwlink/?LinkID=322105". Die fehlende Datei ist "{0}".</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\libpng_native.redist.1.6.30\build\native\libpng_native.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libpng_native.redist.1.6.30\build\native\libpng_native.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\zlib_native.redist.1.2.11\build\native\zlib_native.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\zlib_native.redist.1.2.11\build\native\zlib_native.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\libpng_native.1.6.30\build\native\libpng_native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libpng_native.1.6.30\build\native\libpng_native.targets'))" />
+  </Target>
 </Project>

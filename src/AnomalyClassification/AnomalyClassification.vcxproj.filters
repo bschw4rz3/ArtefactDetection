@@ -16,9 +16,6 @@
     <Filter Include="Headerdateien\detectors">
       <UniqueIdentifier>{096e0476-23d6-4ab3-be58-903976528d01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headerdateien\detectors\statistics">
-      <UniqueIdentifier>{363b4966-d612-4559-9ab0-f4b9097d7e12}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headerdateien\events">
       <UniqueIdentifier>{0f0247ae-ae48-4eae-8400-24504676bc81}</UniqueIdentifier>
     </Filter>
@@ -28,6 +25,24 @@
     <Filter Include="Binaries">
       <UniqueIdentifier>{bbd4b7b0-46fd-4877-a9cc-44fc46877872}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\models">
+      <UniqueIdentifier>{3a7569b8-01cb-4edc-8f40-f6e531ac26b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\detectors\clustering">
+      <UniqueIdentifier>{e4964330-9878-44af-826c-7c506236ba67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\detectors">
+      <UniqueIdentifier>{49bd5375-9f07-4d30-a84e-e6bb1880dcec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\detectors\clustering">
+      <UniqueIdentifier>{d4f555c2-135b-4df4-989e-5a1931505037}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\helpers">
+      <UniqueIdentifier>{7e94e7ae-1927-41a5-8c21-af74afe4ab00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\helpers">
+      <UniqueIdentifier>{ed1d55ea-20f7-42e0-a836-80d04f1a552b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,10 +51,31 @@
     <ClCompile Include="MyEventReceiver.cpp">
       <Filter>Quelldateien\events</Filter>
     </ClCompile>
+    <ClCompile Include="ColorLib.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorRGB.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperPixelService.cpp">
+      <Filter>Quelldateien\detectors\clustering</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorService.cpp">
+      <Filter>Quelldateien\helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
       <Filter>Headerdateien\events</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperPixelService.h">
+      <Filter>Headerdateien\detectors\clustering</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorService.h">
+      <Filter>Headerdateien\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperPixelEntry.h">
+      <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -49,5 +85,8 @@
     <CopyFileToFolders Include="..\lib\fonthaettenschweiler.bmp">
       <Filter>Ressourcendateien</Filter>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
