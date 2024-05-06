@@ -37,9 +37,9 @@ int main()
     SuperPixelService superPixelService(&colorService);
 
     CImg<unsigned char> img("..\\AnomalyGeneration\\testdata\\defect\\75.png");
-    std::vector<std::vector<SuperPixelEntry>> pixelCluster = superPixelService.process(50, img);
+    SuperPixelResult result = superPixelService.calculateSuperPixels(img, 50);
 
-    superPixelToImage(pixelCluster, img.width(), img.height());
+    superPixelToImage(result.superPixelClusters, img.width(), img.height());
 
     GraphicEngine graphicEngine;
     MyEventReceiver receiver(&graphicEngine);

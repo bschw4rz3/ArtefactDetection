@@ -136,12 +136,14 @@
     <ClCompile Include="ColorService.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyEventReceiver.cpp" />
+    <ClCompile Include="SubregionResult.h" />
     <ClCompile Include="SuperPixelService.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColorService.h" />
     <ClInclude Include="MyEventReceiver.h" />
     <ClInclude Include="SuperPixelEntry.h" />
+    <ClInclude Include="SuperPixelResult.h" />
     <ClInclude Include="SuperPixelService.h" />
   </ItemGroup>
   <ItemGroup>

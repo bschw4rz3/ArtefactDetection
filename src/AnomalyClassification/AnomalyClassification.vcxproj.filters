@@ -63,6 +63,9 @@
     <ClCompile Include="ColorService.cpp">
       <Filter>Quelldateien\helpers</Filter>
     </ClCompile>
+    <ClCompile Include="SubregionResult.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -75,6 +78,9 @@
       <Filter>Headerdateien\helpers</Filter>
     </ClInclude>
     <ClInclude Include="SuperPixelEntry.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperPixelResult.h">
       <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>

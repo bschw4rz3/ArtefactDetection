@@ -5,14 +5,42 @@ SuperPixelService::SuperPixelService(ColorService* colorService)
 	this->colorService = colorService;
 }
 
-std::vector<std::vector<SuperPixelEntry>> SuperPixelService::process(int maxCluster, CImg<unsigned char>& image, double m, double E)
+/**
+* maxCluster: Anzahl an maximalen Clusters
+* image: CIMG-Bild
+* m = If m is 0 is set to S (S is sqrt(pixelSizeN / maxCluster)). You can set a own m for distance calculations
+* E = Is the error threshold for the distance of the new and old cluster centers
+* T = Is the threshold for the subsection calculation
+*/
+SubregionResult SuperPixelService::calculateSuperPixelsAndSubregions(CImg<unsigned char>& image, int maxCluster, double m, double E, double T)
 {
-	double residualError = INT32_MAX;
-
 	std::vector<std::vector<SuperPixelEntry>> colorMatrix = this->imageToMatrix(image);
 	Point2D pixelDimensions(image.width(), image.height());
 
-	int pixelSizeN = image.width() * image.height();
+	SuperPixelResult superPixelResult = this->calculateSuperPixel(colorMatrix, pixelDimensions, maxCluster, m, E);
+
+	return SubregionResult(superPixelResult.clusterCenters, superPixelResult.superPixelClusters);
+}
+
+/**
+* maxCluster: Anzahl an maximalen Clusters
+* image: CIMG-Bild
+* m = If m is 0 is set to S (S is sqrt(pixelSizeN / maxCluster)). You can set a own m for distance calculations
+* E = Is the error threshold for the distance of the new and old cluster centers
+*/
+SuperPixelResult SuperPixelService::calculateSuperPixels(CImg<unsigned char>& image, int maxCluster, double m, double E)
+{
+	std::vector<std::vector<SuperPixelEntry>> colorMatrix = this->imageToMatrix(image);
+	Point2D pixelDimensions(image.width(), image.height());
+
+	return this->calculateSuperPixel(colorMatrix, pixelDimensions, maxCluster, m, E);
+}
+
+SuperPixelResult SuperPixelService::calculateSuperPixel(std::vector<std::vector<SuperPixelEntry>> colorMatrix, Point2D pixelDimensions, int maxCluster, double m, double E)
+{
+	double residualError = INT32_MAX;
+
+	int pixelSizeN = pixelDimensions.x * pixelDimensions.y;
 	double S = sqrt(pixelSizeN / maxCluster);
 
 	if (m == 0)
@@ -28,10 +56,10 @@ std::vector<std::vector<SuperPixelEntry>> SuperPixelService::process(int maxClus
 	}
 
 	std::vector<Point2D> clusterCenters = this->optimiceClusterCenters(colorMatrix, unoptimicedClusterCenters, 3);
-	
+
 	int realClusterAmout = clusterCenters.size();
 
-	while(residualError > E)
+	while (residualError > E)
 	{
 		for (int k = 0; k < clusterCenters.size(); k++)
 		{
@@ -51,7 +79,7 @@ std::vector<std::vector<SuperPixelEntry>> SuperPixelService::process(int maxClus
 					double dc = this->calculateDc(currentCluster.color, colorMatrix[x][y].color);
 					double ds = this->calculateDs(currentCluster.position, colorMatrix[x][y].position);
 
-					double distance = sqrt(pow( dc/m, 2) + pow( ds/S, 2));
+					double distance = sqrt(pow(dc / m, 2) + pow(ds / S, 2));
 
 					if (distance < colorMatrix[x][y].distance)
 					{
@@ -70,7 +98,10 @@ std::vector<std::vector<SuperPixelEntry>> SuperPixelService::process(int maxClus
 		clusterCenters = newClusterCenters;
 	}
 
-	return this->sortByLabels(colorMatrix, realClusterAmout);
+	return SuperPixelResult(
+		this->getClusterCenters(colorMatrix, clusterCenters),
+		this->sortByLabels(colorMatrix, realClusterAmout)
+	);
 }
 
 std::vector<Point2D> SuperPixelService::initializeClusterCenters(double distanceOfClusters, Point2D dimensions)
@@ -274,6 +305,21 @@ std::vector<std::vector<SuperPixelEntry>> SuperPixelService::sortByLabels(std::v
 				result[label].push_back(colorMatrix[x][y]);
 			}
 		}
+	}
+
+	return result;
+}
+
+std::vector<SuperPixelEntry> SuperPixelService::getClusterCenters(std::vector<std::vector<SuperPixelEntry>> colorMatrix, std::vector<Point2D> clusterCenters)
+{
+	std::vector<SuperPixelEntry> result;
+
+	for (int i = 0; i < clusterCenters.size(); i++)
+	{
+		int x = clusterCenters[i].x;
+		int y = clusterCenters[i].y;
+
+		result.push_back(colorMatrix[x][y]);
 	}
 
 	return result;

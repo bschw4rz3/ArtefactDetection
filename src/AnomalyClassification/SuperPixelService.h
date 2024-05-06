@@ -12,6 +12,8 @@ using namespace cimg_library;
 
 #include "SuperPixelEntry.h"
 #include "ColorService.h"
+#include "SuperPixelResult.h"
+#include "SubregionResult.h"
 
 class SuperPixelService
 {
@@ -21,9 +23,12 @@ private:
 public:
 	SuperPixelService(ColorService* colorService);
 
-	std::vector<std::vector<SuperPixelEntry>> process(int k, CImg<unsigned char>& image, double m = 0, double E = 0);
+	SubregionResult calculateSuperPixelsAndSubregions(CImg<unsigned char>& image, int maxCluster, double m = 0, double E = 0, double T = 155);
+	SuperPixelResult calculateSuperPixels(CImg<unsigned char>& image, int maxCluster, double m = 0, double E = 0);
 
 private:
+	SuperPixelResult calculateSuperPixel(std::vector<std::vector<SuperPixelEntry>> colorMatrix, Point2D pixelDimensions, int maxCluster, double m, double E);
+
 	double calculateDc(ColorLib clusterPixel, ColorLib other);
 	double calculateDs(Point2D clusterPixel, Point2D other);
 
@@ -37,6 +42,7 @@ private:
 	double caluclateResidualError(std::vector<Point2D> oldPoints, std::vector<Point2D> newPoints);
 
 	std::vector<std::vector<SuperPixelEntry>> sortByLabels(std::vector<std::vector<SuperPixelEntry>> colorMatrix, int maxK);
+	std::vector<SuperPixelEntry> getClusterCenters(std::vector<std::vector<SuperPixelEntry>> colorMatrix, std::vector<Point2D> clusterCenters);
 };
 
 #endif
