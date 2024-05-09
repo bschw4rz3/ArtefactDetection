@@ -7,8 +7,10 @@ public:
 	int x;
 	int y;
 
-	Point2D() {};
+	Point2D();
 	Point2D(int x, int y);
+
+	bool operator==(Point2D a);
 };
 
 #endif

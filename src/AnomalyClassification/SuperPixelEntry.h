@@ -10,15 +10,19 @@ public:
 	ColorLib color;
 	Point2D position;
 
-	int label;
 	double distance;
+
+	int label;
+	int subregionLabel;
 
 	SuperPixelEntry(ColorLib color, Point2D position) {
 		this->color = color;
 		this->position = position;
 
-		this->label = -1;
 		this->distance = INT32_MAX;
+
+		this->label = -1;
+		this->subregionLabel = -1;
 	}
 };
 

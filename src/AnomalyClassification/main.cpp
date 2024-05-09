@@ -7,6 +7,7 @@
 #include "MyEventReceiver.h"
 #include "SuperPixelService.h"
 #include "ColorService.h"
+#include "StringSerivce.h"
 
 void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height)
 {
@@ -31,15 +32,19 @@ void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, i
 
 int main()
 {
-    std::wstring file = L"..\\AnomalyGeneration\\testdata\\defect\\75.png";
 
+    StringSerivce stringSerivce;
     ColorService colorService;
-    SuperPixelService superPixelService(&colorService);
+    MathSerivce mathSerivce;
+    SuperPixelService superPixelService(&colorService, &mathSerivce);
 
-    CImg<unsigned char> img("..\\AnomalyGeneration\\testdata\\defect\\75.png");
-    SuperPixelResult result = superPixelService.calculateSuperPixels(img, 50);
+    std::wstring wFile = L"..\\AnomalyGeneration\\testdata\\defect\\75.png";
+    std::string cFile = stringSerivce.toString(wFile);
 
-    superPixelToImage(result.superPixelClusters, img.width(), img.height());
+    CImg<unsigned char> img(cFile.c_str());
+    SubregionResult result = superPixelService.calculateSuperPixelsAndSubregions(img, 50);
+
+    superPixelToImage(result.subregions, img.width(), img.height());
 
     GraphicEngine graphicEngine;
     MyEventReceiver receiver(&graphicEngine);
@@ -47,7 +52,7 @@ int main()
     graphicEngine.initiate(L"Part Cover", Point2D(640, 480));
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");
 
-    graphicEngine.addImage(GUI_ID_IMAGE, Point2D(10, 10), file.c_str());
+    graphicEngine.addImage(GUI_ID_IMAGE, Point2D(10, 10), wFile.c_str());
 
     graphicEngine.run((EventReceiver*)&receiver);
 }

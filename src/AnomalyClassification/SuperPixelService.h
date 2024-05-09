@@ -1,7 +1,7 @@
 #ifndef SuperPixelService_H
 #define SuperPixelService_H
 
-#include "math.h"
+#include <math.h>
 #include <vector>
 
 #define cimg_use_png
@@ -12,18 +12,21 @@ using namespace cimg_library;
 
 #include "SuperPixelEntry.h"
 #include "ColorService.h"
+#include "MathSerivce.h"
 #include "SuperPixelResult.h"
 #include "SubregionResult.h"
+#include "KeyValuePair.h"
 
 class SuperPixelService
 {
 private:
 	ColorService* colorService;
+	MathSerivce* mathSerivce;
 
 public:
-	SuperPixelService(ColorService* colorService);
+	SuperPixelService(ColorService* colorService, MathSerivce* mathSerivce);
 
-	SubregionResult calculateSuperPixelsAndSubregions(CImg<unsigned char>& image, int maxCluster, double m = 0, double E = 0, double T = 155);
+	SubregionResult calculateSuperPixelsAndSubregions(CImg<unsigned char>& image, int maxCluster, double m = 0, double E = 0, double L = 0, double T = 1);
 	SuperPixelResult calculateSuperPixels(CImg<unsigned char>& image, int maxCluster, double m = 0, double E = 0);
 
 private:
@@ -43,6 +46,14 @@ private:
 
 	std::vector<std::vector<SuperPixelEntry>> sortByLabels(std::vector<std::vector<SuperPixelEntry>> colorMatrix, int maxK);
 	std::vector<SuperPixelEntry> getClusterCenters(std::vector<std::vector<SuperPixelEntry>> colorMatrix, std::vector<Point2D> clusterCenters);
+
+	double calculateS(Point2D pixelDimensions, int maxCluster);
+
+	std::vector<Point2D> cacluateNeighbors(Point2D clusterCenter, double L);
+	std::vector<SuperPixelEntry> getPixelEntries(std::vector<Point2D> neighbors, std::vector<std::vector<SuperPixelEntry>> colorMatrix, Point2D imageDimensions);
+	double calculateColorDistance(ColorLib clusterCenterColor, ColorLib neighborPixelColor);
+	int getClusterOfPixel(std::vector < std::vector<SuperPixelEntry>> clusterEntries, SuperPixelEntry neighborPixel);
+	int getGroupIndex(const std::vector<std::vector<int>>& subSectionIndexes, int elementIndex);
 };
 
 #endif

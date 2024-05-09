@@ -3,12 +3,15 @@
 
 #include "SuperPixelResult.h"
 
-class SubregionResult : SuperPixelResult
+class SubregionResult : public SuperPixelResult
 {
 public:
-	SubregionResult(std::vector<SuperPixelEntry> clusterCenters, std::vector<std::vector<SuperPixelEntry>> superPixelClusters) : SuperPixelResult(clusterCenters, superPixelClusters)
-	{
+	std::vector<std::vector<SuperPixelEntry>> subregions;
 
+public:
+	SubregionResult(std::vector<SuperPixelEntry> clusterCenters, std::vector<std::vector<SuperPixelEntry>> superPixelClusters, std::vector<std::vector<SuperPixelEntry>> subregions) : SuperPixelResult(clusterCenters, superPixelClusters)
+	{
+		this->subregions = subregions;
 	}
 
 };

@@ -66,6 +66,12 @@
     <ClCompile Include="SubregionResult.h">
       <Filter>Headerdateien\models</Filter>
     </ClCompile>
+    <ClCompile Include="MathSerivce.cpp">
+      <Filter>Quelldateien\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="StringService.cpp">
+      <Filter>Quelldateien\helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -82,6 +88,15 @@
     </ClInclude>
     <ClInclude Include="SuperPixelResult.h">
       <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="MathSerivce.h">
+      <Filter>Headerdateien\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyValuePair.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="StringSerivce.h">
+      <Filter>Headerdateien\helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

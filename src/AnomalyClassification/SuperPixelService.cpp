@@ -1,8 +1,9 @@
 #include "SuperPixelService.h"
 
-SuperPixelService::SuperPixelService(ColorService* colorService)
+SuperPixelService::SuperPixelService(ColorService* colorService, MathSerivce* mathSerivce)
 {
 	this->colorService = colorService;
+	this->mathSerivce = mathSerivce;
 }
 
 /**
@@ -10,16 +11,110 @@ SuperPixelService::SuperPixelService(ColorService* colorService)
 * image: CIMG-Bild
 * m = If m is 0 is set to S (S is sqrt(pixelSizeN / maxCluster)). You can set a own m for distance calculations
 * E = Is the error threshold for the distance of the new and old cluster centers
+* L = Distance to cluster superpixels of 8 neighbor pixels
 * T = Is the threshold for the subsection calculation
 */
-SubregionResult SuperPixelService::calculateSuperPixelsAndSubregions(CImg<unsigned char>& image, int maxCluster, double m, double E, double T)
+SubregionResult SuperPixelService::calculateSuperPixelsAndSubregions(CImg<unsigned char>& image, int maxCluster, double m, double E, double L, double T)
 {
 	std::vector<std::vector<SuperPixelEntry>> colorMatrix = this->imageToMatrix(image);
 	Point2D pixelDimensions(image.width(), image.height());
 
 	SuperPixelResult superPixelResult = this->calculateSuperPixel(colorMatrix, pixelDimensions, maxCluster, m, E);
 
-	return SubregionResult(superPixelResult.clusterCenters, superPixelResult.superPixelClusters);
+	if (L == 0)
+	{
+		L = this->calculateS(pixelDimensions, maxCluster);
+	}
+
+	std::vector<KeyValuePair<int, int>> combaineList;
+	
+	for (int k = 0; k < superPixelResult.superPixelClusters.size(); k++)
+	{
+		SuperPixelEntry clusterCenter = superPixelResult.clusterCenters[k];
+		std::vector<SuperPixelEntry> clusterEntries = superPixelResult.superPixelClusters[k];
+
+		std::vector<Point2D> neighbors = this->cacluateNeighbors(clusterCenter.position, L);
+		std::vector<SuperPixelEntry> neighborPixels = this->getPixelEntries(neighbors, colorMatrix, pixelDimensions);
+		
+		for (int i = 0; i < neighborPixels.size(); i++)
+		{
+			double colorDistance = this->calculateColorDistance(clusterCenter.color, neighborPixels[i].color);
+
+			if (colorDistance < T)
+			{
+				int clusterIndex = this->getClusterOfPixel(superPixelResult.superPixelClusters, neighborPixels[i]);
+
+				if (clusterIndex != k)
+				{
+					combaineList.push_back(KeyValuePair<int, int>(std::min(k, clusterIndex), std::max(k, clusterIndex)));
+				}
+			}
+		}
+	}
+
+	sort(combaineList.begin(), combaineList.end());
+	combaineList.erase(unique(combaineList.begin(), combaineList.end()), combaineList.end());
+
+	std::vector<std::vector<int>> subSectionIndexes;
+
+	for (int i = 0; i < combaineList.size(); i++)
+	{
+		KeyValuePair<int, int> combainePair = combaineList[i];
+
+		int keyIndex = this->getGroupIndex(subSectionIndexes, combainePair.key);
+		int valueIndex = this->getGroupIndex(subSectionIndexes, combainePair.value);
+
+		if (keyIndex == -1 && valueIndex == -1)
+		{
+			subSectionIndexes.push_back(std::vector<int>({ combainePair.key, combainePair.value }));
+		}
+		else if ((keyIndex == -1 && valueIndex != -1))
+		{
+			subSectionIndexes[valueIndex].push_back(combainePair.key);
+		}
+		else if ((keyIndex != -1 && valueIndex == -1))
+		{
+			subSectionIndexes[keyIndex].push_back(combainePair.value);
+		}
+		else if(keyIndex != valueIndex)
+		{
+			// different groups: combine groups
+
+			for (int i = 0; i < subSectionIndexes[valueIndex].size(); i++)
+			{
+				subSectionIndexes[keyIndex].push_back(subSectionIndexes[valueIndex][i]);
+			}
+
+			subSectionIndexes.erase(subSectionIndexes.begin() + valueIndex);
+		}
+		else
+		{
+			// is allready in list and same group
+		}
+	}
+
+	std::vector<std::vector<SuperPixelEntry>> subregions;
+	
+	for (int r = 0; r < subSectionIndexes.size(); r++)
+	{
+		std::vector<SuperPixelEntry> subregion;
+
+		for (int i = 0; i < subSectionIndexes[r].size(); i++)
+		{
+			int clusterGroup = subSectionIndexes[r][i];
+
+			for (int k = 0; k < superPixelResult.superPixelClusters[clusterGroup].size(); k++)
+			{
+				SuperPixelEntry pixelEntry = superPixelResult.superPixelClusters[clusterGroup][k];
+				pixelEntry.subregionLabel = r;
+				subregion.push_back(pixelEntry);
+			}
+		}
+
+		subregions.push_back(subregion);
+	}
+
+	return SubregionResult(superPixelResult.clusterCenters, superPixelResult.superPixelClusters, subregions);
 }
 
 /**
@@ -39,9 +134,7 @@ SuperPixelResult SuperPixelService::calculateSuperPixels(CImg<unsigned char>& im
 SuperPixelResult SuperPixelService::calculateSuperPixel(std::vector<std::vector<SuperPixelEntry>> colorMatrix, Point2D pixelDimensions, int maxCluster, double m, double E)
 {
 	double residualError = INT32_MAX;
-
-	int pixelSizeN = pixelDimensions.x * pixelDimensions.y;
-	double S = sqrt(pixelSizeN / maxCluster);
+	double S = this->calculateS(pixelDimensions, maxCluster);
 
 	if (m == 0)
 	{
@@ -323,4 +416,86 @@ std::vector<SuperPixelEntry> SuperPixelService::getClusterCenters(std::vector<st
 	}
 
 	return result;
+}
+
+std::vector<Point2D> SuperPixelService::cacluateNeighbors(Point2D clusterCenter, double L)
+{
+	double diagonalLength = this->mathSerivce->degreesToRadians(45) * L;
+
+	return std::vector<Point2D>({
+		Point2D(clusterCenter.x, clusterCenter.y + L),
+		Point2D(clusterCenter.x, clusterCenter.y - L),
+		Point2D(clusterCenter.x + L, clusterCenter.y),
+		Point2D(clusterCenter.x - L, clusterCenter.y),
+		Point2D(clusterCenter.x - diagonalLength, clusterCenter.y - diagonalLength),
+		Point2D(clusterCenter.x + diagonalLength, clusterCenter.y - diagonalLength),
+		Point2D(clusterCenter.x - diagonalLength, clusterCenter.y + diagonalLength),
+		Point2D(clusterCenter.x + diagonalLength, clusterCenter.y + diagonalLength)
+		});
+}
+
+std::vector<SuperPixelEntry> SuperPixelService::getPixelEntries(std::vector<Point2D> neighbors, std::vector<std::vector<SuperPixelEntry>> colorMatrix, Point2D imageDimensions)
+{
+	std::vector<SuperPixelEntry> result;
+
+	for (int i = 0; i < neighbors.size(); i++)
+	{
+		Point2D position = neighbors[i];
+
+		if (position.x >= 0 && position.x < imageDimensions.x &&
+			position.y >= 0 && position.y < imageDimensions.y)
+		{
+			SuperPixelEntry superPixelEntries = colorMatrix[position.x][position.y];
+			result.push_back(superPixelEntries);
+		}
+	}
+
+	return result;
+}
+
+int SuperPixelService::getClusterOfPixel(std::vector < std::vector<SuperPixelEntry>> clusterEntries, SuperPixelEntry neighborPixel)
+{
+	for (int k = 0; k < clusterEntries.size(); k++)
+	{
+		for (int i = 0; i < clusterEntries[k].size(); i++)
+		{
+			if (clusterEntries[k][i].position == neighborPixel.position)
+			{
+				return k;
+			}
+		}
+	}
+
+	throw "Can't find a cluster of Pixel";
+}
+
+double SuperPixelService::calculateColorDistance(ColorLib clusterCenterColor, ColorLib neighborPixelColor)
+{
+	return sqrt(
+		pow(clusterCenterColor.l - neighborPixelColor.l, 2) +
+		pow(clusterCenterColor.a - neighborPixelColor.a, 2) +
+		pow(clusterCenterColor.b - neighborPixelColor.b, 2)
+	);
+}
+
+int SuperPixelService::getGroupIndex(const std::vector<std::vector<int>>& subSectionIndexes, int elementIndex)
+{
+	for (int i = 0; i < subSectionIndexes.size(); i++)
+	{
+		for (int h = 0; h < subSectionIndexes[i].size(); h++)
+		{
+			if (subSectionIndexes[i][h] == elementIndex)
+			{
+				return i;
+			}
+		}
+	}
+
+	return -1;
+}
+
+double SuperPixelService::calculateS(Point2D pixelDimensions, int maxCluster)
+{
+	int pixelSizeN = pixelDimensions.x * pixelDimensions.y;
+	return sqrt(pixelSizeN / maxCluster);
 }
