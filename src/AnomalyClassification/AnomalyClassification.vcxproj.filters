@@ -43,6 +43,12 @@
     <Filter Include="Quelldateien\helpers">
       <UniqueIdentifier>{ed1d55ea-20f7-42e0-a836-80d04f1a552b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\services">
+      <UniqueIdentifier>{e8ecbf9b-9ee3-4aed-82f8-1bab3e5302d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\services">
+      <UniqueIdentifier>{3129c841-6ae9-4674-8ce8-e79ed2cadd8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -72,6 +78,9 @@
     <ClCompile Include="StringService.cpp">
       <Filter>Quelldateien\helpers</Filter>
     </ClCompile>
+    <ClCompile Include="GraphicEngineExtended.cpp">
+      <Filter>Quelldateien\services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -97,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="StringSerivce.h">
       <Filter>Headerdateien\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngineExtended.h">
+      <Filter>Headerdateien\services</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

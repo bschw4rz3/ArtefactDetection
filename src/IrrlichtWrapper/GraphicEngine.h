@@ -40,7 +40,7 @@ enum
 
 class GraphicEngine : IPrimitiveGraphic
 {
-private:
+protected:
     IrrlichtDevice* device;
 
     video::IVideoDriver* driver;
@@ -68,7 +68,6 @@ public:
 
     void addImage(int id, Point2D position, const wchar_t* file);
     void addImage(Point2D position, const wchar_t* file);
-    void addScaledImage(int id, Point2D position, const wchar_t* file);
 
     void addPrimitiveDraw(IPrimitiveDraw* primitive);
 

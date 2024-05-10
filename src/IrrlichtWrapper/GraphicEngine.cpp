@@ -100,25 +100,6 @@ void GraphicEngine::add2DRectangle(Point2D from, Point2D to, Color color)
     this->driver->draw2DRectangleOutline(rect<s32>(from.x, from.y, to.x, to.y), SColor(color.a, color.r, color.g, color.b));
 }
 
-void GraphicEngine::addScaledImage(int id, Point2D position, const wchar_t* file)
-{/*
-    const char* fileChars = wchar_to_char(file);
-
-    CImg<unsigned int> bg(fileChars);
-
-    bg.resize(400, 400);
-    bg.save()
-
-    IFileSystem* irrFS = this->device->getFileSystem();
-    IReadFile* file = irrFS->createMemoryReadFile(data, SizeofResource(NULL, res), "", true);
-    //tex = driver->getTexture(file);
-
-    ITexture* texture = this->driver->getTexture(file);
-    this->env->addImage(texture, position2d<int>(position.x, position.y), id);*/
-
-    //file->drop();
-}
-
 void GraphicEngine::addImage(int id, Point2D position, const wchar_t* file)
 {
     ITexture* texture = this->driver->getTexture(file);
@@ -192,37 +173,3 @@ void GraphicEngine::renderPrimitive(IGeometry* geometry)
         entry->render(this, geometry);
     }
 }
-/*
-char* wchar_to_char(const wchar_t* pwchar)
-{
-    // get the number of characters in the string.
-    int currentCharIndex = 0;
-    char currentChar = pwchar[currentCharIndex];
-
-    while (currentChar != '\0')
-    {
-        currentCharIndex++;
-        currentChar = pwchar[currentCharIndex];
-    }
-
-    const int charCount = currentCharIndex + 1;
-
-    // allocate a new block of memory size char (1 byte) instead of wide char (2 bytes)
-    char* filePathC = (char*)malloc(sizeof(char) * charCount);
-
-    for (int i = 0; i < charCount; i++)
-    {
-        // convert to char (1 byte)
-        char character = pwchar[i];
-
-        *filePathC = character;
-
-        filePathC += sizeof(char);
-
-    }
-    filePathC += '\0';
-
-    filePathC -= (sizeof(char) * charCount);
-
-    return filePathC;
-}*/

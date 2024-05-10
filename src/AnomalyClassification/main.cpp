@@ -1,9 +1,9 @@
 // AnomalyClassification.cpp : Diese Datei enthält die Funktion "main". Hier beginnt und endet die Ausführung des Programms.
 //
-
 #include <iostream>
 #include <string>
-#include "../IrrlichtWrapper/GraphicEngine.h"
+
+#include "GraphicEngineExtended.h"
 #include "MyEventReceiver.h"
 #include "SuperPixelService.h"
 #include "ColorService.h"
@@ -46,11 +46,13 @@ int main()
 
     superPixelToImage(result.subregions, img.width(), img.height());
 
-    GraphicEngine graphicEngine;
+    GraphicEngineExtended graphicEngine(&stringSerivce);
     MyEventReceiver receiver(&graphicEngine);
 
     graphicEngine.initiate(L"Part Cover", Point2D(640, 480));
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");
+
+    graphicEngine.addImage(0, Point2D(200, 200), L"temp.png");
 
     graphicEngine.addImage(GUI_ID_IMAGE, Point2D(10, 10), wFile.c_str());
 
