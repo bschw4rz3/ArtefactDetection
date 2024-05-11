@@ -42,7 +42,13 @@ SubregionResult SuperPixelService::calculateSuperPixelsAndSubregions(CImg<unsign
 
 			if (colorDistance < T)
 			{
-				int clusterIndex = this->getClusterOfPixel(superPixelResult.superPixelClusters, neighborPixels[i]);
+				//int clusterIndex = this->getClusterOfPixel(superPixelResult.superPixelClusters, neighborPixels[i]);
+				int clusterIndex = neighborPixels[i].label;
+
+				if (clusterIndex == -1)
+				{
+					continue;
+				}
 
 				if (clusterIndex != k)
 				{
@@ -453,6 +459,7 @@ std::vector<SuperPixelEntry> SuperPixelService::getPixelEntries(std::vector<Poin
 	return result;
 }
 
+/*
 int SuperPixelService::getClusterOfPixel(std::vector < std::vector<SuperPixelEntry>> clusterEntries, SuperPixelEntry neighborPixel)
 {
 	for (int k = 0; k < clusterEntries.size(); k++)
@@ -467,7 +474,7 @@ int SuperPixelService::getClusterOfPixel(std::vector < std::vector<SuperPixelEnt
 	}
 
 	throw "Can't find a cluster of Pixel";
-}
+}*/
 
 double SuperPixelService::calculateColorDistance(ColorLib clusterCenterColor, ColorLib neighborPixelColor)
 {

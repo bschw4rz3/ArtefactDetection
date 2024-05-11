@@ -85,6 +85,12 @@ void GraphicEngine::setGUIElementText(int id, const wchar_t* text)
     element->setText(text);
 }
 
+void GraphicEngine::setGUIElementChecked(int id, bool checked)
+{
+    IGUICheckBox* element = (IGUICheckBox*) this->guiElementMap[id];
+    element->setChecked(checked);
+}
+
 void GraphicEngine::add2DLine(Point2D one, Point2D two, Color color)
 {
     this->driver->draw2DLine(core::position2d<s32>(one.x, one.y), core::position2d<s32>(two.x, two.y), SColor(color.a, color.r, color.g, color.b));
@@ -109,6 +115,28 @@ void GraphicEngine::addImage(int id, Point2D position, const wchar_t* file)
 void GraphicEngine::addImage(Point2D position, const wchar_t* file)
 {
     this->addImage(-1, position, file);
+}
+
+void GraphicEngine::addCheckbox(int id, Point2D position, const wchar_t* text, bool checked)
+{
+    int length = sizeof(text);
+    IGUIElement* element = this->env->addCheckBox(checked, core::recti(vector2di(position.x, position.y), vector2di(position.x+(8*length), position.y+15)), 0, id, text);
+
+    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, element));
+}
+
+bool GraphicEngine::isCheckboxChecked(int id)
+{
+    IGUICheckBox* element = (IGUICheckBox*)this->guiElementMap[id];
+    return element->isChecked();
+}
+
+void GraphicEngine::removeElement(int id)
+{
+    IGUIElement* element = (IGUIElement*)this->guiElementMap[id];
+    element->drop();
+
+    this->guiElementMap.erase(id);
 }
 
 void GraphicEngine::addPrimitiveDraw(IPrimitiveDraw* primitive)

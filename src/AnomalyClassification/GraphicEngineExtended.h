@@ -15,11 +15,16 @@ class GraphicEngineExtended : public GraphicEngine
 {
 private:
 	StringSerivce* stringSerivce;
+	std::vector<int> checkboxIds;
 
 public:
 	GraphicEngineExtended(StringSerivce* stringSerivce);
 
-	//void addScaledImage(int id, Point2D position, const wchar_t* file);
+	virtual void addCheckbox(int id, Point2D position, const wchar_t* text, bool checked = false);
+	virtual void resetMethodCheckBoxs();
+
+	virtual void addFileOpenDialog(int id, std::wstring startDir);
+	virtual std::wstring getSelectedFile(int id);
 };
 
 #endif

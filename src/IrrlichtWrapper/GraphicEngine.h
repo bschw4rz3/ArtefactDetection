@@ -50,28 +50,33 @@ protected:
     std::map<int, IGUIElement*> guiElementMap;
 
 public:
-    int initiate(const wchar_t* windowTitle, Point2D windowDimensions);
-    void loadFont(const wchar_t* fontFile);
+    virtual int initiate(const wchar_t* windowTitle, Point2D windowDimensions);
+    virtual void loadFont(const wchar_t* fontFile);
 
-    void addScrollbar(int id, Point2D position, int length, double min, double max, double value);
-    void addButton(int id, Point2D position, int length, const wchar_t* text, const wchar_t* tooltip = L"");
-    void addLabel(int id, Point2D position, int length, const wchar_t* text);
-    void addListBox(int id, Point2D position, Point2D point, const wchar_t* text);
-    void addInputBox(int id, Point2D point, int length, const wchar_t* text);
+    virtual void addScrollbar(int id, Point2D position, int length, double min, double max, double value);
+    virtual void addButton(int id, Point2D position, int length, const wchar_t* text, const wchar_t* tooltip = L"");
+    virtual void addLabel(int id, Point2D position, int length, const wchar_t* text);
+    virtual void addListBox(int id, Point2D position, Point2D point, const wchar_t* text);
+    virtual void addInputBox(int id, Point2D point, int length, const wchar_t* text);
+    virtual void addCheckbox(int id, Point2D position, const wchar_t* text, bool checked = false);
+    virtual bool isCheckboxChecked(int id);
 
-    void enableGUIElement(int id, bool enable);
-    void setGUIElementText(int id, const wchar_t* text);
+    virtual void enableGUIElement(int id, bool enable);
+    virtual void setGUIElementText(int id, const wchar_t* text);
+    virtual void setGUIElementChecked(int id, bool checked);
 
-    void add2DLine(Point2D one, Point2D two, Color color);
-    void add2DPixel(Point2D position, Color color);
-    void add2DRectangle(Point2D from, Point2D to, Color color);
+    virtual void add2DLine(Point2D one, Point2D two, Color color);
+    virtual void add2DPixel(Point2D position, Color color);
+    virtual void add2DRectangle(Point2D from, Point2D to, Color color);
 
-    void addImage(int id, Point2D position, const wchar_t* file);
-    void addImage(Point2D position, const wchar_t* file);
+    virtual void addImage(int id, Point2D position, const wchar_t* file);
+    virtual void addImage(Point2D position, const wchar_t* file);
 
-    void addPrimitiveDraw(IPrimitiveDraw* primitive);
+    virtual void removeElement(int id);
 
-    int run(EventReceiver* receiver);
+    virtual void addPrimitiveDraw(IPrimitiveDraw* primitive);
+
+    virtual int run(EventReceiver* receiver);
 
 private:
     void renderPrimitive(IGeometry* geometry);
