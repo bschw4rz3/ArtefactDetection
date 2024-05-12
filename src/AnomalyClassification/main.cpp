@@ -16,9 +16,6 @@ int main()
     MathSerivce mathSerivce;
     SuperPixelService superPixelService(&colorService, &mathSerivce);
 
-    std::wstring wFile = L"..\\AnomalyGeneration\\testdata\\defect\\75.png";
-    std::string cFile = stringSerivce.toString(wFile);
-
     GraphicEngineExtended graphicEngine(&stringSerivce);
     MyEventReceiver receiver(&graphicEngine, &superPixelService, &stringSerivce);
 
@@ -31,6 +28,8 @@ int main()
 
     graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(450, 400), 100, L"Calculate");
     graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(50, 300), 100, L"Open File");
+
+    graphicEngine.addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, L"..\\AnomalyGeneration\\testdata");
 
     graphicEngine.run((EventReceiver*)&receiver);
 }

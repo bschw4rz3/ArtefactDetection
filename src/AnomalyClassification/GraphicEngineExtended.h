@@ -10,6 +10,7 @@ using namespace cimg_library;
 #include "../IrrlichtWrapper/GraphicEngine.h"
 
 #include "StringSerivce.h"
+#include "CGUIFileSelector.h"
 
 class GraphicEngineExtended : public GraphicEngine
 {
@@ -25,6 +26,7 @@ public:
 
 	virtual void addFileOpenDialog(int id, std::wstring startDir);
 	virtual std::wstring getSelectedFile(int id);
+	virtual void setVisibility(int id, bool visibile);
 };
 
 #endif

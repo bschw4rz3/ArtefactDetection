@@ -75,14 +75,18 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
-                this->graphicEngine->addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, L"..\\AnomalyGeneration\\testdata");
+                graphicEngine->setVisibility(GUI_ID_DIALOG_CHOOSE_FILE, true);
             }
 
             return true;
         case EGET_FILE_SELECTED:
-            this->onSelectFile();
-            break;
-
+            {
+            CGUIFileSelector* dialog = (CGUIFileSelector*)event.GUIEvent.Caller;
+            this->onSelectFile(dialog->getFileName());
+        //case EGET_FILE_CHOOSE_DIALOG_CANCELLED:
+            //this->graphicEngine->removeElement(GUI_ID_DIALOG_CHOOSE_FILE);
+            return true;
+        }
         case EGET_CHECKBOX_CHANGED:
             this->graphicEngine->resetMethodCheckBoxs();
             this->graphicEngine->setGUIElementChecked(id, true);
@@ -111,15 +115,18 @@ void MyEventReceiver::onCalculateSuperPixels()
     this->graphicEngine->addImage(0, Point2D(220, 250), L"temp1.png");
 }
 
-void MyEventReceiver::onSelectFile()
+void MyEventReceiver::onSelectFile(core::stringc fileName)
 {
     if (!this->selectedFile.empty())
     {
         this->graphicEngine->removeElement(GUI_ID_IMAGE);
     }
 
-    this->selectedFile = this->graphicEngine->getSelectedFile(GUI_ID_DIALOG_CHOOSE_FILE);
-    this->graphicEngine->addImage(GUI_ID_IMAGE, Point2D(10, 10), this->selectedFile.c_str());
+    //this->selectedFile = this->graphicEngine->getSelectedFile(GUI_ID_DIALOG_CHOOSE_FILE);
+    //this->graphicEngine->addImage(GUI_ID_IMAGE, Point2D(10, 10), this->selectedFile.c_str());
+
+    this->selectedFile = this->stringSerivce->toWString(fileName.c_str());
+    //this->graphicEngine->addImage(GUI_ID_IMAGE, Point2D(10, 10), this->selectedFile.c_str());
 }
 
 void MyEventReceiver::superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath)

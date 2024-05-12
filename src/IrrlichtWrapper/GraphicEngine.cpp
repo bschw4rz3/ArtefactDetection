@@ -134,7 +134,9 @@ bool GraphicEngine::isCheckboxChecked(int id)
 void GraphicEngine::removeElement(int id)
 {
     IGUIElement* element = (IGUIElement*)this->guiElementMap[id];
-    element->drop();
+
+    if (element != NULL)
+        element->drop();
 
     this->guiElementMap.erase(id);
 }
@@ -177,7 +179,9 @@ int GraphicEngine::run(EventReceiver* receiver)
             this->driver->beginScene(true, true, SColor(0, 200, 200, 200));
 
 	        this->env->drawAll();
-	        this->renderPrimitive(receiver->facet);
+
+            if(receiver->facet != NULL)
+	            this->renderPrimitive(receiver->facet);
 
 	        this->driver->endScene();      
         }

@@ -131,6 +131,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CGUIFileSelector.cpp" />
+    <ClCompile Include="CGUIFileSelector.h" />
     <ClCompile Include="ColorLib.h" />
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />

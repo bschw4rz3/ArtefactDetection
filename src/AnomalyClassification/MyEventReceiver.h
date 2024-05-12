@@ -61,7 +61,7 @@ public:
 
 private:
     void onCalculateSuperPixels();
-    void onSelectFile();
+    void onSelectFile(core::stringc fileName);
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
 };
