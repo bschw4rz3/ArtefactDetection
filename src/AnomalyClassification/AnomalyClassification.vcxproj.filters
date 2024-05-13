@@ -81,12 +81,6 @@
     <ClCompile Include="GraphicEngineExtended.cpp">
       <Filter>Quelldateien\services</Filter>
     </ClCompile>
-    <ClCompile Include="CGUIFileSelector.h">
-      <Filter>Headerdateien\services</Filter>
-    </ClCompile>
-    <ClCompile Include="CGUIFileSelector.cpp">
-      <Filter>Quelldateien\services</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">

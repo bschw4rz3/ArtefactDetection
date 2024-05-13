@@ -2,6 +2,8 @@
 
 std::string enStr[]{
     stringify(GUI_ID_IMAGE),
+    stringify(GUI_ID_IMAGE_1),
+    stringify(GUI_ID_IMAGE_2),
     stringify(GUI_ID_CHECKBOX_UNKNOWN),
     stringify(GUI_ID_CHECKBOX_SUPERPIXELS),
     stringify(GUI_ID_BUTTON_CACLULATE),
@@ -24,6 +26,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixe
 
     this->progressSymbol = '-';
     this->selectedFile = L"";
+    this->tempFileIndex = 0;
 }
 
 MyEventReceiver::~MyEventReceiver()
@@ -68,6 +71,8 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
 
             if (id == GUI_ID_BUTTON_CACLULATE)
             {
+                this->onResetImages();
+
                 if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SUPERPIXELS))
                 {
                     this->onCalculateSuperPixels();
@@ -75,16 +80,14 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
-                graphicEngine->setVisibility(GUI_ID_DIALOG_CHOOSE_FILE, true);
+                graphicEngine->addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, L"..\\AnomalyGeneration\\testdata");
             }
 
             return true;
         case EGET_FILE_SELECTED:
-            {
+        {
             CGUIFileSelector* dialog = (CGUIFileSelector*)event.GUIEvent.Caller;
             this->onSelectFile(dialog->getFileName());
-        //case EGET_FILE_CHOOSE_DIALOG_CANCELLED:
-            //this->graphicEngine->removeElement(GUI_ID_DIALOG_CHOOSE_FILE);
             return true;
         }
         case EGET_CHECKBOX_CHANGED:
@@ -108,25 +111,46 @@ void MyEventReceiver::onCalculateSuperPixels()
     CImg<unsigned char> img(cFile.c_str());
     SubregionResult result = this->superPixelService->calculateSuperPixelsAndSubregions(img, 50);
 
-    superPixelToImage(result.superPixelClusters, img.width(), img.height(), "temp.png");
-    this->graphicEngine->addImage(0, Point2D(220, 10), L"temp.png");
+    std::string fileName = this->generateFileName();
 
-    superPixelToImage(result.subregions, img.width(), img.height(), "temp1.png");
-    this->graphicEngine->addImage(0, Point2D(220, 250), L"temp1.png");
+    this->superPixelToImage(result.superPixelClusters, img.width(), img.height(), fileName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_1, Point2D(220, 10), this->stringSerivce->toWString(fileName).c_str());
+
+    fileName = this->generateFileName();
+
+    this->superPixelToImage(result.subregions, img.width(), img.height(), fileName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(220, 250), this->stringSerivce->toWString(fileName).c_str());
+}
+
+std::string MyEventReceiver::generateFileName()
+{
+    stringstream stream;
+    std::string age_as_string;
+
+    stream << this->tempFileIndex;
+    stream >> age_as_string;
+
+    std::string fileName = "temp";
+    fileName += age_as_string;
+    fileName += ".png";
+
+    this->tempFileIndex++;
+
+    return fileName;
 }
 
 void MyEventReceiver::onSelectFile(core::stringc fileName)
 {
-    if (!this->selectedFile.empty())
+    if (!this->selectedFile.empty() && this->graphicEngine->exists(GUI_ID_IMAGE))
     {
         this->graphicEngine->removeElement(GUI_ID_IMAGE);
+        this->selectedFile = L"";
     }
 
-    //this->selectedFile = this->graphicEngine->getSelectedFile(GUI_ID_DIALOG_CHOOSE_FILE);
-    //this->graphicEngine->addImage(GUI_ID_IMAGE, Point2D(10, 10), this->selectedFile.c_str());
-
-    this->selectedFile = this->stringSerivce->toWString(fileName.c_str());
-    //this->graphicEngine->addImage(GUI_ID_IMAGE, Point2D(10, 10), this->selectedFile.c_str());
+    std::wstring wFileName = this->stringSerivce->toWString(fileName.c_str());
+    
+    this->graphicEngine->addImage(GUI_ID_IMAGE, Point2D(10, 10), wFileName.c_str());
+    this->selectedFile = wFileName;
 }
 
 void MyEventReceiver::superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath)
@@ -138,7 +162,7 @@ void MyEventReceiver::superPixelToImage(std::vector<std::vector<SuperPixelEntry>
 
     for (int k = 0; k < pixelCluster.size(); k++)
     {
-        const unsigned char(&color)[3] = { (unsigned char)(k * 75), (unsigned char)(k * 75), (unsigned char)(k * 75) };
+        const unsigned char(&color)[3] = { (unsigned char)(k * 75), (unsigned char)((k%3) * k * 75), (unsigned char)((k%5) * k * 75) };
 
         for (int i = 0; i < pixelCluster[k].size(); i++)
         {
@@ -148,4 +172,17 @@ void MyEventReceiver::superPixelToImage(std::vector<std::vector<SuperPixelEntry>
     }
 
     bg.save_png(tempPath.c_str());
+}
+
+void MyEventReceiver::onResetImages()
+{
+    if(this->graphicEngine->exists(GUI_ID_IMAGE_1))
+    {
+        this->graphicEngine->removeElement(GUI_ID_IMAGE_1);
+    }
+
+    if(this->graphicEngine->exists(GUI_ID_IMAGE_2))
+    {
+        this->graphicEngine->removeElement(GUI_ID_IMAGE_2);
+    }
 }

@@ -21,28 +21,18 @@ void GraphicEngineExtended::resetMethodCheckBoxs()
     }
 }
 
+bool GraphicEngineExtended::exists(int id)
+{
+    return this->guiElementMap.find(id) != this->guiElementMap.end();
+}
+
 void GraphicEngineExtended::addFileOpenDialog(int id, std::wstring startDir)
 {
-    /*
     std::string cStartDir = this->stringSerivce->toString(startDir).c_str();
     irr::c8* c8Path = (char*)cStartDir.c_str();
 
     IGUIElement* element = this->env->addFileOpenDialog(L"Open file", true, 0, id, false, c8Path);
-    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, element));*/
-
-    CGUIFileSelector* selector = new CGUIFileSelector(L"File Selector", env, env->getRootGUIElement(), 1, CGUIFileSelector::EFST_OPEN_DIALOG);
-    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, selector));
-
-    if (selector) {
-        // Add some file filters and custom icons for unknown files and directories
-        //selector->setCustomFileIcon(driver->getTexture("file.png"));
-        //selector->setCustomDirectoryIcon(driver->getTexture("folder.png"));
-        //selector->addFileFilter((wchar_t*) L"MP3", (wchar_t*) L"mp3", driver->getTexture("mp3.png"));
-        //selector->addFileFilter((wchar_t*) L"PCM WAV", (wchar_t*) L"wav", driver->getTexture("wav.png"));
-        //selector->addFileFilter((wchar_t*) L"Windows Media Audio", (wchar_t*) L"wma", driver->getTexture("wma.png"));
-        //selector->drop();
-        selector->setVisible(false);
-    }
+    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, element));
 }
 
 void GraphicEngineExtended::setVisibility(int id, bool visibile)

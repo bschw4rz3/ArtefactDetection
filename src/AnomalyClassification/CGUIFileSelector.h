@@ -2,6 +2,7 @@
 #define INC_CGUIFILESELECTOR_H
 
 #include <irrlicht.h>
+#include <string>
 
 using namespace irr;
 using namespace gui;
@@ -25,7 +26,7 @@ public:
     \param id - The ID of the dialog
     \param type - The type of dialog
     */
-    CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, E_FILESELECTOR_TYPE type);
+    CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, E_FILESELECTOR_TYPE type, std::wstring prev_working_dir);
 
     /**
     \brief Destructor

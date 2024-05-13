@@ -6,6 +6,9 @@
 
 #define cimg_use_png
 
+#include "../Shared/cimg/CImg.h"
+using namespace cimg_library;
+
 #include <conio.h>
 #include <direct.h>
 
@@ -13,13 +16,10 @@
 #include <iostream>
 #include <chrono>
 #include <string> 
-#include "../../../Shared/cimg/CImg.h"
 #include "header/DrawCalculations.h"
 #include "header/RandomService.h"
 #include "header/DrawBumpCalculations.h"
 #include "header/Anomaly.h"
-
-using namespace cimg_library;
 
 bool contains(std::vector<AnomalyType> list, AnomalyType type)
 {

@@ -4,7 +4,7 @@
 #define cimg_use_png
 #pragma warning(disable:4146)
 #pragma warning(disable:4996)
-#include "../../../Shared/cimg/CImg.h"
+#include "../Shared/cimg/CImg.h"
 using namespace cimg_library;
 
 #include "../IrrlichtWrapper/GraphicEngine.h"
@@ -27,6 +27,8 @@ public:
 	virtual void addFileOpenDialog(int id, std::wstring startDir);
 	virtual std::wstring getSelectedFile(int id);
 	virtual void setVisibility(int id, bool visibile);
+
+	virtual bool exists(int id);
 };
 
 #endif

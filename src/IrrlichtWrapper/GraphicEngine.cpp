@@ -26,6 +26,28 @@ int GraphicEngine::initiate(const wchar_t* windowTitle, Point2D windowDimensions
     return 0;
 }
 
+int GraphicEngine::initiateOpenGL(const wchar_t* windowTitle, Point2D windowDimensions)
+{
+    // ask user for driver
+    video::E_DRIVER_TYPE driverType = video::EDT_OPENGL;
+
+    // create device and exit if creation failed
+    this->device = createDevice(driverType, core::dimension2d<u32>(windowDimensions.x, windowDimensions.y));
+
+    if (this->device == 0)
+    {
+        return 1; // could not create selected driver.
+    }
+
+    this->device->setWindowCaption(windowTitle);
+    this->device->setResizable(true);
+
+    this->driver = device->getVideoDriver();
+    this->env = device->getGUIEnvironment();
+
+    return 0;
+}
+
 void GraphicEngine::loadFont(const wchar_t* fontFile)
 {
     IGUISkin* skin = this->env->getSkin();
@@ -120,7 +142,7 @@ void GraphicEngine::addImage(Point2D position, const wchar_t* file)
 void GraphicEngine::addCheckbox(int id, Point2D position, const wchar_t* text, bool checked)
 {
     int length = sizeof(text);
-    IGUIElement* element = this->env->addCheckBox(checked, core::recti(vector2di(position.x, position.y), vector2di(position.x+(8*length), position.y+15)), 0, id, text);
+    IGUIElement* element = this->env->addCheckBox(checked, core::recti(vector2di(position.x, position.y), vector2di(position.x+(20*length), position.y+15)), 0, id, text);
 
     this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, element));
 }

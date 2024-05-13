@@ -7,7 +7,7 @@
 #define cimg_use_png
 #pragma warning(disable:4146)
 #pragma warning(disable:4996)
-#include "../../../Shared/cimg/CImg.h"
+#include "../Shared/cimg/CImg.h"
 using namespace cimg_library;
 
 #include "SuperPixelEntry.h"
@@ -52,7 +52,7 @@ private:
 	std::vector<Point2D> cacluateNeighbors(Point2D clusterCenter, double L);
 	std::vector<SuperPixelEntry> getPixelEntries(std::vector<Point2D> neighbors, std::vector<std::vector<SuperPixelEntry>> colorMatrix, Point2D imageDimensions);
 	double calculateColorDistance(ColorLib clusterCenterColor, ColorLib neighborPixelColor);
-	//int getClusterOfPixel(std::vector < std::vector<SuperPixelEntry>> clusterEntries, SuperPixelEntry neighborPixel);
+	int getClusterOfPixel(std::vector < std::vector<SuperPixelEntry>> clusterEntries, SuperPixelEntry neighborPixel);
 	int getGroupIndex(const std::vector<std::vector<int>>& subSectionIndexes, int elementIndex);
 };
 

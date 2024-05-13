@@ -19,7 +19,7 @@ int main()
     GraphicEngineExtended graphicEngine(&stringSerivce);
     MyEventReceiver receiver(&graphicEngine, &superPixelService, &stringSerivce);
 
-    graphicEngine.initiate(L"Part Cover", Point2D(640, 480));
+    graphicEngine.initiateOpenGL(L"Part Cover", Point2D(640, 480));
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");
 
     graphicEngine.addLabel(0, Point2D(500, 10), 50, L"Methode:");
@@ -28,8 +28,6 @@ int main()
 
     graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(450, 400), 100, L"Calculate");
     graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(50, 300), 100, L"Open File");
-
-    graphicEngine.addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, L"..\\AnomalyGeneration\\testdata");
 
     graphicEngine.run((EventReceiver*)&receiver);
 }

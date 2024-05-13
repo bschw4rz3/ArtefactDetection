@@ -9,7 +9,7 @@
 #include <math.h>
 #include "corecrt_math_defines.h"
 
-#include "../../../Shared/cimg/CImg.h"
+#include "../../Shared/cimg/CImg.h"
 using namespace cimg_library;
 
 #include "DrawCircelCalculations.h"

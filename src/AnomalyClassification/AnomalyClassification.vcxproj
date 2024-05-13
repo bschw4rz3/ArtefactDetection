@@ -48,7 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -73,6 +73,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>D:\Repository\ArtefactDetection\src\lib\irrlicht;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Repository\ArtefactDetection\src\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>D:\noav\Projects\ArtefactDetection\src\lib\irrlicht;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\noav\Projects\ArtefactDetection\src\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -131,8 +135,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CGUIFileSelector.cpp" />
-    <ClCompile Include="CGUIFileSelector.h" />
     <ClCompile Include="ColorLib.h" />
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />

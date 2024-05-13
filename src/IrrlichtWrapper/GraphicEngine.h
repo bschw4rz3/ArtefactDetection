@@ -51,6 +51,8 @@ protected:
 
 public:
     virtual int initiate(const wchar_t* windowTitle, Point2D windowDimensions);
+    virtual int initiateOpenGL(const wchar_t* windowTitle, Point2D windowDimensions);
+
     virtual void loadFont(const wchar_t* fontFile);
 
     virtual void addScrollbar(int id, Point2D position, int length, double min, double max, double value);

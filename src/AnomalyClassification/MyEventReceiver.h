@@ -2,8 +2,9 @@
 #define MyEventReceiver_H
 
 #include <activation.h>
-#include<iostream>
-
+#include <iostream>
+#include <cstdio>
+#include <sstream> 
 #include <thread>
 #include <future>
 
@@ -20,6 +21,8 @@
 
 enum {
     GUI_ID_IMAGE,
+    GUI_ID_IMAGE_1,
+    GUI_ID_IMAGE_2,
     GUI_ID_CHECKBOX_SUPERPIXELS,
     GUI_ID_CHECKBOX_UNKNOWN,
     GUI_ID_BUTTON_CACLULATE,
@@ -48,6 +51,7 @@ private:
     int imageCountOfLastRun;
 
     std::wstring selectedFile;
+    int tempFileIndex;
 
 public:
     MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, StringSerivce* stringSerivce);
@@ -62,8 +66,10 @@ public:
 private:
     void onCalculateSuperPixels();
     void onSelectFile(core::stringc fileName);
+    void onResetImages();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
+    std::string generateFileName();
 };
 
 #endif
