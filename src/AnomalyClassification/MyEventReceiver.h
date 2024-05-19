@@ -16,6 +16,7 @@
 #include "../IrrlichtWrapper/EventReceiver.h"
 
 #include "SuperPixelService.h"
+#include "SobelOperatorSerivce.h"
 
 #define stringify( name ) #name
 
@@ -24,6 +25,7 @@ enum {
     GUI_ID_IMAGE_1,
     GUI_ID_IMAGE_2,
     GUI_ID_CHECKBOX_SUPERPIXELS,
+    GUI_ID_CHECKBOX_SOBEL,
     GUI_ID_CHECKBOX_UNKNOWN,
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -38,6 +40,7 @@ private:
     StringSerivce* stringSerivce;
 
     SuperPixelService* superPixelService;
+    SobelOperatorSerivce* sobelOperatorSerivce;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -54,8 +57,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, StringSerivce* stringSerivce);
-
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, SobelOperatorSerivce* sobelOperatorSerivce, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
@@ -65,6 +67,8 @@ public:
 
 private:
     void onCalculateSuperPixels();
+    void onCalculateSobelOperator();
+
     void onSelectFile(core::stringc fileName);
     void onResetImages();
 

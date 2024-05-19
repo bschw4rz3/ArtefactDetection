@@ -28,14 +28,8 @@
     <Filter Include="Headerdateien\models">
       <UniqueIdentifier>{3a7569b8-01cb-4edc-8f40-f6e531ac26b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headerdateien\detectors\clustering">
-      <UniqueIdentifier>{e4964330-9878-44af-826c-7c506236ba67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Quelldateien\detectors">
       <UniqueIdentifier>{49bd5375-9f07-4d30-a84e-e6bb1880dcec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quelldateien\detectors\clustering">
-      <UniqueIdentifier>{d4f555c2-135b-4df4-989e-5a1931505037}</UniqueIdentifier>
     </Filter>
     <Filter Include="Headerdateien\helpers">
       <UniqueIdentifier>{7e94e7ae-1927-41a5-8c21-af74afe4ab00}</UniqueIdentifier>
@@ -48,6 +42,12 @@
     </Filter>
     <Filter Include="Quelldateien\services">
       <UniqueIdentifier>{3129c841-6ae9-4674-8ce8-e79ed2cadd8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\detectors\statistical">
+      <UniqueIdentifier>{d4f555c2-135b-4df4-989e-5a1931505037}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\detectors\statistical">
+      <UniqueIdentifier>{e4964330-9878-44af-826c-7c506236ba67}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,7 +64,7 @@
       <Filter>Headerdateien\models</Filter>
     </ClCompile>
     <ClCompile Include="SuperPixelService.cpp">
-      <Filter>Quelldateien\detectors\clustering</Filter>
+      <Filter>Quelldateien\detectors\statistical</Filter>
     </ClCompile>
     <ClCompile Include="ColorService.cpp">
       <Filter>Quelldateien\helpers</Filter>
@@ -81,13 +81,16 @@
     <ClCompile Include="GraphicEngineExtended.cpp">
       <Filter>Quelldateien\services</Filter>
     </ClCompile>
+    <ClCompile Include="SobelOperatorSerivce.cpp">
+      <Filter>Quelldateien\detectors\statistical</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
       <Filter>Headerdateien\events</Filter>
     </ClInclude>
     <ClInclude Include="SuperPixelService.h">
-      <Filter>Headerdateien\detectors\clustering</Filter>
+      <Filter>Headerdateien\detectors\statistical</Filter>
     </ClInclude>
     <ClInclude Include="ColorService.h">
       <Filter>Headerdateien\helpers</Filter>
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="GraphicEngineExtended.h">
       <Filter>Headerdateien\services</Filter>
+    </ClInclude>
+    <ClInclude Include="SobelOperatorSerivce.h">
+      <Filter>Headerdateien\detectors\statistical</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

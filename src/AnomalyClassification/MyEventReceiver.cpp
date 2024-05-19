@@ -5,16 +5,18 @@ std::string enStr[]{
     stringify(GUI_ID_IMAGE_1),
     stringify(GUI_ID_IMAGE_2),
     stringify(GUI_ID_CHECKBOX_UNKNOWN),
+    stringify(GUI_ID_CHECKBOX_SOBEL),
     stringify(GUI_ID_CHECKBOX_SUPERPIXELS),
     stringify(GUI_ID_BUTTON_CACLULATE),
     stringify(GUI_ID_BUTTON_CHOOSE_FILE),
     stringify(GUI_ID_DIALOG_CHOOSE_FILE),
 };
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, SobelOperatorSerivce* sobelOperatorSerivce, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
+    this->sobelOperatorSerivce = sobelOperatorSerivce;
 
     this->stringSerivce = stringSerivce;
 
@@ -77,6 +79,11 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onCalculateSuperPixels();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SOBEL))
+                {
+                    this->onCalculateSobelOperator();
+                }
+                    
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -120,6 +127,18 @@ void MyEventReceiver::onCalculateSuperPixels()
 
     this->superPixelToImage(result.subregions, img.width(), img.height(), fileName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(220, 250), this->stringSerivce->toWString(fileName).c_str());
+}
+
+void MyEventReceiver::onCalculateSobelOperator()
+{
+    std::string cFile = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(cFile.c_str());
+    CImg<unsigned char> tempImage = this->sobelOperatorSerivce->getGradientImage(img);
+
+    std::string tempFileName = this->generateFileName();
+    tempImage.save_png(tempFileName.c_str());
+    
+    this->graphicEngine->addImage(GUI_ID_IMAGE_1, Point2D(220, 10), this->stringSerivce->toWString(tempFileName).c_str());
 }
 
 std::string MyEventReceiver::generateFileName()

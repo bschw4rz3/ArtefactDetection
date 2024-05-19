@@ -1,18 +1,18 @@
 #include "ColorService.h"
 
-double ColorService::rgb2lab_normalizeRgbChannel(double channel) {
-	channel /= 255;
+ColorRGB ColorService::byte2rgb(const unsigned char* ptr, int imageWidth, int imageHeight)
+{
+	unsigned char r = ptr[0];
+	unsigned char g = ptr[0 + imageWidth * imageHeight];
+	unsigned char b = ptr[0 + 2 * imageWidth * imageHeight];
 
-	return 100.0 * (channel > 0.04045
-		? pow((channel + 0.055) / 1.055, 2.4)
-		: channel / 12.92
-		);
+	return ColorRGB(r, g, b);
 }
 
-double ColorService::rgb2lab_normalizeXyzChannel(double channel) {
-	return (channel > 0.008856)
-		? pow(channel, 1.0 / 3.0)
-		: (7.787 * channel) + (16.0 / 116.0);
+const unsigned char* ColorService::rgb2byte(ColorRGB colorRgb)
+{
+	const unsigned char(&color)[3] = { (unsigned char) colorRgb.r, (unsigned char) colorRgb.g, (unsigned char) colorRgb.b };
+	return color;
 }
 
 ColorLib ColorService::rgb2lab(ColorRGB color) {
@@ -34,4 +34,19 @@ ColorLib ColorService::rgb2lab(ColorRGB color) {
 			500 * (X - Y),  // a
 			200 * (Y - Z)  // b
 	);
+}
+
+double ColorService::rgb2lab_normalizeRgbChannel(double channel) {
+	channel /= 255;
+
+	return 100.0 * (channel > 0.04045
+		? pow((channel + 0.055) / 1.055, 2.4)
+		: channel / 12.92
+		);
+}
+
+double ColorService::rgb2lab_normalizeXyzChannel(double channel) {
+	return (channel > 0.008856)
+		? pow(channel, 1.0 / 3.0)
+		: (7.787 * channel) + (16.0 / 116.0);
 }
