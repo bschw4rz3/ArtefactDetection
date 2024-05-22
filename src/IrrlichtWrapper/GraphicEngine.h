@@ -5,7 +5,7 @@
 #include <map>
 #include <ctime>
 
-#include "irrlicht.h"
+#include <irrlicht.h>
 #include "driverChoice.h"
 
 using namespace irr;
