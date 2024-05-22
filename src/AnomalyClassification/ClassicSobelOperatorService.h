@@ -12,13 +12,13 @@ using namespace cimg_library;
 #include "ColorService.h"
 #include "ColorRGB.h"
 
-class SobelOperatorSerivce
+class ClassicSobelOperatorService
 {
 private:
 	ColorService* colorService;
 
 public:
-	SobelOperatorSerivce(ColorService* colorService);
+	ClassicSobelOperatorService(ColorService* colorService);
 
 	CImg<unsigned char> getGradientImage(const CImg<unsigned char>& image);
 

@@ -81,7 +81,10 @@
     <ClCompile Include="GraphicEngineExtended.cpp">
       <Filter>Quelldateien\services</Filter>
     </ClCompile>
-    <ClCompile Include="SobelOperatorSerivce.cpp">
+    <ClCompile Include="ClassicSobelOperatorService.cpp">
+      <Filter>Quelldateien\detectors\statistical</Filter>
+    </ClCompile>
+    <ClCompile Include="ImprovedSobelOperatorService.cpp">
       <Filter>Quelldateien\detectors\statistical</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,7 +116,10 @@
     <ClInclude Include="GraphicEngineExtended.h">
       <Filter>Headerdateien\services</Filter>
     </ClInclude>
-    <ClInclude Include="SobelOperatorSerivce.h">
+    <ClInclude Include="ClassicSobelOperatorService.h">
+      <Filter>Headerdateien\detectors\statistical</Filter>
+    </ClInclude>
+    <ClInclude Include="ImprovedSobelOperatorService.h">
       <Filter>Headerdateien\detectors\statistical</Filter>
     </ClInclude>
   </ItemGroup>

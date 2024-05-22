@@ -139,10 +139,11 @@
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />
     <ClCompile Include="GraphicEngineExtended.cpp" />
+    <ClCompile Include="ImprovedSobelOperatorService.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathSerivce.cpp" />
     <ClCompile Include="MyEventReceiver.cpp" />
-    <ClCompile Include="SobelOperatorSerivce.cpp" />
+    <ClCompile Include="ClassicSobelOperatorService.cpp" />
     <ClCompile Include="StringService.cpp" />
     <ClCompile Include="SubregionResult.h" />
     <ClCompile Include="SuperPixelService.cpp" />
@@ -150,10 +151,11 @@
   <ItemGroup>
     <ClInclude Include="ColorService.h" />
     <ClInclude Include="GraphicEngineExtended.h" />
+    <ClInclude Include="ImprovedSobelOperatorService.h" />
     <ClInclude Include="KeyValuePair.h" />
     <ClInclude Include="MathSerivce.h" />
     <ClInclude Include="MyEventReceiver.h" />
-    <ClInclude Include="SobelOperatorSerivce.h" />
+    <ClInclude Include="ClassicSobelOperatorService.h" />
     <ClInclude Include="StringSerivce.h" />
     <ClInclude Include="SuperPixelEntry.h" />
     <ClInclude Include="SuperPixelResult.h" />

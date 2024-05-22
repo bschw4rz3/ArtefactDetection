@@ -1,17 +1,32 @@
-#include "SobelOperatorSerivce.h"
+#include "ImprovedSobelOperatorService.h"
 
-SobelOperatorSerivce::SobelOperatorSerivce(ColorService* colorService)
+ImprovedSobelOperatorService::ImprovedSobelOperatorService(ColorService* colorService)
 {
 	this->colorService = colorService;
 }
 
-CImg<unsigned char> SobelOperatorSerivce::getGradientImage(const CImg<unsigned char>& image)
+CImg<unsigned char> ImprovedSobelOperatorService::getGradientImage(const CImg<unsigned char>& image)
 {
 	// Initialisiert ein 2-dimensionales Array für den Sobel-Operator S_x
 	double S_x[3][3] = { {-1.0, 0.0, 1.0}, {-2.0, 0.0, 2.0}, {-1.0, 0.0, 1.0} };
-
 	// Initialisiert ein 2-dimensionales Array für den Sobel-Operator S_y
 	double S_y[3][3] = { {-1.0, -2.0, -1.0}, {0.0, 0.0, 0.0}, {1.0, 2.0, 1.0} };
+
+	double S_45 [3][3] = { {-0.0, -1.0, -2.0}, {1.0, 0.0, 1.0}, {2.0, 1.0, 0.0} };
+	double S_315[3][3] = { {-2.0, -1.0, -0.0}, {-1.0, 0.0, 1.0}, {0.0, 1.0, 2.0} };
+	double S_270[3][3] = { {-1.0, -2.0, -1.0}, {0.0, 0.0, 0.0}, {1.0, 2.0, 1.0} };
+	double S_225[3][3] = { {0.0, 1.0, 2.0}, {-1.0, 0.0, 1.0}, {-2.0, -1.0, 0.0} };
+	double S_180[3][3] = { {1.0, 0.0, -1.0}, {2.0, 0.0, -2.0}, {1.0, 0.0, -1.0} };
+	double S_135[3][3] = { {2.0, 1.0, 0.0}, {1.0, 0.0, -1.0}, {0.0, -1.0, -2.0} };
+
+	std::map<KeyValuePair<int, int>, double*> operatorTemplates;
+	operatorTemplates.insert(std::pair< KeyValuePair<int, int>, double*>(KeyValuePair<int, int>(0, 1), (double*) S_y));
+	operatorTemplates.insert(std::pair< KeyValuePair<int, int>, double*>(KeyValuePair<int, int>(1, 1), (double*)S_45));
+	operatorTemplates.insert(std::pair< KeyValuePair<int, int>, double*>(KeyValuePair<int, int>(1, 0), (double*)S_x));
+	operatorTemplates.insert(std::pair< KeyValuePair<int, int>, double*>(KeyValuePair<int, int>(1, -1), (double*)S_315));
+	operatorTemplates.insert(std::pair< KeyValuePair<int, int>, double*>(KeyValuePair<int, int>(0, -1), (double*)S_270));
+	operatorTemplates.insert(std::pair< KeyValuePair<int, int>, double*>(KeyValuePair<int, int>(-1, 0), (double*)S_180));
+	operatorTemplates.insert(std::pair< KeyValuePair<int, int>, double*>(KeyValuePair<int, int>(-1, 1), (double*)S_135));
 
 	// Erzeugt ein neues Bitmap für das Gradienten-Bild.
 
@@ -44,13 +59,13 @@ CImg<unsigned char> SobelOperatorSerivce::getGradientImage(const CImg<unsigned c
 	return gradientImage; // Gibt das Gradienten-Bild als Rückgabewert der Methode zurück.
 }
 
-ColorRGB SobelOperatorSerivce::getPixel(const CImg<unsigned char>& image, int x, int y)
+ColorRGB ImprovedSobelOperatorService::getPixel(const CImg<unsigned char>& image, int x, int y)
 {
 	const unsigned char* bytePixel = image.data(x, y);
 	return this->colorService->byte2rgb(bytePixel, image.width(), image.height());
 }
 
-void SobelOperatorSerivce::setPixel(CImg<unsigned char>& image, int x, int y, ColorRGB colorRGB)
+void ImprovedSobelOperatorService::setPixel(CImg<unsigned char>& image, int x, int y, ColorRGB colorRGB)
 {
 	const unsigned char* color = this->colorService->rgb2byte(colorRGB);
 	image.draw_point(x, y, color);

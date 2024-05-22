@@ -8,6 +8,7 @@
 #include "SuperPixelService.h"
 #include "ColorService.h"
 #include "StringSerivce.h"
+#include "ClassicSobelOperatorService.h"
 
 int main()
 {
@@ -15,10 +16,10 @@ int main()
     ColorService colorService;
     MathSerivce mathSerivce;
     SuperPixelService superPixelService(&colorService, &mathSerivce);
-    SobelOperatorSerivce sobelOperatorSerivce(&colorService);
+    ClassicSobelOperatorService classicSobelOperatorService(&colorService);
 
     GraphicEngineExtended graphicEngine(&stringSerivce);
-    MyEventReceiver receiver(&graphicEngine, &superPixelService, &sobelOperatorSerivce, &stringSerivce);
+    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &stringSerivce);
 
     graphicEngine.initiateOpenGL(L"Part Cover", Point2D(640, 480));
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");

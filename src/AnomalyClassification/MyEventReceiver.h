@@ -16,7 +16,7 @@
 #include "../IrrlichtWrapper/EventReceiver.h"
 
 #include "SuperPixelService.h"
-#include "SobelOperatorSerivce.h"
+#include "ClassicSobelOperatorService.h"
 
 #define stringify( name ) #name
 
@@ -40,7 +40,7 @@ private:
     StringSerivce* stringSerivce;
 
     SuperPixelService* superPixelService;
-    SobelOperatorSerivce* sobelOperatorSerivce;
+    ClassicSobelOperatorService* sobelOperatorSerivce;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -57,7 +57,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, SobelOperatorSerivce* sobelOperatorSerivce, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
