@@ -6,17 +6,19 @@ std::string enStr[]{
     stringify(GUI_ID_IMAGE_2),
     stringify(GUI_ID_CHECKBOX_UNKNOWN),
     stringify(GUI_ID_CHECKBOX_SOBEL),
+    stringify(GUI_ID_CHECKBOX_IMPROVED_SOBEL),
     stringify(GUI_ID_CHECKBOX_SUPERPIXELS),
     stringify(GUI_ID_BUTTON_CACLULATE),
     stringify(GUI_ID_BUTTON_CHOOSE_FILE),
     stringify(GUI_ID_DIALOG_CHOOSE_FILE),
 };
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
     this->sobelOperatorSerivce = sobelOperatorSerivce;
+    this->improvedSobelOperatorService = improvedSobelOperatorService;
 
     this->stringSerivce = stringSerivce;
 
@@ -83,6 +85,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onCalculateSobelOperator();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_IMPROVED_SOBEL))
+                {
+                    this->onCalculateImprovedSobelOperator();
+                }
                     
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
@@ -134,6 +140,18 @@ void MyEventReceiver::onCalculateSobelOperator()
     std::string cFile = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(cFile.c_str());
     CImg<unsigned char> tempImage = this->sobelOperatorSerivce->getGradientImage(img);
+
+    std::string tempFileName = this->generateFileName();
+    tempImage.save_png(tempFileName.c_str());
+    
+    this->graphicEngine->addImage(GUI_ID_IMAGE_1, Point2D(220, 10), this->stringSerivce->toWString(tempFileName).c_str());
+}
+
+void MyEventReceiver::onCalculateImprovedSobelOperator()
+{
+    std::string cFile = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(cFile.c_str());
+    CImg<unsigned char> tempImage = this->improvedSobelOperatorService->getGradientImage(img);
 
     std::string tempFileName = this->generateFileName();
     tempImage.save_png(tempFileName.c_str());

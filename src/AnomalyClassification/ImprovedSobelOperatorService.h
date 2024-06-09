@@ -1,5 +1,5 @@
-#ifndef SobelOperator_H
-#define SobelOperator_H
+#ifndef ImprovedSobelOperatorService_H
+#define ImprovedSobelOperatorService_H
 
 #define cimg_use_png
 #pragma warning(disable:4146)

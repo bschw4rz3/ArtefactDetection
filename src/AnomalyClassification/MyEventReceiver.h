@@ -17,6 +17,7 @@
 
 #include "SuperPixelService.h"
 #include "ClassicSobelOperatorService.h"
+#include "ImprovedSobelOperatorService.h"
 
 #define stringify( name ) #name
 
@@ -26,6 +27,7 @@ enum {
     GUI_ID_IMAGE_2,
     GUI_ID_CHECKBOX_SUPERPIXELS,
     GUI_ID_CHECKBOX_SOBEL,
+    GUI_ID_CHECKBOX_IMPROVED_SOBEL,
     GUI_ID_CHECKBOX_UNKNOWN,
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -41,6 +43,7 @@ private:
 
     SuperPixelService* superPixelService;
     ClassicSobelOperatorService* sobelOperatorSerivce;
+    ImprovedSobelOperatorService* improvedSobelOperatorService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -57,7 +60,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
@@ -68,6 +71,7 @@ public:
 private:
     void onCalculateSuperPixels();
     void onCalculateSobelOperator();
+    void onCalculateImprovedSobelOperator();
 
     void onSelectFile(core::stringc fileName);
     void onResetImages();
