@@ -52,6 +52,110 @@ bool containsWithePixels(CImg<unsigned char> &tmp)
     return false;
 }
 
+std::string getTestdataImagePath(std::vector<AnomalyType> anomalyTypeList, int index)
+{
+    std::string path = "testdata/";
+
+    if (contains(anomalyTypeList, AnomalyType::Defect) || contains(anomalyTypeList, AnomalyType::MinorDefect))
+    {
+        path = path + "defect/";
+    }
+    else if (contains(anomalyTypeList, AnomalyType::Artefact))
+    {
+        path = path + "artefact/";
+    }
+    else
+    {
+        path = path + "none/";
+    }
+
+    return path + std::to_string(index) + ".png";
+}
+
+void saveImage(CImg<unsigned char>& tmp, int wx, int hy, int size_z, int size_c, std::vector<AnomalyType>& anomalyTypeList, int& index)
+{
+    std::string complitePath = getTestdataImagePath(anomalyTypeList, index);
+    FILE* file = std::fopen(complitePath.c_str(), "r");
+
+    while (file != NULL)
+    {
+        fclose(file);
+
+        index++;
+        complitePath = getTestdataImagePath(anomalyTypeList, index);
+
+        file = fopen(complitePath.c_str(), "r");
+    }
+
+    file = std::fopen(complitePath.c_str(), "wb");
+
+    unsigned char* buffer = tmp.data();
+
+    CImg<unsigned char> tmpSave = CImg<unsigned char>(buffer, wx, hy, size_z, size_c, 255);
+    //tmpSave.display();
+    tmpSave.save_png(file);
+
+    fclose(file);
+}
+
+void cutSubPics(CImg<unsigned int>& bg, std::vector<Anomaly>& anomalyList, int w, int h, int size_z, int size_c)
+{
+    int wx = 200;
+    int hy = 200;
+    int index = 0;
+
+    for (int x = 0; x < w; x += wx)
+    {
+        std::vector<AnomalyType> anomalyTypeList;
+
+        for (int y = 0; y < h; y += hy)
+        {
+            PixelPosition imageFrom(x, y);
+            PixelPosition imageTo(x + wx - 1, y + hy - 1);
+
+            CImg<unsigned char> tmp = bg.get_crop(imageFrom.x, imageFrom.y, 0, 0, imageTo.x, imageTo.y, 0, size_c);
+
+            for (int i = 0; i < anomalyList.size(); i++)
+            {
+                if (anomalyList[i].IsInImage(imageFrom, imageTo))
+                {
+                    anomalyTypeList.push_back(anomalyList[i].anomalyType);
+                }
+            }
+
+            if (!containsWithePixels(tmp))
+            {
+                continue;
+            }
+
+            saveImage(tmp, wx, hy, size_z, size_c, anomalyTypeList, index);
+        }
+    }
+}
+
+void cutAnomalies(CImg<unsigned int>& bg, std::vector<Anomaly>& anomalyList, int w, int h, int size_z, int size_c)
+{
+    int index = 0;
+
+    for (int i = 0; i < anomalyList.size(); i++)
+    {
+        PixelPosition from = anomalyList[i].getFrom();
+        PixelPosition to = anomalyList[i].getTo();
+
+        if (anomalyList[i].pixelList.size() == 0)
+        {
+            continue;
+        }
+
+        CImg<unsigned char> tmp = bg.get_crop(from.x, from.y, 0, 0, to.x, to.y, 0, size_c);
+
+        std::vector<AnomalyType> anomalyTypeList;
+        anomalyTypeList.push_back(anomalyList[i].anomalyType);
+
+        saveImage(tmp, tmp.width(), tmp.height(), size_z, size_c, anomalyTypeList, index);
+    }
+}
+
 int main()
 {
     int w = 1000;
@@ -168,76 +272,10 @@ int main()
 
     bg.display();
 
-    int wx = 200;
-    int hy = 200;
-    int index = 0;
-
     mkdir("testdata");
     mkdir("testdata/defect");
     mkdir("testdata/artefact");
     mkdir("testdata/none");
 
-    for(int x = 0;x<w;x+=wx)
-    {
-        std::vector<AnomalyType> anomalyTypeList;
-
-        for(int y = 0;y<h;y+=hy)
-        {
-            PixelPosition imageFrom(x, y);
-            PixelPosition imageTo(x+wx-1, y+hy-1);
-
-            CImg<unsigned char> tmp = bg.get_crop(imageFrom.x, imageFrom.y, 0, 0, imageTo.x, imageTo.y, 0, size_c);
-            
-            for(int i = 0;i<anomalyList.size();i++)
-            {
-                if(anomalyList[i].IsInImage(imageFrom, imageTo))
-                {
-                    anomalyTypeList.push_back(anomalyList[i].anomalyType);
-                }
-            }
-
-            if (!containsWithePixels(tmp))
-            {
-                continue;
-            }
-
-            std::string path = "testdata/";
-
-            if(contains(anomalyTypeList, AnomalyType::Defect) || contains(anomalyTypeList, AnomalyType::MinorDefect))
-            {
-                path = path + "defect/";
-            }
-            else if(contains(anomalyTypeList, AnomalyType::Artefact))
-            {
-                path = path + "artefact/";
-            }
-            else
-            {
-                path = path + "none/";
-            }
-
-            std::string complitePath = path + std::to_string(index) + ".png";
-            FILE* file = std::fopen(complitePath.c_str(), "r");
-
-            while(file != NULL)
-            {
-                fclose(file);
-
-                index++;
-                complitePath = path + std::to_string(index) + ".png";
-
-                file = fopen(complitePath.c_str(), "r");
-            }
-            
-            file = std::fopen(complitePath.c_str(), "wb");
-
-            unsigned char* buffer = tmp.data();
-
-            CImg<unsigned char> tmpSave = CImg<unsigned char>(buffer, wx, hy, size_z, size_c, 255);
-            //tmpSave.display();
-            tmpSave.save_png(file);
-
-            fclose(file);
-        }
-    }    
+    cutAnomalies(bg, anomalyList, w, h, size_z, size_c);
 }
