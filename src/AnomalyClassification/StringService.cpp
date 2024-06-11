@@ -45,3 +45,20 @@ char* StringSerivce::toChar(const wchar_t* pwchar)
 
     return filePathC;
 }
+
+std::wstring StringSerivce::intToWString(int value)
+{
+    size_t myInteger = 10;
+    std::wostringstream myStringStream;
+    myStringStream << myInteger;
+    std::wstring concatenatedStr = myStringStream.str();
+
+    return concatenatedStr;
+}
+
+std::wstring StringSerivce::doubleToWString(double value)
+{
+    std::ostringstream strs;
+    strs << value;
+    return this->toWString(strs.str());
+}

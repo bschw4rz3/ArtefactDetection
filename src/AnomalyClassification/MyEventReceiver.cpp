@@ -13,12 +13,13 @@ std::string enStr[]{
     stringify(GUI_ID_DIALOG_CHOOSE_FILE),
 };
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
     this->sobelOperatorSerivce = sobelOperatorSerivce;
     this->improvedSobelOperatorService = improvedSobelOperatorService;
+    this->geometricService = geometricService;
 
     this->stringSerivce = stringSerivce;
 
@@ -183,6 +184,23 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
         this->graphicEngine->removeElement(GUI_ID_IMAGE);
         this->selectedFile = L"";
     }
+
+    CImg<unsigned char> img(fileName.c_str());
+
+    std::wstring roiString = this->stringSerivce->intToWString(img.width()) + L" x " + this->stringSerivce->intToWString(img.height());
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ROI, roiString.c_str());
+
+    int blackPixels = this->geometricService->countBlackPixels(img);
+    std::wstring blackPixelsString = this->stringSerivce->intToWString(blackPixels);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_AREA, blackPixelsString.c_str());
+
+    double rotioRoiArea = ((double)img.width()) * ((double)img.height()) / ((double)blackPixels);
+    std::wstring rotioRoiAreaString = this->stringSerivce->doubleToWString(rotioRoiArea);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RATIO_AREA_ROI, rotioRoiAreaString.c_str());
+
+    double rotioWidthLength = ((double)img.width()) / ((double)img.height());
+    std::wstring rotioWidthLengthString = this->stringSerivce->doubleToWString(rotioWidthLength);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RATIO_WIDTH_LENGTH, rotioWidthLengthString.c_str());
 
     std::wstring wFileName = this->stringSerivce->toWString(fileName.c_str());
     

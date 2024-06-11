@@ -202,8 +202,8 @@ int GraphicEngine::run(EventReceiver* receiver)
 
 	        this->env->drawAll();
 
-            if(receiver->facet != NULL)
-	            this->renderPrimitive(receiver->facet);
+            //if(receiver->facet != NULL)
+            //    this->renderPrimitive(receiver->facet);
 
 	        this->driver->endScene();      
         }

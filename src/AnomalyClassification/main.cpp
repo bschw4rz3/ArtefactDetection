@@ -10,6 +10,7 @@
 #include "StringSerivce.h"
 #include "ClassicSobelOperatorService.h"
 #include "ImprovedSobelOperatorService.h"
+#include "GeometricService.h"
 
 int main()
 {
@@ -19,9 +20,10 @@ int main()
     SuperPixelService superPixelService(&colorService, &mathSerivce);
     ClassicSobelOperatorService classicSobelOperatorService(&colorService);
     ImprovedSobelOperatorService improvedSobelOperatorService(&colorService);
+    GeometricService geometricService(&colorService);
 
     GraphicEngineExtended graphicEngine(&stringSerivce);
-    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &stringSerivce);
+    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &stringSerivce);
 
     graphicEngine.initiateOpenGL(L"Part Cover", Point2D(640, 480));
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");
@@ -34,6 +36,16 @@ int main()
 
     graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(450, 400), 100, L"Calculate");
     graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(50, 300), 100, L"Open File");
+
+    graphicEngine.addLabel(GUI_ID_LABEL_ROI, Point2D(350, 30), 100, L"ROI:");
+    graphicEngine.addLabel(GUI_ID_LABEL_AREA, Point2D(350, 50), 100, L"Area of Anomaly:");
+    graphicEngine.addLabel(GUI_ID_LABEL_RATIO_AREA_ROI, Point2D(350, 70), 100, L"Ratio of Area and ROI:");
+    graphicEngine.addLabel(GUI_ID_LABEL_RATIO_WIDTH_LENGTH, Point2D(350, 90), 100, L"Ratio of width and length:");
+
+    graphicEngine.addLabel(GUI_ID_VALUE_ROI, Point2D(450, 30), 50, L"");
+    graphicEngine.addLabel(GUI_ID_VALUE_AREA, Point2D(450, 50), 50, L"");
+    graphicEngine.addLabel(GUI_ID_VALUE_RATIO_AREA_ROI, Point2D(450, 70), 50, L"");
+    graphicEngine.addLabel(GUI_ID_VALUE_RATIO_WIDTH_LENGTH, Point2D(450, 90), 50, L"");
 
     graphicEngine.run((EventReceiver*)&receiver);
 }

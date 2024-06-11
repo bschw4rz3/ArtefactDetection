@@ -49,6 +49,12 @@
     <Filter Include="Headerdateien\detectors\statistical">
       <UniqueIdentifier>{e4964330-9878-44af-826c-7c506236ba67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\detectors\geometric">
+      <UniqueIdentifier>{b684c0f5-7f12-4dc8-ad57-a1ad36489ab8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\detectors\geometric">
+      <UniqueIdentifier>{bf2563db-9df3-4901-9f31-d18c4e5dc2a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -87,6 +93,9 @@
     <ClCompile Include="ImprovedSobelOperatorService.cpp">
       <Filter>Quelldateien\detectors\statistical</Filter>
     </ClCompile>
+    <ClCompile Include="GeometricService.cpp">
+      <Filter>Quelldateien\detectors\geometric</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -121,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="ImprovedSobelOperatorService.h">
       <Filter>Headerdateien\detectors\statistical</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometricService.h">
+      <Filter>Headerdateien\detectors\geometric</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

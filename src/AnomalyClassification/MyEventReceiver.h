@@ -18,6 +18,7 @@
 #include "SuperPixelService.h"
 #include "ClassicSobelOperatorService.h"
 #include "ImprovedSobelOperatorService.h"
+#include "GeometricService.h"
 
 #define stringify( name ) #name
 
@@ -31,7 +32,15 @@ enum {
     GUI_ID_CHECKBOX_UNKNOWN,
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
-    GUI_ID_DIALOG_CHOOSE_FILE
+    GUI_ID_DIALOG_CHOOSE_FILE,
+    GUI_ID_LABEL_ROI,
+    GUI_ID_LABEL_AREA,
+    GUI_ID_LABEL_RATIO_AREA_ROI,
+    GUI_ID_LABEL_RATIO_WIDTH_LENGTH,
+    GUI_ID_VALUE_ROI,
+    GUI_ID_VALUE_AREA,
+    GUI_ID_VALUE_RATIO_AREA_ROI,
+    GUI_ID_VALUE_RATIO_WIDTH_LENGTH
 };
 
 class MyEventReceiver : public EventReceiver
@@ -44,6 +53,7 @@ private:
     SuperPixelService* superPixelService;
     ClassicSobelOperatorService* sobelOperatorSerivce;
     ImprovedSobelOperatorService* improvedSobelOperatorService;
+    GeometricService* geometricService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -60,7 +70,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
