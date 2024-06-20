@@ -29,6 +29,7 @@ public:
 	virtual void setVisibility(int id, bool visibile);
 
 	virtual bool exists(int id);
+	virtual void forget(int id);
 };
 
 #endif

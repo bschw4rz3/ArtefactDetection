@@ -17,9 +17,11 @@ private:
 public:
 	GeometricService(ColorService* colorService);
 
-	int countBlackPixels(CImg<unsigned char> img);
+	int countBlackPixels(CImg<unsigned char> image);
+	int calculateScope(CImg<unsigned char> image);
 
-
+private:
+	bool isboarderPixel(CImg<unsigned char> image, int x, int y);
 };
 
 #endif

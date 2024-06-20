@@ -48,9 +48,8 @@ char* StringSerivce::toChar(const wchar_t* pwchar)
 
 std::wstring StringSerivce::intToWString(int value)
 {
-    size_t myInteger = 10;
     std::wostringstream myStringStream;
-    myStringStream << myInteger;
+    myStringStream << value;
     std::wstring concatenatedStr = myStringStream.str();
 
     return concatenatedStr;

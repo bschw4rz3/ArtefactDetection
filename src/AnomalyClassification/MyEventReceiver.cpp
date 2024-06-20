@@ -1,5 +1,5 @@
 #include "MyEventReceiver.h"
-
+/*
 std::string enStr[]{
     stringify(GUI_ID_IMAGE),
     stringify(GUI_ID_IMAGE_1),
@@ -11,7 +11,7 @@ std::string enStr[]{
     stringify(GUI_ID_BUTTON_CACLULATE),
     stringify(GUI_ID_BUTTON_CHOOSE_FILE),
     stringify(GUI_ID_DIALOG_CHOOSE_FILE),
-};
+};*/
 
 MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, StringSerivce* stringSerivce)
 {
@@ -94,14 +94,16 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
-                graphicEngine->addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, L"..\\AnomalyGeneration\\testdata");
+                this->graphicEngine->addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, L"..\\AnomalyGeneration\\testdata");
             }
 
             return true;
         case EGET_FILE_SELECTED:
         {
-            CGUIFileSelector* dialog = (CGUIFileSelector*)event.GUIEvent.Caller;
-            this->onSelectFile(dialog->getFileName());
+            IGUIFileOpenDialog* dialog =
+                (IGUIFileOpenDialog*)event.GUIEvent.Caller;
+
+            this->onSelectFile(core::stringc(dialog->getFileName()).c_str());
             return true;
         }
         case EGET_CHECKBOX_CHANGED:
@@ -184,15 +186,16 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
         this->graphicEngine->removeElement(GUI_ID_IMAGE);
         this->selectedFile = L"";
     }
-
+    
     CImg<unsigned char> img(fileName.c_str());
-
-    std::wstring roiString = this->stringSerivce->intToWString(img.width()) + L" x " + this->stringSerivce->intToWString(img.height());
+    
+    std::wstring roiString = this->stringSerivce->intToWString(img.width()) + L" x " + this->stringSerivce->intToWString(img.height()) + L" px";
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ROI, roiString.c_str());
 
     int blackPixels = this->geometricService->countBlackPixels(img);
     std::wstring blackPixelsString = this->stringSerivce->intToWString(blackPixels);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_AREA, blackPixelsString.c_str());
+    std::wstring blackPixelsStringUnit = blackPixelsString + std::wstring(L" px");
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_AREA, blackPixelsStringUnit.c_str());
 
     double rotioRoiArea = ((double)img.width()) * ((double)img.height()) / ((double)blackPixels);
     std::wstring rotioRoiAreaString = this->stringSerivce->doubleToWString(rotioRoiArea);
@@ -202,10 +205,15 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     std::wstring rotioWidthLengthString = this->stringSerivce->doubleToWString(rotioWidthLength);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RATIO_WIDTH_LENGTH, rotioWidthLengthString.c_str());
 
+    int scope = this->geometricService->calculateScope(img);
+    std::wstring scropWithUnit = this->stringSerivce->doubleToWString(scope) + L" px";
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_SCOPE, scropWithUnit.c_str());
+    
     std::wstring wFileName = this->stringSerivce->toWString(fileName.c_str());
     
     this->graphicEngine->addImage(GUI_ID_IMAGE, Point2D(10, 10), wFileName.c_str());
-    this->selectedFile = wFileName;
+
+    this->selectedFile = wFileName.c_str();
 }
 
 void MyEventReceiver::superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath)

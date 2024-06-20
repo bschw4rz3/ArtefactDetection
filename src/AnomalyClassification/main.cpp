@@ -37,15 +37,20 @@ int main()
     graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(450, 400), 100, L"Calculate");
     graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(50, 300), 100, L"Open File");
 
-    graphicEngine.addLabel(GUI_ID_LABEL_ROI, Point2D(350, 30), 100, L"ROI:");
-    graphicEngine.addLabel(GUI_ID_LABEL_AREA, Point2D(350, 50), 100, L"Area of Anomaly:");
-    graphicEngine.addLabel(GUI_ID_LABEL_RATIO_AREA_ROI, Point2D(350, 70), 100, L"Ratio of Area and ROI:");
-    graphicEngine.addLabel(GUI_ID_LABEL_RATIO_WIDTH_LENGTH, Point2D(350, 90), 100, L"Ratio of width and length:");
+    int pannelX = 350;
+    int pannelY = 30;
 
-    graphicEngine.addLabel(GUI_ID_VALUE_ROI, Point2D(450, 30), 50, L"");
-    graphicEngine.addLabel(GUI_ID_VALUE_AREA, Point2D(450, 50), 50, L"");
-    graphicEngine.addLabel(GUI_ID_VALUE_RATIO_AREA_ROI, Point2D(450, 70), 50, L"");
-    graphicEngine.addLabel(GUI_ID_VALUE_RATIO_WIDTH_LENGTH, Point2D(450, 90), 50, L"");
+    graphicEngine.addLabel(GUI_ID_LABEL_ROI, Point2D(pannelX, pannelY), 100, L"ROI:");
+    graphicEngine.addLabel(GUI_ID_LABEL_AREA, Point2D(pannelX, pannelY+20), 100, L"Area of Anomaly:");
+    graphicEngine.addLabel(GUI_ID_LABEL_RATIO_AREA_ROI, Point2D(pannelX, pannelY + 40), 100, L"Ratio of Area and ROI:");
+    graphicEngine.addLabel(GUI_ID_LABEL_RATIO_WIDTH_LENGTH, Point2D(pannelX, pannelY + 60), 100, L"Ratio of width and length:");
+    graphicEngine.addLabel(GUI_ID_LABEL_SCOPE, Point2D(pannelX, pannelY + 80), 100, L"Defektumfang:");
+
+    graphicEngine.addLabel(GUI_ID_VALUE_ROI, Point2D(pannelX+100, pannelY), 60, L"");
+    graphicEngine.addLabel(GUI_ID_VALUE_AREA, Point2D(pannelX + 100, pannelY + 20), 60, L"");
+    graphicEngine.addLabel(GUI_ID_VALUE_RATIO_AREA_ROI, Point2D(pannelX + 100, pannelY+40), 60, L"");
+    graphicEngine.addLabel(GUI_ID_VALUE_RATIO_WIDTH_LENGTH, Point2D(pannelX + 100, pannelY+60), 60, L"");
+    graphicEngine.addLabel(GUI_ID_VALUE_SCOPE, Point2D(pannelX + 100, pannelY + 80), 60, L"");
 
     graphicEngine.run((EventReceiver*)&receiver);
 }

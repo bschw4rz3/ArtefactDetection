@@ -26,13 +26,20 @@ bool GraphicEngineExtended::exists(int id)
     return this->guiElementMap.find(id) != this->guiElementMap.end();
 }
 
+void GraphicEngineExtended::forget(int id)
+{
+    if (this->exists(id))
+    {
+        this->guiElementMap.erase(id);
+    }
+}
+
 void GraphicEngineExtended::addFileOpenDialog(int id, std::wstring startDir)
 {
     std::string cStartDir = this->stringSerivce->toString(startDir).c_str();
     irr::c8* c8Path = (char*)cStartDir.c_str();
 
-    IGUIElement* element = this->env->addFileOpenDialog(L"Open file", true, 0, id, false, c8Path);
-    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, element));
+    this->env->addFileOpenDialog(L"Open file", true, 0, -1, false, c8Path);
 }
 
 void GraphicEngineExtended::setVisibility(int id, bool visibile)

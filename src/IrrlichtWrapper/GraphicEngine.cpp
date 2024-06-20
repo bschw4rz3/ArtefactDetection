@@ -158,7 +158,10 @@ void GraphicEngine::removeElement(int id)
     IGUIElement* element = (IGUIElement*)this->guiElementMap[id];
 
     if (element != NULL)
-        element->drop();
+    {
+        element->grab();
+        //element->drop();
+    }
 
     this->guiElementMap.erase(id);
 }
@@ -202,8 +205,8 @@ int GraphicEngine::run(EventReceiver* receiver)
 
 	        this->env->drawAll();
 
-            //if(receiver->facet != NULL)
-            //    this->renderPrimitive(receiver->facet);
+            if(receiver->facet != NULL)
+                this->renderPrimitive(receiver->facet);
 
 	        this->driver->endScene();      
         }
