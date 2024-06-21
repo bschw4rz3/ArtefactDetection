@@ -49,6 +49,33 @@ int GeometricService::calculateScope(CImg<unsigned char> image)
 	return boarderPixels;
 }
 
+Point2D GeometricService::calculateDefectFocus(CImg<unsigned char> image)
+{
+	double blackPixels = 0;
+
+	double sumX = 0;
+	double sumY = 0;
+
+	for (int x = 0; x < image.width() - 1; x++)
+	{
+		for (int y = 0; y < image.height() - 1; y++)
+		{
+			const unsigned char* bytePixel = image.data(x, y);
+			ColorRGB color = this->colorService->byte2rgb(bytePixel, image.width(), image.height());
+
+			if(color.r == 0 && color.g == 0 && color.b == 0)
+			{
+				sumX += x;
+				sumY += y;
+
+				blackPixels++;
+			}
+		}
+	}
+
+	return Point2D(sumX/blackPixels, sumY/blackPixels);
+}
+
 bool GeometricService::isboarderPixel(CImg<unsigned char> image, int x, int y)
 {
 	for (int w = -1; w <= 1; w++)

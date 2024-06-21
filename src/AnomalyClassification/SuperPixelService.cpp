@@ -152,12 +152,6 @@ SuperPixelResult SuperPixelService::calculateSuperPixel(std::vector<std::vector<
 	}
 
 	std::vector<Point2D> unoptimicedClusterCenters = this->initializeClusterCenters(S, pixelDimensions);
-
-	if (unoptimicedClusterCenters.size() > maxCluster)
-	{
-		throw "Zu wenig Cluster!";
-	}
-
 	std::vector<Point2D> clusterCenters = this->optimiceClusterCenters(colorMatrix, unoptimicedClusterCenters, 3);
 
 	int realClusterAmout = clusterCenters.size();
@@ -217,9 +211,9 @@ std::vector<Point2D> SuperPixelService::initializeClusterCenters(double distance
 	double beginX = (dimensions.x - (((double)timesX) * distanceOfClusters));
 	double beginY = (dimensions.y - (((double)timesY) * distanceOfClusters));
 
-	for (double x = beginX; x < dimensions.x; x += distanceOfClusters)
+	for (double x = beginX; round(x) < dimensions.x; x += distanceOfClusters)
 	{
-		for (double y = beginY; y < dimensions.y; y += distanceOfClusters)
+		for (double y = beginY; round(y) < dimensions.y; y += distanceOfClusters)
 		{
 			result.push_back(Point2D(round(x), round(y)));			
 		}
@@ -284,6 +278,16 @@ double SuperPixelService::calculateGradientof(Point2D position, const std::vecto
 	int minY = position.y - 1 >= 0 ? position.y - 1 : 0;
 	int maxX = position.x + 1 < colorMatrix.size() ? position.x + 1 : colorMatrix.size() - 1;
 	int maxY = position.y + 1 < colorMatrix[0].size() ? position.y + 1 : colorMatrix[0].size() - 1;
+
+	if(position.y >= maxY)
+	{
+		position.y = maxY;
+	}
+
+	if(position.x >= maxX)
+	{
+		position.x = maxX;
+	}
 
 	ColorLib currentColor = colorMatrix[position.x][position.y].color;
 

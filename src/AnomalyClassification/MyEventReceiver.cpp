@@ -208,9 +208,12 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     int scope = this->geometricService->calculateScope(img);
     std::wstring scropWithUnit = this->stringSerivce->doubleToWString(scope) + L" px";
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_SCOPE, scropWithUnit.c_str());
+
+    Point2D defectFocus = this->geometricService->calculateDefectFocus(img);
+    std::wstring defectFocusString = L"(" + this->stringSerivce->doubleToWString(defectFocus.x) + L"px/" + this->stringSerivce->doubleToWString(defectFocus.y)+L"px)";
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_DEFECT_FOCUS, defectFocusString.c_str());
     
     std::wstring wFileName = this->stringSerivce->toWString(fileName.c_str());
-    
     this->graphicEngine->addImage(GUI_ID_IMAGE, Point2D(10, 10), wFileName.c_str());
 
     this->selectedFile = wFileName.c_str();

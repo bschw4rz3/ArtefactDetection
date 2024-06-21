@@ -45,12 +45,14 @@ int main()
     graphicEngine.addLabel(GUI_ID_LABEL_RATIO_AREA_ROI, Point2D(pannelX, pannelY + 40), 100, L"Ratio of Area and ROI:");
     graphicEngine.addLabel(GUI_ID_LABEL_RATIO_WIDTH_LENGTH, Point2D(pannelX, pannelY + 60), 100, L"Ratio of width and length:");
     graphicEngine.addLabel(GUI_ID_LABEL_SCOPE, Point2D(pannelX, pannelY + 80), 100, L"Defektumfang:");
+    graphicEngine.addLabel(GUI_ID_LABEL_DEFECT_FOCUS, Point2D(pannelX, pannelY + 100), 100, L"Defektschwerpunkt:");
 
     graphicEngine.addLabel(GUI_ID_VALUE_ROI, Point2D(pannelX+100, pannelY), 60, L"");
     graphicEngine.addLabel(GUI_ID_VALUE_AREA, Point2D(pannelX + 100, pannelY + 20), 60, L"");
     graphicEngine.addLabel(GUI_ID_VALUE_RATIO_AREA_ROI, Point2D(pannelX + 100, pannelY+40), 60, L"");
     graphicEngine.addLabel(GUI_ID_VALUE_RATIO_WIDTH_LENGTH, Point2D(pannelX + 100, pannelY+60), 60, L"");
     graphicEngine.addLabel(GUI_ID_VALUE_SCOPE, Point2D(pannelX + 100, pannelY + 80), 60, L"");
+    graphicEngine.addLabel(GUI_ID_VALUE_DEFECT_FOCUS, Point2D(pannelX + 100, pannelY + 100), 60, L"");
 
     graphicEngine.run((EventReceiver*)&receiver);
 }

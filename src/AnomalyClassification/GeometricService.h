@@ -8,6 +8,7 @@
 using namespace cimg_library;
 
 #include "ColorService.h"
+#include "../IrrlichtWrapper/Point2D.h"
 
 class GeometricService
 {
@@ -19,6 +20,7 @@ public:
 
 	int countBlackPixels(CImg<unsigned char> image);
 	int calculateScope(CImg<unsigned char> image);
+	Point2D calculateDefectFocus(CImg<unsigned char> image);
 
 private:
 	bool isboarderPixel(CImg<unsigned char> image, int x, int y);
