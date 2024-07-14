@@ -21,7 +21,7 @@ private:
 public:
 	GraphicEngineExtended(StringSerivce* stringSerivce);
 
-	virtual void addCheckbox(int id, Point2D position, const wchar_t* text, bool checked = false);
+	virtual void addCheckbox(int id, Point2D position, const wchar_t* text, bool checked = false, int parentId = -1);
 	virtual void resetMethodCheckBoxs();
 
 	virtual void addFileOpenDialog(int id, std::wstring startDir);

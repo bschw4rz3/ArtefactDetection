@@ -5,10 +5,10 @@ GraphicEngineExtended::GraphicEngineExtended(StringSerivce* stringSerivce) : Gra
     this->stringSerivce = stringSerivce;
 }
 
-void GraphicEngineExtended::addCheckbox(int id, Point2D position, const wchar_t* text, bool checked)
+void GraphicEngineExtended::addCheckbox(int id, Point2D position, const wchar_t* text, bool checked, int parentId)
 {
     this->checkboxIds.push_back(id);
-    GraphicEngine::addCheckbox(id, position, text, checked);
+    GraphicEngine::addCheckbox(id, position, text, checked, parentId);
 }
 
 void GraphicEngineExtended::resetMethodCheckBoxs()

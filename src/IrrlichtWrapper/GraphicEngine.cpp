@@ -61,9 +61,10 @@ void GraphicEngine::loadFont(const wchar_t* fontFile)
     skin->setFont(this->env->getBuiltInFont(), EGDF_TOOLTIP);
 }
 
-void GraphicEngine::addScrollbar(int id, Point2D position, int length, double min, double max, double value)
+void GraphicEngine::addScrollbar(int id, Point2D position, int length, double min, double max, double value, int parentId)
 {
-    IGUIScrollBar* scrollBar = this->env->addScrollBar(true, rect<s32>(position.x, position.y, position.x + length, position.y + 32), 0, id);
+    IGUIElement* parentElement = this->getParentElement(parentId);
+    IGUIScrollBar* scrollBar = this->env->addScrollBar(true, rect<s32>(position.x, position.y, position.x + length, position.y + 32), parentElement, id);
     scrollBar->setPos(value);
     scrollBar->setMin(min);
     scrollBar->setMax(max);
@@ -71,27 +72,31 @@ void GraphicEngine::addScrollbar(int id, Point2D position, int length, double mi
     this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, scrollBar));
 }
 
-void GraphicEngine::addButton(int id, Point2D position, int length, const wchar_t* text, const wchar_t* tooltip)
+void GraphicEngine::addButton(int id, Point2D position, int length, const wchar_t* text, const wchar_t* tooltip, int parentId)
 {
-    IGUIButton* button = this->env->addButton(rect<s32>(position.x, position.y, position.x + length, position.y + 32), 0, id, text, tooltip);
+    IGUIElement* parentElement = this->getParentElement(parentId);
+    IGUIButton* button = this->env->addButton(rect<s32>(position.x, position.y, position.x + length, position.y + 32), parentElement, id, text, tooltip);
     this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, button));
 }
 
-void GraphicEngine::addLabel(int id, Point2D position, int length, const wchar_t* text)
+void GraphicEngine::addLabel(int id, Point2D position, int length, const wchar_t* text, int parentId)
 {
-    IGUIStaticText* label = this->env->addStaticText(text, rect<s32>(position.x, position.y, position.x + length, position.y + 32), false);
+    IGUIElement* parentElement = this->getParentElement(parentId);
+    IGUIStaticText* label = this->env->addStaticText(text, rect<s32>(position.x, position.y, position.x + length, position.y + 32), false, false, parentElement);
     this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, label));
 }
 
-void GraphicEngine::addListBox(int id, Point2D position, Point2D point, const wchar_t* text)
+void GraphicEngine::addListBox(int id, Point2D position, Point2D point, const wchar_t* text, int parentId)
 {
-    IGUIListBox* listbox = this->env->addListBox(rect<s32>(position.x, position.y, position.x, position.y));
+    IGUIElement* parentElement = this->getParentElement(parentId);
+    IGUIListBox* listbox = this->env->addListBox(rect<s32>(position.x, position.y, position.x, position.y), parentElement);
     this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, listbox));
 }
 
-void GraphicEngine::addInputBox(int id, Point2D point, int length, const wchar_t* text)
+void GraphicEngine::addInputBox(int id, Point2D point, int length, const wchar_t* text, int parentId)
 {
-    IGUIEditBox* input = this->env->addEditBox(text, rect<s32>(point.x, point.y, point.x + length, point.y + 32));
+    IGUIElement* parentElement = this->getParentElement(parentId);
+    IGUIEditBox* input = this->env->addEditBox(text, rect<s32>(point.x, point.y, point.x + length, point.y + 32), true, parentElement);
     this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, input));
 }
 
@@ -128,22 +133,57 @@ void GraphicEngine::add2DRectangle(Point2D from, Point2D to, Color color)
     this->driver->draw2DRectangleOutline(rect<s32>(from.x, from.y, to.x, to.y), SColor(color.a, color.r, color.g, color.b));
 }
 
-void GraphicEngine::addImage(int id, Point2D position, const wchar_t* file)
+void GraphicEngine::addImage(int id, Point2D position, const wchar_t* file, int parentId)
 {
+    IGUIElement* parentElement = this->getParentElement(parentId);
     ITexture* texture = this->driver->getTexture(file);
-    this->env->addImage(texture, position2d<int>(position.x, position.y), id);
+    this->env->addImage(texture, position2d<int>(position.x, position.y), true, parentElement, id);
 }
 
-void GraphicEngine::addImage(Point2D position, const wchar_t* file)
+void GraphicEngine::addImage(Point2D position, const wchar_t* file, int parentId)
 {
-    this->addImage(-1, position, file);
+    this->addImage(-1, position, file, parentId);
 }
 
-void GraphicEngine::addCheckbox(int id, Point2D position, const wchar_t* text, bool checked)
+void GraphicEngine::addCheckbox(int id, Point2D position, const wchar_t* text, bool checked, int parentId)
 {
+    IGUIElement* parentElement = this->getParentElement(parentId);
+
     int length = sizeof(text);
-    IGUIElement* element = this->env->addCheckBox(checked, core::recti(vector2di(position.x, position.y), vector2di(position.x+(20*length), position.y+15)), 0, id, text);
+    IGUIElement* element = this->env->addCheckBox(checked, core::recti(vector2di(position.x, position.y), vector2di(position.x+(20*length), position.y+15)), parentElement, id, text);
 
+    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, element));
+}
+
+void GraphicEngine::addSubwindow(int id, Point2D from, Point2D to, const wchar_t* titel)
+{
+    IGUIElement* element = this->env->addWindow(core::recti(vector2di(from.x, from.y), vector2di(to.x, to.y)), false, titel);
+    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, element));
+}
+
+void GraphicEngine::addTabControl(int id, Point2D from, Point2D to, int parentId)
+{
+    IGUIElement* parentElement = this->getParentElement(parentId);
+    IGUITabControl* element = this->env->addTabControl(core::recti(vector2di(from.x, from.y), vector2di(to.x, to.y)), parentElement);
+    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, element));
+}
+
+void GraphicEngine::addTab(int id, const wchar_t* title, int parentId)
+{
+    IGUITabControl* tabControl = NULL;
+    IGUIElement* parentElement = this->getParentElement(parentId);
+
+    if (parentElement != NULL)
+    {
+        tabControl = dynamic_cast<IGUITabControl*>(parentElement);
+    }
+    
+    if (tabControl == NULL)
+    {
+        throw "Parent element is not a TabControl!";
+    }
+
+    IGUIElement* element = tabControl->addTab(title);
     this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, element));
 }
 
@@ -159,8 +199,9 @@ void GraphicEngine::removeElement(int id)
 
     if (element != NULL)
     {
+        element->setVisible(false);
         element->grab();
-        //element->drop();
+        element->drop();
     }
 
     this->guiElementMap.erase(id);
@@ -229,4 +270,16 @@ void GraphicEngine::renderPrimitive(IGeometry* geometry)
         IPrimitiveDraw* entry = this->primitiveList[i];
         entry->render(this, geometry);
     }
+}
+
+IGUIElement* GraphicEngine::getParentElement(int parentId)
+{
+    IGUIElement* element = NULL;
+
+    if (parentId != -1)
+    {
+        element = this->guiElementMap[parentId];
+    }
+
+    return element;
 }

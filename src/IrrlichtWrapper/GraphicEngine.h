@@ -55,14 +55,14 @@ public:
 
     virtual void loadFont(const wchar_t* fontFile);
 
-    virtual void addScrollbar(int id, Point2D position, int length, double min, double max, double value);
-    virtual void addButton(int id, Point2D position, int length, const wchar_t* text, const wchar_t* tooltip = L"");
-    virtual void addLabel(int id, Point2D position, int length, const wchar_t* text);
-    virtual void addListBox(int id, Point2D position, Point2D point, const wchar_t* text);
-    virtual void addInputBox(int id, Point2D point, int length, const wchar_t* text);
-    virtual void addCheckbox(int id, Point2D position, const wchar_t* text, bool checked = false);
+    virtual void addScrollbar(int id, Point2D position, int length, double min, double max, double value, int parentId = -1);
+    virtual void addButton(int id, Point2D position, int length, const wchar_t* text, const wchar_t* tooltip = L"", int parentId = -1);
+    virtual void addLabel(int id, Point2D position, int length, const wchar_t* text, int parentId = -1);
+    virtual void addListBox(int id, Point2D position, Point2D point, const wchar_t* text, int parentId = -1);
+    virtual void addInputBox(int id, Point2D point, int length, const wchar_t* text, int parentId = -1);
+    virtual void addCheckbox(int id, Point2D position, const wchar_t* text, bool checked = false, int parentId = -1);
+    
     virtual bool isCheckboxChecked(int id);
-
     virtual void enableGUIElement(int id, bool enable);
     virtual void setGUIElementText(int id, const wchar_t* text);
     virtual void setGUIElementChecked(int id, bool checked);
@@ -71,8 +71,11 @@ public:
     virtual void add2DPixel(Point2D position, Color color);
     virtual void add2DRectangle(Point2D from, Point2D to, Color color);
 
-    virtual void addImage(int id, Point2D position, const wchar_t* file);
-    virtual void addImage(Point2D position, const wchar_t* file);
+    virtual void addImage(int id, Point2D position, const wchar_t* file, int parentId = -1);
+    virtual void addImage(Point2D position, const wchar_t* file, int parentId = -1);
+    virtual void addSubwindow(int id, Point2D from, Point2D to, const wchar_t* titel);
+    virtual void addTabControl(int id, Point2D from, Point2D to, int parentId = -1);
+    virtual void addTab(int id, const wchar_t* title, int parentId = -1);
 
     virtual void removeElement(int id);
 
@@ -82,6 +85,7 @@ public:
 
 private:
     void renderPrimitive(IGeometry* geometry);
+    IGUIElement* getParentElement(int parentId);
 };
 
 #endif
