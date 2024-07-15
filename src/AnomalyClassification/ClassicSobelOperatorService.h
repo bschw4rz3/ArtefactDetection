@@ -15,16 +15,20 @@ using namespace cimg_library;
 class ClassicSobelOperatorService
 {
 private:
+	static int cacheImageWidth;
+	static int cacheImageHeight;
+	static CImg<unsigned char> cacheSobelImage;
+
 	ColorService* colorService;
 
 public:
 	ClassicSobelOperatorService(ColorService* colorService);
 
-	CImg<unsigned char> getGradientImage(const CImg<unsigned char>& image);
+	CImg<unsigned char> getGradientImage(const CImg<unsigned char>* image);
 
 private:
-	void setPixel(CImg<unsigned char>& image, int x, int y, ColorRGB color);
-	ColorRGB getPixel(const CImg<unsigned char>& image, int x, int y);
+	void setPixel(CImg<unsigned char>* image, int x, int y, ColorRGB color);
+	ColorRGB getPixel(const CImg<unsigned char>* image, int x, int y);
 };
 
 #endif

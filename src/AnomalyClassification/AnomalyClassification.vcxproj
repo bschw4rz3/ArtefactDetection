@@ -138,6 +138,7 @@
     <ClCompile Include="ColorLib.h" />
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />
+    <ClCompile Include="DiscreteFourierTransformationSerivce.cpp" />
     <ClCompile Include="GeometricService.cpp" />
     <ClCompile Include="GraphicEngineExtended.cpp" />
     <ClCompile Include="HistogramValueService.cpp" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColorService.h" />
+    <ClInclude Include="DiscreteFourierTransformationSerivce.h" />
     <ClInclude Include="GeometricService.h" />
     <ClInclude Include="GraphicEngineExtended.h" />
     <ClInclude Include="HistogramValueService.h" />
