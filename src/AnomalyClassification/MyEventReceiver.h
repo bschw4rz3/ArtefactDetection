@@ -20,6 +20,7 @@
 #include "ImprovedSobelOperatorService.h"
 #include "GeometricService.h"
 #include "HistogramValueService.h"
+#include "DiscreteFourierTransformationSerivce.h"
 
 #define stringify( name ) #name
 
@@ -82,6 +83,7 @@ private:
     ImprovedSobelOperatorService* improvedSobelOperatorService;
     GeometricService* geometricService;
     HistogramValueService* histogramValueService;
+    DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -98,7 +100,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);

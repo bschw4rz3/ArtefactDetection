@@ -12,6 +12,7 @@
 #include "ImprovedSobelOperatorService.h"
 #include "GeometricService.h"
 #include "HistogramValueService.h"
+#include "DiscreteFourierTransformationSerivce.h"
 
 int main()
 {
@@ -23,9 +24,10 @@ int main()
     ImprovedSobelOperatorService improvedSobelOperatorService(&colorService);
     GeometricService geometricService(&colorService);
     HistogramValueService histogramValueService(&colorService);
+    DiscreteFourierTransformationSerivce discreteFourierTransformationSerivce(&colorService);
 
     GraphicEngineExtended graphicEngine(&stringSerivce);
-    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &stringSerivce);
+    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &stringSerivce);
 
     graphicEngine.initiateOpenGL(L"Part Cover", Point2D(640, 480));
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");

@@ -13,7 +13,7 @@ std::string enStr[]{
     stringify(GUI_ID_DIALOG_CHOOSE_FILE),
 };*/
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
@@ -21,6 +21,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixe
     this->improvedSobelOperatorService = improvedSobelOperatorService;
     this->geometricService = geometricService;
     this->histogramValueService = histogramValueService;
+    this->discreteFourierTransformationSerivce = discreteFourierTransformationSerivce;
 
     this->stringSerivce = stringSerivce;
 
