@@ -142,7 +142,7 @@ void MyEventReceiver::onCalculateSobelOperator()
 {
     std::string cFile = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(cFile.c_str());
-    CImg<unsigned char> tempImage = this->sobelOperatorSerivce->getGradientImage(img);
+    CImg<unsigned char> tempImage = this->sobelOperatorSerivce->getGradientImage(&img);
 
     std::string tempFileName = this->generateFileName();
     tempImage.save_png(tempFileName.c_str());

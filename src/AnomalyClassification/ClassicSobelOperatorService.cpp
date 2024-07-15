@@ -1,7 +1,7 @@
 #include "ClassicSobelOperatorService.h"
 
-int ClassicSobelOperatorService::cacheImageWidth = NAN;
-int ClassicSobelOperatorService::cacheImageHeight = NAN;
+int ClassicSobelOperatorService::cacheImageWidth = 0;
+int ClassicSobelOperatorService::cacheImageHeight = 0;
 CImg<unsigned char> ClassicSobelOperatorService::cacheSobelImage;
 
 ClassicSobelOperatorService::ClassicSobelOperatorService(ColorService* colorService)
@@ -11,7 +11,7 @@ ClassicSobelOperatorService::ClassicSobelOperatorService(ColorService* colorServ
 
 CImg<unsigned char> ClassicSobelOperatorService::getGradientImage(const CImg<unsigned char>* image)
 {
-	if(!isnan(ClassicSobelOperatorService::cacheImageWidth) && image->width() == ClassicSobelOperatorService::cacheImageWidth && image->height() == ClassicSobelOperatorService::cacheImageHeight)
+	if(image->width() == ClassicSobelOperatorService::cacheImageWidth && image->height() == ClassicSobelOperatorService::cacheImageHeight)
 	{
 		return ClassicSobelOperatorService::cacheSobelImage;
 	}
