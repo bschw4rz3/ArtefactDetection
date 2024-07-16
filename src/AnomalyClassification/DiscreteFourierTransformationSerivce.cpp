@@ -6,6 +6,50 @@ DiscreteFourierTransformationSerivce::DiscreteFourierTransformationSerivce(Class
 	this->colorService = colorService;
 }
 
+
+
+/**
+ * \brief Computes 1-dimensional DFT (discrete fourier transform) on given input.
+ *
+ * \param input  an array of complex numbers, possibly a signal in time-domain.
+ * \param output a modifiable array to store the output in, if larger than input
+ *               only elements past input length are changed and if smaller the
+ *               result is truncated to output length.
+ */
+void dft(const std::vector<std::complex<double>>& input,
+	std::vector<std::complex<double>>& output)
+{
+	auto M_I_2PI_DL = -(6.28318530718i / (double)input.size());
+
+	for (size_t k = 0; k < output.size(); ++k) {
+		output[k] = 0;
+		for (size_t n = 0; n < input.size(); ++n)
+			output[k] += input[n] * pow(2.718281828459045, M_I_2PI_DL * (double)k * (double)n);
+	}
+}
+
+
+/**
+ * \brief Computes 1-dimensional IDFT (inverse discrete fourier transform) on given input.
+ *
+ * \param input an array of complex numbers, possibly a DFT'd signal in frequency domain.
+ * \param output a modifiable array to store the output in, if larger than input
+ *               only elements past input length are changed and if smaller the
+ *               result is truncated to output length.
+ */
+void idft(const std::vector<std::complex<double>>& input,
+	std::vector<std::complex<double>>& output)
+{
+	for (size_t k = 0; k < output.size(); ++k) {
+		output[k] = 0;
+		for (size_t n = 0; n < input.size(); ++n)
+			output[k] += input[n] * pow(2.718281828459045, (6.28318530718i * (double)k * (double)n) / (double)input.size());
+
+		output[k] /= input.size();
+	}
+}
+
+
 std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate(CImg<unsigned char>* image)
 {
 	CImg<unsigned char> sobelImage = this->classicSobelOperatorService->getGradientImage(image);
@@ -27,7 +71,10 @@ std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculat
 		}
 	}
 
-	return this->calculate_dft(vector);
+	std::vector<std::complex<double>> output(50);
+	dft(vector, output);
+
+	return output;
 
 }
 
@@ -52,15 +99,3 @@ std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculat
 
 	return dft;
 }
-
-/*
-void dft(const std::vector<std::complex<double>>& input, std::vector<std::complex<double>>& output)
-{
-	auto M_I_2PI_DL = -(6.28318530718i / (double)input.size());
-
-	for (size_t k = 0; k < output.size(); ++k) {
-		output[k] = 0;
-		for (size_t n = 0; n < input.size(); ++n)
-			output[k] += input[n] * pow(2.718281828459045, M_I_2PI_DL * (double)k * (double)n);
-	}
-}*/

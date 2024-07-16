@@ -118,6 +118,14 @@ void MyEventReceiver::onDiscreteFourierTransformation()
     CImg<unsigned char> img(cFile.c_str());
 
     std::vector<std::complex<double>> dftResult = this->discreteFourierTransformationSerivce->calculate(&img);
+
+    int n = dftResult.size();
+    std::vector<double> x(n), y(n);
+    for (int i = 0; i < n; ++i) {
+        x.at(i) = dftResult[i].real();
+        y.at(i) = dftResult[i].imag();
+    }
+
 }
 
 void MyEventReceiver::onCalculateSuperPixels()
