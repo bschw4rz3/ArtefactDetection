@@ -26,12 +26,12 @@ private:
 	MathSerivce* mathSerivce;
 
 public:
-	DiscreteFourierTransformationSerivce(ColorService* colorService);
+	DiscreteFourierTransformationSerivce(ClassicSobelOperatorService* classicSobelOperatorService, ColorService* colorService);
 
-	std::vector<int> calculate(CImg<unsigned char>* image);
+	std::vector<std::complex<double>> calculate(CImg<unsigned char>* image);
 
 private:
-	std::vector<int> calculate_IDFT(std::vector<float> Xr, std::vector<float> Xi, int len);
+	std::vector<std::complex<double>> calculate_dft(const std::vector<std::complex<double> >& signal);
 };
 
 #endif // !DiscreteFourierTransformationSerivce_H

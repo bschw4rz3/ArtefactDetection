@@ -1,17 +1,4 @@
 #include "MyEventReceiver.h"
-/*
-std::string enStr[]{
-    stringify(GUI_ID_IMAGE),
-    stringify(GUI_ID_IMAGE_1),
-    stringify(GUI_ID_IMAGE_2),
-    stringify(GUI_ID_CHECKBOX_UNKNOWN),
-    stringify(GUI_ID_CHECKBOX_SOBEL),
-    stringify(GUI_ID_CHECKBOX_IMPROVED_SOBEL),
-    stringify(GUI_ID_CHECKBOX_SUPERPIXELS),
-    stringify(GUI_ID_BUTTON_CACLULATE),
-    stringify(GUI_ID_BUTTON_CHOOSE_FILE),
-    stringify(GUI_ID_DIALOG_CHOOSE_FILE),
-};*/
 
 MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, StringSerivce* stringSerivce)
 {
@@ -130,7 +117,7 @@ void MyEventReceiver::onDiscreteFourierTransformation()
     std::string cFile = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(cFile.c_str());
 
-    std::vector<int> dftResult = this->discreteFourierTransformationSerivce->calculate(&img);
+    std::vector<std::complex<double>> dftResult = this->discreteFourierTransformationSerivce->calculate(&img);
 }
 
 void MyEventReceiver::onCalculateSuperPixels()

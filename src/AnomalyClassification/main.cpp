@@ -24,7 +24,7 @@ int main()
     ImprovedSobelOperatorService improvedSobelOperatorService(&colorService);
     GeometricService geometricService(&colorService);
     HistogramValueService histogramValueService(&colorService);
-    DiscreteFourierTransformationSerivce discreteFourierTransformationSerivce(&colorService);
+    DiscreteFourierTransformationSerivce discreteFourierTransformationSerivce(&classicSobelOperatorService, &colorService);
 
     GraphicEngineExtended graphicEngine(&stringSerivce);
     MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &stringSerivce);

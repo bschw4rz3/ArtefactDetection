@@ -1,17 +1,16 @@
 #include "DiscreteFourierTransformationSerivce.h"
 
-DiscreteFourierTransformationSerivce::DiscreteFourierTransformationSerivce(ColorService* colorService)
+DiscreteFourierTransformationSerivce::DiscreteFourierTransformationSerivce(ClassicSobelOperatorService* classicSobelOperatorService, ColorService* colorService)
 {
+	this->classicSobelOperatorService = classicSobelOperatorService;
 	this->colorService = colorService;
 }
 
-std::vector<int> DiscreteFourierTransformationSerivce::calculate(CImg<unsigned char>* image)
+std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate(CImg<unsigned char>* image)
 {
 	CImg<unsigned char> sobelImage = this->classicSobelOperatorService->getGradientImage(image);
 
-	int len = 0;
-	std::vector<float> xVector;
-	std::vector<float> yVector;
+	std::vector<std::complex<double>> vector;
 
 	for (int x = 0; x < sobelImage.width(); x++)
 	{
@@ -23,33 +22,35 @@ std::vector<int> DiscreteFourierTransformationSerivce::calculate(CImg<unsigned c
 
 			if (grayColor == 255)
 			{
-				xVector.push_back(x);
-				yVector.push_back(y);
-				len++;
+				vector.push_back(std::complex<double>(x, y));
 			}
 		}
 	}
 
-	return this->calculate_IDFT(xVector, yVector, len);
+	return this->calculate_dft(vector);
 
 }
 
-std::vector<int> DiscreteFourierTransformationSerivce::calculate_IDFT(std::vector<float> Xr, std::vector<float> Xi, int len)
+std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate_dft(const std::vector<std::complex<double>>& signal)
 {
-	std::vector<int> x(len, 0);
-    int k, n, N = 0;
+	const std::complex<double> PI(3.14159, 0);       // PI
+	const std::complex<double> IMAG_UNIT(0, 1);
 
-    for (n = 0; n < N; n++) {
-        x[n] = 0;
-        for (k = 0; k < N; k++) {
-            int theta = (2 * M_PI * k * n) / N;
-            x[n] = x[n] + Xr[k] * cos(theta)
-                + Xi[k] * sin(theta);
-        }
-        x[n] = x[n] / N;
-    }
+	long N = signal.size();									// Number of samples
+	std::vector<std::complex<double> > dft(N);   // DFT vector
+	               
+	std::complex<double> temp(0, 0);                // Temporary loop variable
 
-    return x;
+	for (int k = 0; k < N; k++)
+	{
+		for (int n = 0; n < N; n++)
+		{
+			temp = std::complex<double>(double(-1 * 2 * k * n) / N, 0);
+			dft[k] += signal[n] * exp(IMAG_UNIT * PI * temp) / ((double) N);
+		}
+	}
+
+	return dft;
 }
 
 /*
