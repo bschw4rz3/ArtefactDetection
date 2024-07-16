@@ -90,6 +90,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onCalculateImprovedSobelOperator();
                 }
+                else if(this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION))
+                {
+                    this->onDiscreteFourierTransformation();
+                }
                     
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
@@ -119,6 +123,14 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
     }
 
     return false;
+}
+
+void MyEventReceiver::onDiscreteFourierTransformation()
+{
+    std::string cFile = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(cFile.c_str());
+
+    std::vector<int> dftResult = this->discreteFourierTransformationSerivce->calculate(&img);
 }
 
 void MyEventReceiver::onCalculateSuperPixels()

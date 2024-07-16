@@ -41,6 +41,7 @@ enum {
     GUI_ID_CHECKBOX_SUPERPIXELS,
     GUI_ID_CHECKBOX_SOBEL,
     GUI_ID_CHECKBOX_IMPROVED_SOBEL,
+    GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION,
     GUI_ID_CHECKBOX_UNKNOWN,
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -112,6 +113,7 @@ private:
     void onCalculateSuperPixels();
     void onCalculateSobelOperator();
     void onCalculateImprovedSobelOperator();
+    void onDiscreteFourierTransformation();
 
     void onSelectFile(core::stringc fileName);
     void onResetImages();
