@@ -1,6 +1,6 @@
 #include "MyEventReceiver.h"
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, DirectoryService* directoryService, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
@@ -11,6 +11,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixe
     this->discreteFourierTransformationSerivce = discreteFourierTransformationSerivce;
 
     this->stringSerivce = stringSerivce;
+    this->directoryService = directoryService;
 
     this->facet = NULL;
     this->context = NULL;
@@ -117,14 +118,46 @@ void MyEventReceiver::onDiscreteFourierTransformation()
     std::string cFile = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(cFile.c_str());
 
-    std::vector<std::complex<double>> dftResult = this->discreteFourierTransformationSerivce->calculate(&img);
+    std::vector<std::complex<double>> dftResult = this->discreteFourierTransformationSerivce->calculate(&img, 2000);
 
     int n = dftResult.size();
-    std::vector<double> x(n), y(n);
-    for (int i = 0; i < n; ++i) {
-        x.at(i) = dftResult[i].real();
-        y.at(i) = dftResult[i].imag();
+    double* x = new double[n];
+    double* y = new double[n];
+    const char ** z = new const char*[n];
+
+    for (int i = 0; i < n; ++i) 
+    {
+        x[i] = dftResult[i].real();
+        y[i] = dftResult[i].imag();
+
+        const char * label = this->stringSerivce->intToString(i).c_str();
+        z[i] = label;
     }
+
+    XYChart* c = new XYChart(300, 300);
+    c->setPlotArea(50, 20, 240, 250);
+
+    // Add a line chart layer using the given data
+    c->addLineLayer(DoubleArray(x, n));
+    c->addLineLayer(DoubleArray(y, n));
+
+    // Set the labels on the x axis.
+    c->xAxis()->setLabels(StringArray(z, n));
+
+    // Display 1 out of 3 labels on the x-axis.
+    c->xAxis()->setLabelStep(3);
+
+    // Output the chart
+    std::string fileName = this->generateFileName();
+    c->makeChart(fileName.c_str());
+
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+
+    //free up resources
+    delete c;
+    delete x;
+    delete y;
+    delete z;
 
 }
 
@@ -144,6 +177,8 @@ void MyEventReceiver::onCalculateSuperPixels()
 
     this->superPixelToImage(result.subregions, img.width(), img.height(), fileName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+
+    this->removeTempFiles();
 }
 
 void MyEventReceiver::onCalculateSobelOperator()
@@ -156,6 +191,8 @@ void MyEventReceiver::onCalculateSobelOperator()
     tempImage.save_png(tempFileName.c_str());
     
     this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(tempFileName).c_str(), GUI_ID_IMAGE_3_TAB);
+
+    this->removeTempFiles();
 }
 
 void MyEventReceiver::onCalculateImprovedSobelOperator()
@@ -168,6 +205,8 @@ void MyEventReceiver::onCalculateImprovedSobelOperator()
     tempImage.save_png(tempFileName.c_str());
     
     this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(tempFileName).c_str(), GUI_ID_IMAGE_3_TAB);
+
+    this->removeTempFiles();
 }
 
 std::string MyEventReceiver::generateFileName()
@@ -185,6 +224,19 @@ std::string MyEventReceiver::generateFileName()
     this->tempFileIndex++;
 
     return fileName;
+}
+
+void MyEventReceiver::removeTempFiles()
+{
+    std::vector<std::string> fileNames = this->directoryService->getFileNames(".");
+
+    for(std::string fileName : fileNames)
+    {
+        if(this->stringSerivce->contains(fileName, "temp"))
+        {
+            std::remove(fileName.c_str());
+        }
+    }
 }
 
 void MyEventReceiver::onSelectFile(core::stringc fileName)

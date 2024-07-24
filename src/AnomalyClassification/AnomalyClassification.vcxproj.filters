@@ -102,6 +102,9 @@
     <ClCompile Include="DiscreteFourierTransformationSerivce.cpp">
       <Filter>Quelldateien\detectors\geometric</Filter>
     </ClCompile>
+    <ClCompile Include="DirectoryService.cpp">
+      <Filter>Quelldateien\helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -146,6 +149,9 @@
     <ClInclude Include="DiscreteFourierTransformationSerivce.h">
       <Filter>Headerdateien\detectors\geometric</Filter>
     </ClInclude>
+    <ClInclude Include="DirectoryService.h">
+      <Filter>Headerdateien\helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\lib\Irrlicht.dll">
@@ -153,6 +159,9 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\lib\fonthaettenschweiler.bmp">
       <Filter>Ressourcendateien</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\lib\chartdir70.dll">
+      <Filter>Binaries</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

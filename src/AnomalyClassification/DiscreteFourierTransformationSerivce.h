@@ -28,7 +28,7 @@ private:
 public:
 	DiscreteFourierTransformationSerivce(ClassicSobelOperatorService* classicSobelOperatorService, ColorService* colorService);
 
-	std::vector<std::complex<double>> calculate(CImg<unsigned char>* image);
+	std::vector<std::complex<double>> calculate(CImg<unsigned char>* image, int dataSetLength);
 
 private:
 	std::vector<std::complex<double>> calculate_dft(const std::vector<std::complex<double> >& signal);

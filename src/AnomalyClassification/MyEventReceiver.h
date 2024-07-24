@@ -8,6 +8,8 @@
 #include <thread>
 #include <future>
 
+#include "memblock.h"
+#include "chartdir.h"
 #include <irrlicht.h>
 #include "driverChoice.h"
 
@@ -21,6 +23,7 @@
 #include "GeometricService.h"
 #include "HistogramValueService.h"
 #include "DiscreteFourierTransformationSerivce.h"
+#include "DirectoryService.h"
 
 #define stringify( name ) #name
 
@@ -78,6 +81,7 @@ private:
     GraphicEngineExtended* graphicEngine;
     SAppContext* context;
     StringSerivce* stringSerivce;
+    DirectoryService* directoryService;
 
     SuperPixelService* superPixelService;
     ClassicSobelOperatorService* sobelOperatorSerivce;
@@ -101,7 +105,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, DirectoryService* directoryService, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
@@ -121,6 +125,7 @@ private:
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();
+    void removeTempFiles();
 };
 
 #endif

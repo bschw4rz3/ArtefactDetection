@@ -50,7 +50,7 @@ void idft(const std::vector<std::complex<double>>& input,
 }
 
 
-std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate(CImg<unsigned char>* image)
+std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate(CImg<unsigned char>* image, int dataSetLength)
 {
 	CImg<unsigned char> sobelImage = this->classicSobelOperatorService->getGradientImage(image);
 
@@ -71,7 +71,7 @@ std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculat
 		}
 	}
 
-	std::vector<std::complex<double>> output(50);
+	std::vector<std::complex<double>> output(dataSetLength);
 	dft(vector, output);
 
 	return output;

@@ -6,6 +6,9 @@
 #include <iostream>
 #include <vector>
 #include <regex>
+#include <string>
+#include <iostream>
+#include <filesystem>
 
 #include "StringSerivce.h"
 
@@ -16,9 +19,9 @@ private:
 	std::string argvZero;
 
 public:
-	DirectoryService(StringSerivce* stringSerivce, std::string argvZero);
+	DirectoryService(StringSerivce* stringSerivce);
 
-	std::string getCurrentPath();
+	std::vector<std::string> getFileNames(std::string path);
 };
 
 #endif

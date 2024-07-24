@@ -1,22 +1,23 @@
 #include "DirectoryService.h"
 
-DirectoryService::DirectoryService(StringSerivce* stringSerivce, std::string argvZero)
+DirectoryService::DirectoryService(StringSerivce* stringSerivce)
 {
 	this->stringSerivce = stringSerivce;
 	this->argvZero = argvZero;
 }
 
-std::string DirectoryService::getCurrentPath()
+std::vector<std::string> DirectoryService::getFileNames(std::string path)
 {
-	std::string delimiters = "\\/";
-	std::vector<std::string> tokens = this->stringSerivce->splitStringByDelimiters(this->argvZero, delimiters);
-
-	std::string result = "";
-
-	for(int i = 0;i < tokens.size()-1;i++)
+	std::vector<std::string> result;
+	
+	std::filesystem::directory_iterator directories = std::filesystem::directory_iterator(path);
+	
+	for (std::filesystem::directory_entry entry : directories)
 	{
-		result += tokens[i] + "/";
+		std::filesystem::path entryPath = entry.path();
+		std::string path = entryPath.u8string();
+		result.push_back(path);
 	}
 
-	return this->stringSerivce->trim(result, "/");
+	return result;
 }

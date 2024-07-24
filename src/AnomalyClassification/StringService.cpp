@@ -61,3 +61,17 @@ std::wstring StringSerivce::doubleToWString(double value)
     strs << value;
     return this->toWString(strs.str());
 }
+
+std::string StringSerivce::intToString(int value)
+{
+    std::stringstream myStringStream;
+    myStringStream << value;
+    std::string concatenatedStr = myStringStream.str();
+
+    return concatenatedStr;
+}
+
+bool StringSerivce::contains(std::string string, std::string term)
+{
+    return string.find(term) != std::string::npos;
+}

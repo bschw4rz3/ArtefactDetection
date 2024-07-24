@@ -10,8 +10,13 @@ public:
 	std::string toString(std::wstring input);
 	std::wstring toWString(std::string input);
 	char* toChar(const wchar_t* pwchar);
+
 	std::wstring intToWString(int value);
 	std::wstring doubleToWString(double value);
+
+	std::string intToString(int value);
+
+	bool contains(std::string string, std::string term);
 };
 
 #endif
