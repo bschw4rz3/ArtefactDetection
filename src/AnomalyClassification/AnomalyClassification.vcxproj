@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)..\lib\chartDirector;$(ProjectDir)..\lib\irrlicht;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\lib\opencv2;$(ProjectDir)..\lib;$(ProjectDir)..\lib\chartDirector;$(ProjectDir)..\lib\irrlicht;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)..\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -117,7 +117,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>chartdir70.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>chartdir70.lib;opencv_world4100d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,6 +145,7 @@
     <ClCompile Include="GeometricService.cpp" />
     <ClCompile Include="GraphicEngineExtended.cpp" />
     <ClCompile Include="HistogramValueService.cpp" />
+    <ClCompile Include="HuMomentsService.cpp" />
     <ClCompile Include="ImprovedSobelOperatorService.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathSerivce.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="GeometricService.h" />
     <ClInclude Include="GraphicEngineExtended.h" />
     <ClInclude Include="HistogramValueService.h" />
+    <ClInclude Include="HuMomentsService.h" />
     <ClInclude Include="ImprovedSobelOperatorService.h" />
     <ClInclude Include="KeyValuePair.h" />
     <ClInclude Include="MathSerivce.h" />
@@ -195,6 +197,15 @@
   <ItemGroup>
     <CopyFileToFolders Include="..\lib\chartdir70.dll">
       <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\lib\opencv_videoio_ffmpeg4100_64.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\lib\opencv_videoio_msmf4100_64d.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\lib\opencv_world4100d.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <None Include="packages.config" />

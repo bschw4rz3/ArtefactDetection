@@ -21,6 +21,7 @@ public:
 	int countBlackPixels(CImg<unsigned char>* image);
 	int calculateScope(CImg<unsigned char>* image);
 	Point2D calculateDefectFocus(CImg<unsigned char>* image);
+	double calculateRectangularity(CImg<unsigned char>* image);
 
 private:
 	bool isboarderPixel(CImg<unsigned char>* image, int x, int y);

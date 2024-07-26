@@ -14,6 +14,7 @@
 #include "HistogramValueService.h"
 #include "DiscreteFourierTransformationSerivce.h"
 #include "DirectoryService.h"
+#include "HuMomentsService.h"
 
 int main()
 {
@@ -27,35 +28,38 @@ int main()
     HistogramValueService histogramValueService(&colorService);
     DiscreteFourierTransformationSerivce discreteFourierTransformationSerivce(&classicSobelOperatorService, &colorService);
     DirectoryService directoryService(&stringSerivce);
+    HuMomentsService huMomentsService(&colorService);
 
     GraphicEngineExtended graphicEngine(&stringSerivce);
-    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &directoryService, &stringSerivce);
+    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &directoryService, &stringSerivce);
 
-    graphicEngine.initiateOpenGL(L"Part Cover", Point2D(640, 480));
+    Point2D windowSize(1280, 720);
+
+    graphicEngine.initiateOpenGL(L"Part Cover", windowSize);
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");
-
-
-    graphicEngine.addSubwindow(GUI_ID_OPERATION_PANNEL, Point2D(500, 0), Point2D(620, 320), L"Operationpannel");
+    graphicEngine.addSubwindow(GUI_ID_OPERATION_PANNEL, Point2D(windowSize.x - 180, 0), Point2D(windowSize.x, 320), L"Operationpannel");
 
     graphicEngine.addLabel(0, Point2D(10, 30), 50, L"Methode:", GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SUPERPIXELS, Point2D(10, 50), L"Super Pixels", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SOBEL, Point2D(10, 70), L"Sobel Operator", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_IMPROVED_SOBEL, Point2D(10, 90), L"Improved Sobel", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION, Point2D(10, 110), L"Discrete Fourier Transformation", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 130), L"Unknown", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HU_MOMENT, Point2D(10, 130), L"Hu Moment", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 150), L"Unknown", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(10, 200), 100, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 250), 100, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
 
     int pannelX = 10;
     int pannelY = 30;
-    graphicEngine.addSubwindow(GUI_ID_GEOMETRICINFO_PANNEL, Point2D(330, 0), Point2D(500, 210), L"Geometrische Merkmale");
+    graphicEngine.addSubwindow(GUI_ID_GEOMETRICINFO_PANNEL, Point2D(windowSize.x-360, 0), Point2D(windowSize.x-180, 270), L"Geometrische Merkmale");
 
     graphicEngine.addLabel(GUI_ID_LABEL_ROI, Point2D(pannelX, pannelY), 100, L"ROI:", GUI_ID_GEOMETRICINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_AREA, Point2D(pannelX, pannelY+20), 100, L"Area of Anomaly:", GUI_ID_GEOMETRICINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_RATIO_AREA_ROI, Point2D(pannelX, pannelY + 40), 100, L"Ratio of Area and ROI:", GUI_ID_GEOMETRICINFO_PANNEL);
-    graphicEngine.addLabel(GUI_ID_LABEL_RATIO_WIDTH_LENGTH, Point2D(pannelX, pannelY + 60), 100, L"Ratio of width and length:", GUI_ID_GEOMETRICINFO_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_RATIO_WIDTH_LENGTH, Point2D(pannelX, pannelY + 60), 100, L"Ratio of width and length:\n(Slimness)", GUI_ID_GEOMETRICINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_SCOPE, Point2D(pannelX, pannelY + 80), 100, L"Defektumfang:", GUI_ID_GEOMETRICINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_DEFECT_FOCUS, Point2D(pannelX, pannelY + 100), 100, L"Defektschwerpunkt:", GUI_ID_GEOMETRICINFO_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_RECTANGULARITY, Point2D(pannelX, pannelY + 120), 100, L"Rectangularity:", GUI_ID_GEOMETRICINFO_PANNEL);
 
     graphicEngine.addLabel(GUI_ID_VALUE_ROI, Point2D(pannelX+100, pannelY), 60, L"", GUI_ID_GEOMETRICINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_AREA, Point2D(pannelX + 100, pannelY + 20), 60, L"", GUI_ID_GEOMETRICINFO_PANNEL);
@@ -63,8 +67,9 @@ int main()
     graphicEngine.addLabel(GUI_ID_VALUE_RATIO_WIDTH_LENGTH, Point2D(pannelX + 100, pannelY+60), 60, L"", GUI_ID_GEOMETRICINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_SCOPE, Point2D(pannelX + 100, pannelY + 80), 60, L"", GUI_ID_GEOMETRICINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_DEFECT_FOCUS, Point2D(pannelX + 100, pannelY + 100), 60, L"", GUI_ID_GEOMETRICINFO_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_RECTANGULARITY, Point2D(pannelX + 100, pannelY + 120), 60, L"", GUI_ID_GEOMETRICINFO_PANNEL);
 
-    graphicEngine.addSubwindow(GUI_ID_GRAYINFO_PANNEL, Point2D(330, 210), Point2D(500, 370), L"Graustufenbasierte Merkmale");
+    graphicEngine.addSubwindow(GUI_ID_GRAYINFO_PANNEL, Point2D(windowSize.x-360, 270), Point2D(windowSize.x-180, 480), L"Graustufenbasierte Merkmale");
 
     graphicEngine.addLabel(GUI_ID_LABEL_MEAN, Point2D(pannelX, pannelY), 100, L"Mean:", GUI_ID_GRAYINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_VARIANCE, Point2D(pannelX, pannelY + 20), 100, L"Variance:", GUI_ID_GRAYINFO_PANNEL);
@@ -79,6 +84,24 @@ int main()
     graphicEngine.addLabel(GUI_ID_VALUE_KURTOSIS, Point2D(pannelX + 100, pannelY + 60), 60, L"", GUI_ID_GRAYINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_POWER, Point2D(pannelX + 100, pannelY + 80), 60, L"", GUI_ID_GRAYINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_ENTROPY, Point2D(pannelX + 100, pannelY + 100), 60, L"", GUI_ID_GRAYINFO_PANNEL);
+
+    graphicEngine.addSubwindow(GUI_ID_HU_MOMENT_PANNEL, Point2D(windowSize.x - 180, 320), Point2D(windowSize.x, 500), L"Hu Moments");
+
+    graphicEngine.addLabel(GUI_ID_LABEL_HU_1, Point2D(pannelX, pannelY), 25, L"Hu 1:", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_HU_2, Point2D(pannelX, pannelY + 20), 25, L"Hu 2:", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_HU_3, Point2D(pannelX, pannelY + 40), 25, L"Hu 3:", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_HU_4, Point2D(pannelX, pannelY + 60), 25, L"Hu 4:", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_HU_5, Point2D(pannelX, pannelY + 80), 25, L"Hu 5:", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_HU_6, Point2D(pannelX, pannelY + 100), 25, L"Hu 6:", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_HU_7, Point2D(pannelX, pannelY + 120), 25, L"Hu 7:", GUI_ID_HU_MOMENT_PANNEL);
+
+    graphicEngine.addLabel(GUI_ID_VALUE_HU_1, Point2D(pannelX + 25, pannelY), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_HU_2, Point2D(pannelX + 25, pannelY + 20), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_HU_3, Point2D(pannelX + 25, pannelY + 40), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_HU_4, Point2D(pannelX + 25, pannelY + 60), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_HU_5, Point2D(pannelX + 25, pannelY + 80), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_HU_6, Point2D(pannelX + 25, pannelY + 100), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_HU_7, Point2D(pannelX + 25, pannelY + 120), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
 
     graphicEngine.run((EventReceiver*)&receiver);
 }

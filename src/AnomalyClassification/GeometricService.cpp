@@ -76,6 +76,15 @@ Point2D GeometricService::calculateDefectFocus(CImg<unsigned char>* image)
 	return Point2D(sumX/blackPixels, sumY/blackPixels);
 }
 
+double GeometricService::calculateRectangularity(CImg<unsigned char>* image)
+{
+	double totalPixels = image->width() * image->height();
+	double blackPixels = this->countBlackPixels(image);
+	double withePixels = totalPixels - blackPixels;
+
+	return withePixels / totalPixels;
+}
+
 bool GeometricService::isboarderPixel(CImg<unsigned char>* image, int x, int y)
 {
 	for (int w = -1; w <= 1; w++)

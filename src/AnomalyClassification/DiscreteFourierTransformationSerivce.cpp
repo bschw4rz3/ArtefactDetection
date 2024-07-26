@@ -6,8 +6,6 @@ DiscreteFourierTransformationSerivce::DiscreteFourierTransformationSerivce(Class
 	this->colorService = colorService;
 }
 
-
-
 /**
  * \brief Computes 1-dimensional DFT (discrete fourier transform) on given input.
  *
@@ -28,7 +26,6 @@ void dft(const std::vector<std::complex<double>>& input,
 	}
 }
 
-
 /**
  * \brief Computes 1-dimensional IDFT (inverse discrete fourier transform) on given input.
  *
@@ -37,8 +34,7 @@ void dft(const std::vector<std::complex<double>>& input,
  *               only elements past input length are changed and if smaller the
  *               result is truncated to output length.
  */
-void idft(const std::vector<std::complex<double>>& input,
-	std::vector<std::complex<double>>& output)
+void idft(const std::vector<std::complex<double>>& input, std::vector<std::complex<double>>& output)
 {
 	for (size_t k = 0; k < output.size(); ++k) {
 		output[k] = 0;
@@ -49,12 +45,10 @@ void idft(const std::vector<std::complex<double>>& input,
 	}
 }
 
-
 std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate(CImg<unsigned char>* image, int dataSetLength)
 {
-	CImg<unsigned char> sobelImage = this->classicSobelOperatorService->getGradientImage(image);
-
 	std::vector<std::complex<double>> vector;
+	CImg<unsigned char> sobelImage = this->classicSobelOperatorService->getGradientImage(image);
 
 	for (int x = 0; x < sobelImage.width(); x++)
 	{
@@ -72,10 +66,9 @@ std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculat
 	}
 
 	std::vector<std::complex<double>> output(dataSetLength);
-	dft(vector, output);
+	idft(vector, output);
 
 	return output;
-
 }
 
 std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate_dft(const std::vector<std::complex<double>>& signal)

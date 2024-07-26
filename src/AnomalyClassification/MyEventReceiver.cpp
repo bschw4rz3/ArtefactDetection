@@ -1,6 +1,6 @@
 #include "MyEventReceiver.h"
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, DirectoryService* directoryService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, DirectoryService* directoryService, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
@@ -9,6 +9,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixe
     this->geometricService = geometricService;
     this->histogramValueService = histogramValueService;
     this->discreteFourierTransformationSerivce = discreteFourierTransformationSerivce;
+    this->huMomentsService = huMomentsService;
 
     this->stringSerivce = stringSerivce;
     this->directoryService = directoryService;
@@ -32,6 +33,8 @@ MyEventReceiver::~MyEventReceiver()
     {
         //this->onJoinTask();
     }
+
+    this->removeTempFiles();
 }
 
 void MyEventReceiver::OnInit(SAppContext* context)
@@ -82,7 +85,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onDiscreteFourierTransformation();
                 }
-                    
+                else if(this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_HU_MOMENT))
+                {
+                    this->onHuMoment();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -111,6 +117,11 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
     }
 
     return false;
+}
+
+void MyEventReceiver::onHuMoment()
+{
+
 }
 
 void MyEventReceiver::onDiscreteFourierTransformation()
@@ -159,6 +170,7 @@ void MyEventReceiver::onDiscreteFourierTransformation()
     delete y;
     delete z;
 
+    this->removeTempFiles();
 }
 
 void MyEventReceiver::onCalculateSuperPixels()
@@ -249,9 +261,12 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ROI, roiString.c_str());
 
     int blackPixels = this->geometricService->countBlackPixels(&img);
+    int withePixels =  ((double)img.width()) * ((double)img.height()) - blackPixels;
     std::wstring blackPixelsString = this->stringSerivce->intToWString(blackPixels);
+    std::wstring withePixelsString = this->stringSerivce->intToWString(withePixels);
     std::wstring blackPixelsStringUnit = blackPixelsString + std::wstring(L" px");
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_AREA, blackPixelsStringUnit.c_str());
+    std::wstring withePixelsStringUnit = withePixelsString + std::wstring(L" px");
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_AREA, std::wstring(L"W:"+withePixelsStringUnit+L"/B:"+blackPixelsStringUnit).c_str());
 
     double rotioRoiArea = ((double)img.width()) * ((double)img.height()) / ((double)blackPixels);
     std::wstring rotioRoiAreaString = this->stringSerivce->doubleToWString(rotioRoiArea);
@@ -268,6 +283,10 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     Point2D defectFocus = this->geometricService->calculateDefectFocus(&img);
     std::wstring defectFocusString = L"(" + this->stringSerivce->doubleToWString(defectFocus.x) + L"px/" + this->stringSerivce->doubleToWString(defectFocus.y)+L"px)";
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_DEFECT_FOCUS, defectFocusString.c_str());
+
+    double rectangularity = this->geometricService->calculateRectangularity(&img);
+    std::wstring rectangularityString = this->stringSerivce->doubleToWString(rectangularity);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RECTANGULARITY, rectangularityString.c_str());
     
     double mean = this->histogramValueService->getMean(&img);
     std::wstring meanString = this->stringSerivce->doubleToWString(mean);
@@ -293,6 +312,55 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     std::wstring entropyString = this->stringSerivce->doubleToWString(entropy);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ENTROPY, entropyString.c_str());
 
+    double hu = this->huMomentsService->calculateHu1(&img);
+    std::wstring huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_1, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu2(&img);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_2, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu3(&img);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_3, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu4(&img);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_4, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu5(&img);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_5, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu6(&img);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_6, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu7(&img);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_7, huString.c_str());
+
+    
+    double huMoments[7]; 
+
+    try
+    {
+        cv::Mat image = cv::imread(fileName.c_str(), cv::IMREAD_GRAYSCALE);
+        cv::threshold(image, image, 128, 255, cv::THRESH_BINARY);
+
+        // Calculate Moments 
+        cv::Moments moments = cv::moments(image, false); 
+        // Calculate Hu Moments 
+        cv::HuMoments(moments, huMoments);
+    }
+    catch(cv::Exception e)
+    {
+        std::string message = e.what();
+        int b = 0;
+    }
+
+    
+    
     std::wstring wFileName = this->stringSerivce->toWString(fileName.c_str());
     this->graphicEngine->addImage(GUI_ID_IMAGE_1, Point2D(10, 10), wFileName.c_str(), GUI_ID_IMAGE_1_TAB);
 

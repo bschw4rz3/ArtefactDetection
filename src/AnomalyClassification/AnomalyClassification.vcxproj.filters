@@ -105,6 +105,9 @@
     <ClCompile Include="DirectoryService.cpp">
       <Filter>Quelldateien\helpers</Filter>
     </ClCompile>
+    <ClCompile Include="HuMomentsService.cpp">
+      <Filter>Quelldateien\detectors\geometric</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -152,6 +155,9 @@
     <ClInclude Include="DirectoryService.h">
       <Filter>Headerdateien\helpers</Filter>
     </ClInclude>
+    <ClInclude Include="HuMomentsService.h">
+      <Filter>Headerdateien\detectors\geometric</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\lib\Irrlicht.dll">
@@ -161,6 +167,15 @@
       <Filter>Ressourcendateien</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\lib\chartdir70.dll">
+      <Filter>Binaries</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\lib\opencv_videoio_ffmpeg4100_64.dll">
+      <Filter>Binaries</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\lib\opencv_videoio_msmf4100_64d.dll">
+      <Filter>Binaries</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\lib\opencv_world4100d.dll">
       <Filter>Binaries</Filter>
     </CopyFileToFolders>
   </ItemGroup>

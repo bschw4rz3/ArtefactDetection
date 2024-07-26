@@ -23,7 +23,24 @@
 #include "GeometricService.h"
 #include "HistogramValueService.h"
 #include "DiscreteFourierTransformationSerivce.h"
+#include "HuMomentsService.h"
 #include "DirectoryService.h"
+
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/gapi/imgproc.hpp>
+#include <opencv2/gapi/gkernel.hpp>
+#include <opencv2/gapi/gmat.hpp>
+#include <opencv2/gapi/gscalar.hpp>
+#include <opencv2/imgproc.hpp>
+
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+#include <iostream>
+#include <iomanip>
 
 #define stringify( name ) #name
 
@@ -32,6 +49,7 @@ enum {
     GUI_ID_GRAYINFO_PANNEL,
     GUI_ID_GEOMETRICINFO_PANNEL,
     GUI_ID_IMAGE_PANNEL,
+    GUI_ID_HU_MOMENT_PANNEL,
 
     GUI_ID_TABCONTROL,
     GUI_ID_IMAGE_1_TAB,
@@ -45,6 +63,7 @@ enum {
     GUI_ID_CHECKBOX_SOBEL,
     GUI_ID_CHECKBOX_IMPROVED_SOBEL,
     GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION,
+    GUI_ID_CHECKBOX_HU_MOMENT,
     GUI_ID_CHECKBOX_UNKNOWN,
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -61,6 +80,7 @@ enum {
     GUI_ID_LABEL_KURTOSIS,
     GUI_ID_LABEL_POWER,
     GUI_ID_LABEL_ENTROPY,
+    GUI_ID_LABEL_RECTANGULARITY,
     GUI_ID_VALUE_ROI,
     GUI_ID_VALUE_AREA,
     GUI_ID_VALUE_RATIO_AREA_ROI,
@@ -72,7 +92,22 @@ enum {
     GUI_ID_VALUE_SKEWNESS,
     GUI_ID_VALUE_KURTOSIS,
     GUI_ID_VALUE_POWER,
-    GUI_ID_VALUE_ENTROPY
+    GUI_ID_VALUE_ENTROPY,
+    GUI_ID_VALUE_RECTANGULARITY,
+    GUI_ID_LABEL_HU_1,
+    GUI_ID_LABEL_HU_2,
+    GUI_ID_LABEL_HU_3,
+    GUI_ID_LABEL_HU_4,
+    GUI_ID_LABEL_HU_5,
+    GUI_ID_LABEL_HU_6,
+    GUI_ID_LABEL_HU_7,
+    GUI_ID_VALUE_HU_1,
+    GUI_ID_VALUE_HU_2,
+    GUI_ID_VALUE_HU_3,
+    GUI_ID_VALUE_HU_4,
+    GUI_ID_VALUE_HU_5,
+    GUI_ID_VALUE_HU_6,
+    GUI_ID_VALUE_HU_7
 };
 
 class MyEventReceiver : public EventReceiver
@@ -89,6 +124,7 @@ private:
     GeometricService* geometricService;
     HistogramValueService* histogramValueService;
     DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce;
+    HuMomentsService* huMomentsService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -105,7 +141,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, DirectoryService* directoryService, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, DirectoryService* directoryService, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
@@ -122,6 +158,7 @@ private:
     void onSelectFile(core::stringc fileName);
     void onResetImages();
     void onCreateImagePannel();
+    void onHuMoment();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();
