@@ -79,7 +79,7 @@ double HuMomentsService::calculateHu2(CImg<unsigned char>* image, bool useMu)
 	double eta20 = this->calculateMomentEta(image, 2, 0, useMu);
 	double eta11 = this->calculateMomentEta(image, 1, 1, useMu);
 
-	return pow(eta20 - eta02, 2) + 4 * pow(eta11, 2);
+	return pow(eta20 - eta02, 2) + pow(2*eta11, 2);
 }
 
 double HuMomentsService::calculateHu3(CImg<unsigned char>* image, bool useMu)
@@ -89,7 +89,7 @@ double HuMomentsService::calculateHu3(CImg<unsigned char>* image, bool useMu)
 	double eta21 = this->calculateMomentEta(image, 2, 1, useMu);
 	double eta03 = this->calculateMomentEta(image, 0, 3, useMu);
 
-	return pow(eta30 - 3*eta12, 2) + pow(3*eta21 - eta03, 2);
+	return pow(eta30 - (3*eta12), 2) + pow((3*eta21) - eta03, 2);
 }
 
 double HuMomentsService::calculateHu4(CImg<unsigned char>* image, bool useMu)
@@ -109,8 +109,8 @@ double HuMomentsService::calculateHu5(CImg<unsigned char>* image, bool useMu)
 	double eta21 = this->calculateMomentEta(image, 2, 1, useMu);
 	double eta03 = this->calculateMomentEta(image, 0, 3, useMu);
 
-	return pow(eta30 - 3*eta12, 2) + pow(eta30 + eta12, 2) * abs(pow(eta30 + eta12, 2) - 3*pow(eta21 + eta03, 2)) + 
-		   pow(3*eta21 - eta03, 2) * pow(eta21 + eta03, 2) * abs(pow(eta30 + eta12, 2) - pow(eta21 + eta03, 2));
+	return ((eta30 - (3*eta12)) * (eta30 + eta12) * abs(pow(eta30 + eta12, 2) - (3*pow(eta21 + eta03, 2)))) + 
+		   (((3*eta21) - eta03) * (eta21 + eta03) * abs((3*pow(eta30 + eta12, 2)) - pow(eta21 + eta03, 2)));
 }
 
 double HuMomentsService::calculateHu6(CImg<unsigned char>* image, bool useMu)
@@ -123,7 +123,7 @@ double HuMomentsService::calculateHu6(CImg<unsigned char>* image, bool useMu)
 	double eta03 = this->calculateMomentEta(image, 0, 3, useMu);
 	double eta11 = this->calculateMomentEta(image, 1, 1, useMu);
 
-	return (eta20 - eta02) * abs(pow(eta30 + eta12, 2) - pow(eta21 + eta03, 2)) + 4 * eta11 * (eta30 + eta12) * (eta21 + eta03);
+	return ((eta20 - eta02) * abs(pow(eta30 + eta12, 2) - pow(eta21 + eta03, 2))) + ((4 * eta11) * (eta30 + eta12) * (eta21 + eta03));
 }
 
 double HuMomentsService::calculateHu7(CImg<unsigned char>* image, bool useMu)
@@ -133,6 +133,6 @@ double HuMomentsService::calculateHu7(CImg<unsigned char>* image, bool useMu)
 	double eta30 = this->calculateMomentEta(image, 3, 0, useMu);
 	double eta12 = this->calculateMomentEta(image, 1, 2, useMu);
 
-	return (3 * eta21 - eta03) * (eta30 + eta12) * abs(pow(eta30 + eta12, 2)-3*pow(eta21 + eta03, 2)) +
-		   (3 * eta12 - eta30) * (eta21 + eta03) * abs(3 * pow(eta30 + eta12, 2) - pow(eta21 + eta03, 2));
+	return (((3 * eta21) - eta03) * (eta30 + eta12) * abs(pow(eta30 + eta12, 2)-(3*pow(eta21 + eta03, 2)))) -
+		   ((eta30 - (3 * eta12)) * (eta21 + eta03) * abs((3 * pow(eta30 + eta12, 2)) - pow(eta21 + eta03, 2)));
 }

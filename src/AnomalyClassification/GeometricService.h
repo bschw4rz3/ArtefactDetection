@@ -1,6 +1,9 @@
 #ifndef GeometricService_H
 #define GeometricService_H
 
+#include <map>
+#include <vector>
+
 #define cimg_use_png
 #pragma warning(disable:4146)
 #pragma warning(disable:4996)
@@ -18,10 +21,12 @@ private:
 public:
 	GeometricService(ColorService* colorService);
 
-	int countBlackPixels(CImg<unsigned char>* image);
-	int calculateScope(CImg<unsigned char>* image);
-	Point2D calculateDefectFocus(CImg<unsigned char>* image);
-	double calculateRectangularity(CImg<unsigned char>* image);
+	ColorRGB getBackgroundColor(CImg<unsigned char>* image);
+
+	int countDefectPixels(CImg<unsigned char>* image, ColorRGB backgroundColor);
+	int calculateScope(CImg<unsigned char>* image, ColorRGB backgroundColor);
+	Point2D calculateDefectFocus(CImg<unsigned char>* image, ColorRGB backgroundColor);
+	double calculateRectangularity(CImg<unsigned char>* image, ColorRGB backgroundColor);
 
 private:
 	bool isboarderPixel(CImg<unsigned char>* image, int x, int y);

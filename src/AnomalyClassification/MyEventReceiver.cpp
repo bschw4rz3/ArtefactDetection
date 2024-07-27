@@ -121,7 +121,71 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
 
 void MyEventReceiver::onHuMoment()
 {
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(fileName.c_str());
 
+    
+    try
+    {
+        double huMoments[7];
+        int huMomentOpenCVMoments[] = { GUI_ID_VALUE_HU_OPENCV_1, GUI_ID_VALUE_HU_OPENCV_2, GUI_ID_VALUE_HU_OPENCV_3, GUI_ID_VALUE_HU_OPENCV_4, GUI_ID_VALUE_HU_OPENCV_5, GUI_ID_VALUE_HU_OPENCV_6, GUI_ID_VALUE_HU_OPENCV_7 };
+
+        cv::Mat image = cv::imread(fileName.c_str(), cv::IMREAD_GRAYSCALE);
+        cv::threshold(image, image, 128, 255, cv::THRESH_BINARY);
+
+        // Calculate Moments 
+        cv::Moments moments = cv::moments(image, false);
+        // Calculate Hu Moments 
+        cv::HuMoments(moments, huMoments);
+
+        int length = sizeof(huMoments) / sizeof(double);
+        for (int i = 0; i < length; i++)
+        {
+            std::wstring huString = this->stringSerivce->doubleToWString(huMoments[i]);
+            this->graphicEngine->setGUIElementText(huMomentOpenCVMoments[i], huString.c_str());
+        }
+    }
+    catch (cv::Exception e)
+    {
+        std::string message = e.what();
+        int b = 0;
+    }
+
+    CImg<unsigned char> sobelImage = this->improvedSobelOperatorService->getGradientImage(img);
+
+    // Output the chart
+    std::string sobelName = this->generateFileName();
+    sobelImage.save(sobelName.c_str());
+
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+    double hu = this->huMomentsService->calculateHu1(&sobelImage);
+    std::wstring huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_1, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu2(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_2, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu3(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_3, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu4(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_4, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu5(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_5, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu6(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_6, huString.c_str());
+
+    hu = this->huMomentsService->calculateHu7(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_7, huString.c_str());
 }
 
 void MyEventReceiver::onDiscreteFourierTransformation()
@@ -260,7 +324,11 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     std::wstring roiString = this->stringSerivce->intToWString(img.width()) + L" x " + this->stringSerivce->intToWString(img.height()) + L" px";
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ROI, roiString.c_str());
 
-    int blackPixels = this->geometricService->countBlackPixels(&img);
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
+    std::wstring backgroundColorString = this->stringSerivce->doubleToWString(backgroundColor.r)+L"|"+this->stringSerivce->doubleToWString(backgroundColor.g) + L"|" + this->stringSerivce->doubleToWString(backgroundColor.b);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_BACKGROUND_COLOR, backgroundColorString.c_str());
+
+    int blackPixels = this->geometricService->countDefectPixels(&img, backgroundColor);
     int withePixels =  ((double)img.width()) * ((double)img.height()) - blackPixels;
     std::wstring blackPixelsString = this->stringSerivce->intToWString(blackPixels);
     std::wstring withePixelsString = this->stringSerivce->intToWString(withePixels);
@@ -276,15 +344,15 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     std::wstring rotioWidthLengthString = this->stringSerivce->doubleToWString(rotioWidthLength);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RATIO_WIDTH_LENGTH, rotioWidthLengthString.c_str());
 
-    int scope = this->geometricService->calculateScope(&img);
+    int scope = this->geometricService->calculateScope(&img, backgroundColor);
     std::wstring scropWithUnit = this->stringSerivce->doubleToWString(scope) + L" px";
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_SCOPE, scropWithUnit.c_str());
 
-    Point2D defectFocus = this->geometricService->calculateDefectFocus(&img);
+    Point2D defectFocus = this->geometricService->calculateDefectFocus(&img, backgroundColor);
     std::wstring defectFocusString = L"(" + this->stringSerivce->doubleToWString(defectFocus.x) + L"px/" + this->stringSerivce->doubleToWString(defectFocus.y)+L"px)";
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_DEFECT_FOCUS, defectFocusString.c_str());
 
-    double rectangularity = this->geometricService->calculateRectangularity(&img);
+    double rectangularity = this->geometricService->calculateRectangularity(&img, backgroundColor);
     std::wstring rectangularityString = this->stringSerivce->doubleToWString(rectangularity);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RECTANGULARITY, rectangularityString.c_str());
     
@@ -311,55 +379,6 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     double entropy = this->histogramValueService->getEntropy(&img);
     std::wstring entropyString = this->stringSerivce->doubleToWString(entropy);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ENTROPY, entropyString.c_str());
-
-    double hu = this->huMomentsService->calculateHu1(&img);
-    std::wstring huString = this->stringSerivce->doubleToWString(hu);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_1, huString.c_str());
-
-    hu = this->huMomentsService->calculateHu2(&img);
-    huString = this->stringSerivce->doubleToWString(hu);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_2, huString.c_str());
-
-    hu = this->huMomentsService->calculateHu3(&img);
-    huString = this->stringSerivce->doubleToWString(hu);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_3, huString.c_str());
-
-    hu = this->huMomentsService->calculateHu4(&img);
-    huString = this->stringSerivce->doubleToWString(hu);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_4, huString.c_str());
-
-    hu = this->huMomentsService->calculateHu5(&img);
-    huString = this->stringSerivce->doubleToWString(hu);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_5, huString.c_str());
-
-    hu = this->huMomentsService->calculateHu6(&img);
-    huString = this->stringSerivce->doubleToWString(hu);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_6, huString.c_str());
-
-    hu = this->huMomentsService->calculateHu7(&img);
-    huString = this->stringSerivce->doubleToWString(hu);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_7, huString.c_str());
-
-    
-    double huMoments[7]; 
-
-    try
-    {
-        cv::Mat image = cv::imread(fileName.c_str(), cv::IMREAD_GRAYSCALE);
-        cv::threshold(image, image, 128, 255, cv::THRESH_BINARY);
-
-        // Calculate Moments 
-        cv::Moments moments = cv::moments(image, false); 
-        // Calculate Hu Moments 
-        cv::HuMoments(moments, huMoments);
-    }
-    catch(cv::Exception e)
-    {
-        std::string message = e.what();
-        int b = 0;
-    }
-
-    
     
     std::wstring wFileName = this->stringSerivce->toWString(fileName.c_str());
     this->graphicEngine->addImage(GUI_ID_IMAGE_1, Point2D(10, 10), wFileName.c_str(), GUI_ID_IMAGE_1_TAB);

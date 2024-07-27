@@ -27,7 +27,7 @@ CImg<unsigned char> ClassicSobelOperatorService::getGradientImage(const CImg<uns
 	const unsigned int size_z = 1;
 	const unsigned int size_c = 3;
 
-	CImg<unsigned char> gradientImage(image->width(), image->height(), size_z, size_c, 255);
+	CImg<unsigned char> gradientImage(image->width(), image->height(), size_z, size_c, 0);
 
 	// Durchläuft das Originalbild entlang der x-Achse.
 	for (int x = 1; x < image->width() - 1; x++)
