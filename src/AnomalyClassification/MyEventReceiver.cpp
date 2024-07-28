@@ -1,6 +1,6 @@
 #include "MyEventReceiver.h"
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, DirectoryService* directoryService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, DirectoryService* directoryService, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
@@ -10,6 +10,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixe
     this->histogramValueService = histogramValueService;
     this->discreteFourierTransformationSerivce = discreteFourierTransformationSerivce;
     this->huMomentsService = huMomentsService;
+    this->sdSfService = sdSfService;
 
     this->stringSerivce = stringSerivce;
     this->directoryService = directoryService;
@@ -89,6 +90,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onHuMoment();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SDSF))
+                {
+                    this->onSdSf();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -117,6 +122,29 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
     }
 
     return false;
+}
+
+void MyEventReceiver::onSdSf()
+{
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(fileName.c_str());
+
+    // Sobel Image
+    CImg<unsigned char> sobelImage = this->improvedSobelOperatorService->getGradientImage(img);
+    
+    std::string sobelName = this->generateFileName();
+    sobelImage.save(sobelName.c_str());
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+    // Create SD-SF-Diagram
+    std::map<std::string, int> distanceHistogram = this->sdSfService->calculateSdSf(&sobelImage);
+
+    fileName = this->generateFileName();
+    this->histogram(distanceHistogram, fileName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+
+    // Clean up
+    this->removeTempFiles();
 }
 
 void MyEventReceiver::onHuMoment()
@@ -186,6 +214,8 @@ void MyEventReceiver::onHuMoment()
     hu = this->huMomentsService->calculateHu7(&sobelImage);
     huString = this->stringSerivce->doubleToWString(hu);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_7, huString.c_str());
+
+    this->removeTempFiles();
 }
 
 void MyEventReceiver::onDiscreteFourierTransformation()
@@ -193,47 +223,14 @@ void MyEventReceiver::onDiscreteFourierTransformation()
     std::string cFile = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(cFile.c_str());
 
-    std::vector<std::complex<double>> dftResult = this->discreteFourierTransformationSerivce->calculate(&img, 2000);
-
-    int n = dftResult.size();
-    double* x = new double[n];
-    double* y = new double[n];
-    const char ** z = new const char*[n];
-
-    for (int i = 0; i < n; ++i) 
-    {
-        x[i] = dftResult[i].real();
-        y[i] = dftResult[i].imag();
-
-        const char * label = this->stringSerivce->intToString(i).c_str();
-        z[i] = label;
-    }
-
-    XYChart* c = new XYChart(300, 300);
-    c->setPlotArea(50, 20, 240, 250);
-
-    // Add a line chart layer using the given data
-    c->addLineLayer(DoubleArray(x, n));
-    c->addLineLayer(DoubleArray(y, n));
-
-    // Set the labels on the x axis.
-    c->xAxis()->setLabels(StringArray(z, n));
-
-    // Display 1 out of 3 labels on the x-axis.
-    c->xAxis()->setLabelStep(3);
-
     // Output the chart
+    std::vector<std::complex<double>> dftResult = this->discreteFourierTransformationSerivce->calculate(&img, 2000);
     std::string fileName = this->generateFileName();
-    c->makeChart(fileName.c_str());
+    this->diagram(dftResult, fileName);
 
     this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
 
-    //free up resources
-    delete c;
-    delete x;
-    delete y;
-    delete z;
-
+    // Clean Up
     this->removeTempFiles();
 }
 
@@ -457,4 +454,77 @@ void MyEventReceiver::onResetImages()
     {
         this->graphicEngine->removeElement(GUI_ID_IMAGE_PANNEL);
     }
+}
+
+void MyEventReceiver::histogram(std::map<std::string, int> histogramData, std::string fileName)
+{
+    int n = histogramData.size();
+    double* x = new double[n];
+    const char** z = new const char* [n];
+
+    int i = 0;
+    std::map<std::string, int>::iterator it;
+    for (it = histogramData.begin(); it != histogramData.end(); it++)
+    {
+        x[i] = it->second;
+        z[i] = it->first.c_str();
+        i++;
+    }
+
+    XYChart* c = new XYChart(300, 300);
+    c->setPlotArea(50, 20, 240, 250);
+
+    // Add a line chart layer using the given data
+    c->addLineLayer(DoubleArray(x, n));
+
+    // Set the labels on the x axis.
+    c->xAxis()->setLabels(StringArray(z, n));
+
+    // Display 1 out of 3 labels on the x-axis.
+    c->xAxis()->setLabelStep(min(5, n));
+
+    c->makeChart(fileName.c_str());
+
+    //free up resources
+    delete c;
+    delete x;
+    delete z;
+}
+
+void MyEventReceiver::diagram(std::vector<std::complex<double>> data, std::string fileName)
+{
+    int n = data.size();
+    double* x = new double[n];
+    double* y = new double[n];
+    const char** z = new const char* [n];
+
+    for (int i = 0; i < n; ++i)
+    {
+        x[i] = data[i].real();
+        y[i] = data[i].imag();
+
+        const char* label = this->stringSerivce->intToString(i).c_str();
+        z[i] = label;
+    }
+
+    XYChart* c = new XYChart(300, 300);
+    c->setPlotArea(50, 20, 240, 250);
+
+    // Add a line chart layer using the given data
+    c->addLineLayer(DoubleArray(x, n));
+    c->addLineLayer(DoubleArray(y, n));
+
+    // Set the labels on the x axis.
+    c->xAxis()->setLabels(StringArray(z, n));
+
+    // Display 1 out of 3 labels on the x-axis.
+    c->xAxis()->setLabelStep(3);
+
+    c->makeChart(fileName.c_str());
+
+    //free up resources
+    delete c;
+    delete x;
+    delete y;
+    delete z;
 }

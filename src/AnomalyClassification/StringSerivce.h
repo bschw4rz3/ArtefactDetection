@@ -15,6 +15,7 @@ public:
 	std::wstring doubleToWString(double value);
 
 	std::string intToString(int value);
+	std::string doubleToString(double value);
 
 	bool contains(std::string string, std::string term);
 };

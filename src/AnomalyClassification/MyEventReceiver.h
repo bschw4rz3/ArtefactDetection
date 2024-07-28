@@ -25,6 +25,7 @@
 #include "DiscreteFourierTransformationSerivce.h"
 #include "HuMomentsService.h"
 #include "DirectoryService.h"
+#include "SdSfService.h"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -59,12 +60,15 @@ enum {
     GUI_ID_IMAGE_1,
     GUI_ID_IMAGE_2,
     GUI_ID_IMAGE_3,
+
     GUI_ID_CHECKBOX_SUPERPIXELS,
     GUI_ID_CHECKBOX_SOBEL,
     GUI_ID_CHECKBOX_IMPROVED_SOBEL,
     GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION,
     GUI_ID_CHECKBOX_HU_MOMENT,
     GUI_ID_CHECKBOX_UNKNOWN,
+    GUI_ID_CHECKBOX_SDSF,
+
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
     GUI_ID_DIALOG_CHOOSE_FILE,
@@ -145,6 +149,7 @@ private:
     HistogramValueService* histogramValueService;
     DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce;
     HuMomentsService* huMomentsService;
+    SdSfService* sdSfService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -161,7 +166,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, DirectoryService* directoryService, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, DirectoryService* directoryService, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
@@ -179,10 +184,14 @@ private:
     void onResetImages();
     void onCreateImagePannel();
     void onHuMoment();
+    void onSdSf();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();
     void removeTempFiles();
+
+    void histogram(std::map<std::string, int> histogramData, std::string fileName);
+    void diagram(std::vector<std::complex<double>> data, std::string fileName);
 };
 
 #endif

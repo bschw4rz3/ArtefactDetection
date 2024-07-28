@@ -71,6 +71,13 @@ std::string StringSerivce::intToString(int value)
     return concatenatedStr;
 }
 
+std::string StringSerivce::doubleToString(double value)
+{
+    std::ostringstream strs;
+    strs << value;
+    return strs.str();
+}
+
 bool StringSerivce::contains(std::string string, std::string term)
 {
     return string.find(term) != std::string::npos;

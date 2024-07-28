@@ -29,9 +29,10 @@ int main()
     DiscreteFourierTransformationSerivce discreteFourierTransformationSerivce(&classicSobelOperatorService, &colorService);
     DirectoryService directoryService(&stringSerivce);
     HuMomentsService huMomentsService(&colorService);
+    SdSfService sdSfService(&classicSobelOperatorService, &mathSerivce, &stringSerivce, &colorService);
 
     GraphicEngineExtended graphicEngine(&stringSerivce);
-    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &directoryService, &stringSerivce);
+    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &sdSfService, &directoryService, &stringSerivce);
 
     Point2D windowSize(1280, 720);
 
@@ -45,7 +46,9 @@ int main()
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_IMPROVED_SOBEL, Point2D(10, 90), L"Improved Sobel", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION, Point2D(10, 110), L"Discrete Fourier Transformation", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HU_MOMENT, Point2D(10, 130), L"Hu Moment", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 150), L"Unknown", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SDSF, Point2D(10, 150), L"SdSf", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 170), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
+
     graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(10, 200), 100, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 250), 100, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
 

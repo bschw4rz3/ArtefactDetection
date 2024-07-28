@@ -108,6 +108,9 @@
     <ClCompile Include="HuMomentsService.cpp">
       <Filter>Quelldateien\detectors\geometric</Filter>
     </ClCompile>
+    <ClCompile Include="SdSfService.cpp">
+      <Filter>Quelldateien\detectors\geometric</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -156,6 +159,9 @@
       <Filter>Headerdateien\helpers</Filter>
     </ClInclude>
     <ClInclude Include="HuMomentsService.h">
+      <Filter>Headerdateien\detectors\geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="SdSfService.h">
       <Filter>Headerdateien\detectors\geometric</Filter>
     </ClInclude>
   </ItemGroup>

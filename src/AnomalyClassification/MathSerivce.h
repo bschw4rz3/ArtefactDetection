@@ -13,6 +13,8 @@ public:
 
 	double sinDegrees(double deg);
 
+	double roundDigits(double value, int digit);
+
 };
 
 #endif

@@ -15,7 +15,7 @@ std::vector<std::string> DirectoryService::getFileNames(std::string path)
 	for (std::filesystem::directory_entry entry : directories)
 	{
 		std::filesystem::path entryPath = entry.path();
-		std::string path = entryPath.u8string();
+		std::string path = entryPath.string();
 		result.push_back(path);
 	}
 
