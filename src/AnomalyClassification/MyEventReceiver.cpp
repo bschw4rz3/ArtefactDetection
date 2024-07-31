@@ -1,6 +1,6 @@
 #include "MyEventReceiver.h"
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, DirectoryService* directoryService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, DirectoryService* directoryService, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
@@ -11,6 +11,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixe
     this->discreteFourierTransformationSerivce = discreteFourierTransformationSerivce;
     this->huMomentsService = huMomentsService;
     this->sdSfService = sdSfService;
+    this->lbpService = lbpService;
 
     this->stringSerivce = stringSerivce;
     this->directoryService = directoryService;
@@ -94,6 +95,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onSdSf();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_LBP))
+                {
+                    this->onLbp();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -124,6 +129,28 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
     return false;
 }
 
+void MyEventReceiver::onLbp()
+{
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(fileName.c_str());
+
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
+
+    // Sobel Image
+    std::map<int, int> histogram = this->lbpService->calculateLbpHistogram(&img, 8, 10);
+
+    // Generate Diagram
+    fileName = this->generateFileName();
+    this->histogram(histogram, 5, fileName);
+
+    double result = this->lbpService->calculateUniform(&img, this->geometricService->calculateDefectFocus(&img, backgroundColor), 8, 10);
+
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    
+    // Clean up
+    this->removeTempFiles();
+}
+
 void MyEventReceiver::onSdSf()
 {
     std::string fileName = this->stringSerivce->toString(this->selectedFile);
@@ -140,7 +167,7 @@ void MyEventReceiver::onSdSf()
     std::map<std::string, int> distanceHistogram = this->sdSfService->calculateSdSf(&sobelImage);
 
     fileName = this->generateFileName();
-    this->histogram(distanceHistogram, fileName);
+    this->histogram(distanceHistogram, 4, fileName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     // Clean up
@@ -152,7 +179,6 @@ void MyEventReceiver::onHuMoment()
     std::string fileName = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(fileName.c_str());
 
-    
     try
     {
         double huMoments[7];
@@ -456,7 +482,21 @@ void MyEventReceiver::onResetImages()
     }
 }
 
-void MyEventReceiver::histogram(std::map<std::string, int> histogramData, std::string fileName)
+void MyEventReceiver::histogram(std::map<int, int> histogramData, int labelCount, std::string fileName)
+{
+    std::map<std::string, int> stringHistogramData;
+
+    std::map<int, int>::iterator it;
+    for (it = histogramData.begin(); it != histogramData.end(); it++)
+    {        
+		std::string key = std::format("{:03}", it->first);
+        stringHistogramData.insert(std::pair<std::string, int>(key, it->second));
+    }
+
+    this->histogram(stringHistogramData, labelCount, fileName);
+}
+
+void MyEventReceiver::histogram(std::map<std::string, int> histogramData, int labelCount, std::string fileName)
 {
     int n = histogramData.size();
     double* x = new double[n];
@@ -475,13 +515,14 @@ void MyEventReceiver::histogram(std::map<std::string, int> histogramData, std::s
     c->setPlotArea(50, 20, 240, 250);
 
     // Add a line chart layer using the given data
-    c->addLineLayer(DoubleArray(x, n));
+    c->addBarLayer(DoubleArray(x, n));
 
     // Set the labels on the x axis.
     c->xAxis()->setLabels(StringArray(z, n));
 
     // Display 1 out of 3 labels on the x-axis.
-    c->xAxis()->setLabelStep(min(5, n));
+    double steps = ((double)n)/((double)labelCount);
+    c->xAxis()->setLabelStep(steps);
 
     c->makeChart(fileName.c_str());
 

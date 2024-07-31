@@ -147,6 +147,7 @@
     <ClCompile Include="HistogramValueService.cpp" />
     <ClCompile Include="HuMomentsService.cpp" />
     <ClCompile Include="ImprovedSobelOperatorService.cpp" />
+    <ClCompile Include="LbpService.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathSerivce.cpp" />
     <ClCompile Include="MyEventReceiver.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="HuMomentsService.h" />
     <ClInclude Include="ImprovedSobelOperatorService.h" />
     <ClInclude Include="KeyValuePair.h" />
+    <ClInclude Include="LbpService.h" />
     <ClInclude Include="MathSerivce.h" />
     <ClInclude Include="MyEventReceiver.h" />
     <ClInclude Include="ClassicSobelOperatorService.h" />

@@ -26,6 +26,7 @@
 #include "HuMomentsService.h"
 #include "DirectoryService.h"
 #include "SdSfService.h"
+#include "LbpService.h"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -68,6 +69,7 @@ enum {
     GUI_ID_CHECKBOX_HU_MOMENT,
     GUI_ID_CHECKBOX_UNKNOWN,
     GUI_ID_CHECKBOX_SDSF,
+    GUI_ID_CHECKBOX_LBP,
 
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -150,6 +152,7 @@ private:
     DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce;
     HuMomentsService* huMomentsService;
     SdSfService* sdSfService;
+    LbpService* lbpService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -166,7 +169,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, DirectoryService* directoryService, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, DirectoryService* directoryService, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
@@ -185,12 +188,14 @@ private:
     void onCreateImagePannel();
     void onHuMoment();
     void onSdSf();
+    void onLbp();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();
     void removeTempFiles();
 
-    void histogram(std::map<std::string, int> histogramData, std::string fileName);
+    void histogram(std::map<int, int> histogramData, int labelCount, std::string fileName);
+    void histogram(std::map<std::string, int> histogramData, int labelCount, std::string fileName);
     void diagram(std::vector<std::complex<double>> data, std::string fileName);
 };
 

@@ -153,3 +153,64 @@ bool GeometricService::isboarderPixel(CImg<unsigned char>* image, int x, int y)
 
 	return false;
 }
+
+std::vector<Point2D> GeometricService::getConturePixelPositions(CImg<unsigned char>* image, ColorRGB backgroundColor)
+{
+	std::vector<Point2D> contureList;
+
+	for (int x = 0; x < image->width(); x++)
+	{
+		for (int y = 0; y < image->height(); y++)
+		{
+			const unsigned char* bytePixel = image->data(x, y);
+			ColorRGB color = this->colorService->byte2rgb(bytePixel, image->width(), image->height());
+
+			if (color != backgroundColor)
+			{
+				contureList.push_back(Point2D(x, y));
+			}
+		}
+	}
+
+	return contureList;
+}
+
+double GeometricService::getPixelPositionWithMinDistance(std::vector<Point2D> contureList, Point2D centerPoint, ColorRGB backgroundColor)
+{
+	double minDistance = 0;
+
+	for (int i = 0; i < contureList.size(); i++)
+	{
+		double distance = this->calculateDistance(contureList[i], centerPoint);
+
+		if (distance < minDistance)
+		{
+			minDistance = distance;
+		}
+	}
+
+	return minDistance;
+}
+
+double GeometricService::getPixelPositionWithMaxDistance(std::vector<Point2D> contureList, Point2D centerPoint, ColorRGB backgroundColor)
+{
+	double maxDistance = 0;
+
+	for (int i = 0; i < contureList.size(); i++)
+	{
+		double distance = this->calculateDistance(contureList[i], centerPoint);
+
+		if (distance > maxDistance)
+		{
+			maxDistance = distance;
+		}
+	
+	}
+
+	return maxDistance;
+}
+
+double GeometricService::calculateDistance(Point2D point, Point2D center)
+{
+	return sqrt(pow(point.x - center.x, 2) + pow(point.y - center.y, 2));
+}

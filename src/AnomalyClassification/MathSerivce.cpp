@@ -12,6 +12,11 @@ double MathSerivce::sinDegrees(double degreeAngel)
 
 double MathSerivce::roundDigits(double value, int digit)
 {
+    if(digit <= 0)
+    {
+        return round(value);
+    }
+
     double factor = pow(digit, 2);
     return round(value * factor)/ factor;
 }

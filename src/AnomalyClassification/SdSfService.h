@@ -16,6 +16,7 @@ using namespace cimg_library;
 #include "ColorService.h"
 #include "MathSerivce.h"
 #include "StringSerivce.h"
+#include "GeometricService.h"
 #include "../IrrlichtWrapper/Point2D.h"
 
 class SdSfService
@@ -25,20 +26,15 @@ private:
 	ColorService* colorService;
 	MathSerivce* mathSerivce;
 	StringSerivce* stringSerivce;
+	GeometricService* geometricService;
 
 public:
-	SdSfService(ClassicSobelOperatorService* classicSobelOperatorService, MathSerivce* mathSerivce, StringSerivce* stringSerivce, ColorService* colorService);
+	SdSfService(ClassicSobelOperatorService* classicSobelOperatorService, GeometricService* geometricService, MathSerivce* mathSerivce, StringSerivce* stringSerivce, ColorService* colorService);
 
 	std::map<std::string, int> calculateSdSf(CImg<unsigned char>* image);
 
 private:
-	double getMinDistance(std::vector<Point2D> contureList, Point2D centerPoint, ColorRGB backgroundColor);
-	double getMaxDistance(std::vector<Point2D> contureList, Point2D centerPoint, ColorRGB backgroundColor);
-
 	Point2D calculateCenterPoint(std::vector<Point2D> contureList, ColorRGB backgroundColor);
-	double calculateDistanceToCenter(Point2D point, Point2D center);
-
-	std::vector<Point2D> getConture(CImg<unsigned char>* image, ColorRGB backgroundColor);
 };
 
 #endif
