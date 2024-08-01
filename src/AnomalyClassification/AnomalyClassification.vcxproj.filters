@@ -176,6 +176,12 @@
     <ClInclude Include="LbpService.h">
       <Filter>Headerdateien\detectors\texture</Filter>
     </ClInclude>
+    <ClInclude Include="LbpResult.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="LbpHistogramResult.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\lib\Irrlicht.dll">

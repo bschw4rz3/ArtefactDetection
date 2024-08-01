@@ -7,10 +7,14 @@
 #include "../Shared/cimg/CImg.h"
 using namespace cimg_library;
 
+#include <string>
+
 #include "ColorService.h"
 #include "GeometricService.h"
 #include "ColorRGB.h"
 #include "MathSerivce.h"
+#include "LbpResult.h"
+#include "LbpHistogramResult.h"
 
 class LbpService
 {
@@ -23,13 +27,14 @@ public:
 	LbpService(GeometricService* geometricService, MathSerivce* mathSerivce, ColorService* colorSerivce);
 
 public:
-	std::map<int, int> calculateLbpHistogram(CImg<unsigned char>* image, int samplePoints, double pixelRadius);
-	int calculateLbp(CImg<unsigned char>* image, Point2D centerPosition, int samplePoints, double pixelRadius);
-	int calculateUniform(CImg<unsigned char>* image, Point2D centerPosition, int samplePoints, double pixelRadius);
+	LbpHistogramResult calculateLbpHistogram(CImg<unsigned char>* image, int samplePoints, double pixelRadius);
 
 private:
+	LbpResult calculateLbp(CImg<unsigned char>* image, Point2D centerPosition, int samplePoints, double pixelRadius);
+
 	int functionS(double value);
 	Point2D calculatePoint(Point2D center, double radius, int p, int samplePoints);
+	std::string getUniformityString(int uniformity);
 };
 
 #endif

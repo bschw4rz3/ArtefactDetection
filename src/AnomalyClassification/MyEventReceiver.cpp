@@ -99,6 +99,8 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onLbp();
                 }
+
+                this->onResetImages();
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -137,14 +139,15 @@ void MyEventReceiver::onLbp()
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
 
     // Sobel Image
-    std::map<int, int> histogram = this->lbpService->calculateLbpHistogram(&img, 8, 10);
+    LbpHistogramResult result = this->lbpService->calculateLbpHistogram(&img, 8, 10);
 
     // Generate Diagram
     fileName = this->generateFileName();
-    this->histogram(histogram, 5, fileName);
+    this->histogram(result.getLbpHistogram(), 5, fileName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    double result = this->lbpService->calculateUniform(&img, this->geometricService->calculateDefectFocus(&img, backgroundColor), 8, 10);
-
+    fileName = this->generateFileName();
+    this->histogram(result.getUniformityHistogram(), 3, fileName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
     
     // Clean up
@@ -351,15 +354,12 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     std::wstring backgroundColorString = this->stringSerivce->doubleToWString(backgroundColor.r)+L"|"+this->stringSerivce->doubleToWString(backgroundColor.g) + L"|" + this->stringSerivce->doubleToWString(backgroundColor.b);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_BACKGROUND_COLOR, backgroundColorString.c_str());
 
-    int blackPixels = this->geometricService->countDefectPixels(&img, backgroundColor);
-    int withePixels =  ((double)img.width()) * ((double)img.height()) - blackPixels;
-    std::wstring blackPixelsString = this->stringSerivce->intToWString(blackPixels);
-    std::wstring withePixelsString = this->stringSerivce->intToWString(withePixels);
-    std::wstring blackPixelsStringUnit = blackPixelsString + std::wstring(L" px");
-    std::wstring withePixelsStringUnit = withePixelsString + std::wstring(L" px");
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_AREA, std::wstring(L"W:"+withePixelsStringUnit+L"/B:"+blackPixelsStringUnit).c_str());
+    int defectPixels = this->geometricService->countDefectPixels(&img, backgroundColor);
+    std::wstring defectPixelsString = this->stringSerivce->intToWString(defectPixels);
+    std::wstring defectPixelsStringUnit = defectPixelsString + std::wstring(L" px");
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_AREA, defectPixelsStringUnit.c_str());
 
-    double rotioRoiArea = ((double)img.width()) * ((double)img.height()) / ((double)blackPixels);
+    double rotioRoiArea = defectPixels / ((double)img.width()) * ((double)img.height());
     std::wstring rotioRoiAreaString = this->stringSerivce->doubleToWString(rotioRoiArea);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RATIO_AREA_ROI, rotioRoiAreaString.c_str());
 

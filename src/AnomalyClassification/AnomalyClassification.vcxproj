@@ -167,6 +167,8 @@
     <ClInclude Include="HuMomentsService.h" />
     <ClInclude Include="ImprovedSobelOperatorService.h" />
     <ClInclude Include="KeyValuePair.h" />
+    <ClInclude Include="LbpHistogramResult.h" />
+    <ClInclude Include="LbpResult.h" />
     <ClInclude Include="LbpService.h" />
     <ClInclude Include="MathSerivce.h" />
     <ClInclude Include="MyEventReceiver.h" />
