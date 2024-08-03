@@ -140,6 +140,7 @@
     <ClCompile Include="ColorLib.h" />
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />
+    <ClCompile Include="CompletedLbpService.cpp" />
     <ClCompile Include="DirectoryService.cpp" />
     <ClCompile Include="DiscreteFourierTransformationSerivce.cpp" />
     <ClCompile Include="GeometricService.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColorService.h" />
+    <ClInclude Include="CompletedLbpService.h" />
     <ClInclude Include="DirectoryService.h" />
     <ClInclude Include="DiscreteFourierTransformationSerivce.h" />
     <ClInclude Include="GeometricService.h" />

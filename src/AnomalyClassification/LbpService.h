@@ -29,7 +29,7 @@ public:
 public:
 	LbpHistogramResult calculateLbpHistogram(CImg<unsigned char>* image, int samplePoints, double pixelRadius);
 
-private:
+protected:
 	LbpResult calculateLbp(CImg<unsigned char>* image, Point2D centerPosition, int samplePoints, double pixelRadius);
 
 	int functionS(double value);

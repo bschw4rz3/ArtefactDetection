@@ -120,6 +120,9 @@
     <ClCompile Include="LbpService.cpp">
       <Filter>Quelldateien\detectors\texture</Filter>
     </ClCompile>
+    <ClCompile Include="CompletedLbpService.cpp">
+      <Filter>Quelldateien\detectors\texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -181,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="LbpHistogramResult.h">
       <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="CompletedLbpService.h">
+      <Filter>Headerdateien\detectors\texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
