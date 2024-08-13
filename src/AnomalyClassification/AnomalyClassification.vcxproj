@@ -144,6 +144,7 @@
     <ClCompile Include="DirectoryService.cpp" />
     <ClCompile Include="DiscreteFourierTransformationSerivce.cpp" />
     <ClCompile Include="GeometricService.cpp" />
+    <ClCompile Include="GLCMService.cpp" />
     <ClCompile Include="GraphicEngineExtended.cpp" />
     <ClCompile Include="HistogramValueService.cpp" />
     <ClCompile Include="HuMomentsService.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="DirectoryService.h" />
     <ClInclude Include="DiscreteFourierTransformationSerivce.h" />
     <ClInclude Include="GeometricService.h" />
+    <ClInclude Include="GLCMService.h" />
     <ClInclude Include="GraphicEngineExtended.h" />
     <ClInclude Include="HistogramValueService.h" />
     <ClInclude Include="HuMomentsService.h" />

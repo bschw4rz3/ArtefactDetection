@@ -3,11 +3,29 @@
 
 #include "LbpService.h"
 
-class CompletedLbpService : LbpService
+#define cimg_use_png
+#pragma warning(disable:4146)
+#pragma warning(disable:4996)
+#include "../Shared/cimg/CImg.h"
+using namespace cimg_library;
+
+#include <string>
+
+#include "ColorService.h"
+#include "GeometricService.h"
+#include "ColorRGB.h"
+#include "MathSerivce.h"
+#include "LbpResult.h"
+#include "LbpHistogramResult.h"
+
+class CompletedLbpService : public LbpService
 {
-private:
-	int functionS(double value);
-	double sign(double x);
+public:
+	CompletedLbpService(GeometricService* geometricService, MathSerivce* mathSerivce, ColorService* colorSerivce);
+
+protected:
+	virtual int functionS(double value);
+	virtual double sign(double x);
 };
 
 #endif

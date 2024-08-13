@@ -1,6 +1,6 @@
 #include "MyEventReceiver.h"
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, DirectoryService* directoryService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, DirectoryService* directoryService, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
@@ -12,6 +12,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixe
     this->huMomentsService = huMomentsService;
     this->sdSfService = sdSfService;
     this->lbpService = lbpService;
+    this->completedLbpService = completedLbpService;
 
     this->stringSerivce = stringSerivce;
     this->directoryService = directoryService;
@@ -99,6 +100,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onLbp();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_COMPLETED_LBP))
+                {
+                    this->onCompletedLbp();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -127,6 +132,29 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
     }
 
     return false;
+}
+
+void MyEventReceiver::onCompletedLbp()
+{
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(fileName.c_str());
+
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
+
+    // Sobel Image
+    LbpHistogramResult result = this->completedLbpService->calculateLbpHistogram(&img, 8, 10);
+
+    // Generate Diagram
+    fileName = this->generateFileName();
+    this->histogram(result.getLbpHistogram(), 5, fileName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    
+    fileName = this->generateFileName();
+    this->histogram(result.getUniformityHistogram(), 3, fileName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    
+    // Clean up
+    this->removeTempFiles();
 }
 
 void MyEventReceiver::onLbp()

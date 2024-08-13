@@ -32,9 +32,9 @@ public:
 protected:
 	LbpResult calculateLbp(CImg<unsigned char>* image, Point2D centerPosition, int samplePoints, double pixelRadius);
 
-	int functionS(double value);
-	Point2D calculatePoint(Point2D center, double radius, int p, int samplePoints);
-	std::string getUniformityString(int uniformity);
+	virtual int functionS(double value);
+	virtual Point2D calculatePoint(Point2D center, double radius, int p, int samplePoints);
+	virtual std::string getUniformityString(int uniformity);
 };
 
 #endif

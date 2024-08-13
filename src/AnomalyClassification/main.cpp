@@ -16,6 +16,7 @@
 #include "DirectoryService.h"
 #include "HuMomentsService.h"
 #include "LbpService.h"
+#include "CompletedLbpService.h"
 
 int main()
 {
@@ -32,9 +33,10 @@ int main()
     HuMomentsService huMomentsService(&colorService);
     SdSfService sdSfService(&classicSobelOperatorService, &geometricService, &mathSerivce, &stringSerivce, &colorService);
     LbpService lbpService(&geometricService, &mathSerivce, &colorService);
+    CompletedLbpService completedLbpService(&geometricService, &mathSerivce, &colorService);
 
     GraphicEngineExtended graphicEngine(&stringSerivce);
-    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &sdSfService, &lbpService, &directoryService, &stringSerivce);
+    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &sdSfService, &lbpService, &completedLbpService, &directoryService, &stringSerivce);
 
     Point2D windowSize(1280, 720);
 
@@ -50,10 +52,11 @@ int main()
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HU_MOMENT, Point2D(10, 130), L"Hu Moment", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SDSF, Point2D(10, 150), L"SdSf", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_LBP, Point2D(10, 170), L"LBP", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 190), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_COMPLETED_LBP, Point2D(10, 190), L"Completed LBP", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 210), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
 
-    graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(10, 250), 100, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 280), 100, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 250), 120, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(10, 285), 120, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
 
     int pannelX = 10;
     int pannelY = 30;

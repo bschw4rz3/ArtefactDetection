@@ -1,5 +1,10 @@
 #include "CompletedLbpService.h"
 
+CompletedLbpService::CompletedLbpService(GeometricService* geometricService, MathSerivce* mathSerivce, ColorService* colorSerivce) : LbpService(geometricService, mathSerivce, colorSerivce)
+{
+
+}
+
 int CompletedLbpService::functionS(double value)
 {	
 	double sp = sign(value);
