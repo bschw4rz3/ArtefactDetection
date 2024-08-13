@@ -99,8 +99,6 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onLbp();
                 }
-
-                this->onResetImages();
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -145,7 +143,7 @@ void MyEventReceiver::onLbp()
     fileName = this->generateFileName();
     this->histogram(result.getLbpHistogram(), 5, fileName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
-
+    
     fileName = this->generateFileName();
     this->histogram(result.getUniformityHistogram(), 3, fileName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
