@@ -19,6 +19,7 @@
 #include "LbpService.h"
 #include "CompletedLbpService.h"
 #include "GLCMService.h"
+#include "HOGService.h"
 
 int main()
 {
@@ -39,14 +40,20 @@ int main()
     CompletedLbpService completedLbpService(&geometricService, &mathSerivce, &colorService);
     GLCMService glcmService(&imgService);
 
+    size_t blocksize = 2;
+    size_t cellsize = 2;
+    size_t stride = 2;
+    size_t binning = 2;
+    HOGService hogService(blocksize, cellsize, stride, binning, HOGService::GRADIENT_UNSIGNED);
+
     GraphicEngineExtended graphicEngine(&stringSerivce);
-    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &sdSfService, &lbpService, &completedLbpService, &glcmService, &directoryService, &stringSerivce);
+    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &sdSfService, &lbpService, &completedLbpService, &glcmService, &hogService, &directoryService, &stringSerivce);
 
     Point2D windowSize(1280, 720);
 
     graphicEngine.initiateOpenGL(L"Part Cover", windowSize);
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");
-    graphicEngine.addSubwindow(GUI_ID_OPERATION_PANNEL, Point2D(windowSize.x - 180, 0), Point2D(windowSize.x, 320), L"Operationpannel");
+    graphicEngine.addSubwindow(GUI_ID_OPERATION_PANNEL, Point2D(windowSize.x - 180, 0), Point2D(windowSize.x, 360), L"Operationpannel");
 
     graphicEngine.addLabel(0, Point2D(10, 30), 50, L"Methode:", GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SUPERPIXELS, Point2D(10, 50), L"Super Pixels", false, GUI_ID_OPERATION_PANNEL);
@@ -58,10 +65,11 @@ int main()
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_LBP, Point2D(10, 170), L"LBP", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_COMPLETED_LBP, Point2D(10, 190), L"Completed LBP", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GLCM, Point2D(10, 210), L"GLCM", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 230), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HOG, Point2D(10, 230), L"HOG", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 250), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
 
-    graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 250), 120, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(10, 285), 120, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 290), 120, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(10, 325), 120, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
 
     int pannelX = 10;
     int pannelY = 30;
@@ -103,7 +111,7 @@ int main()
     graphicEngine.addLabel(GUI_ID_VALUE_POWER, Point2D(pannelX + 100, pannelY + 80), 60, L"", GUI_ID_GRAYINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_ENTROPY, Point2D(pannelX + 100, pannelY + 100), 60, L"", GUI_ID_GRAYINFO_PANNEL);
 
-    graphicEngine.addSubwindow(GUI_ID_HU_MOMENT_PANNEL, Point2D(windowSize.x - 180, 320), Point2D(windowSize.x, 520), L"Hu Moments");
+    graphicEngine.addSubwindow(GUI_ID_HU_MOMENT_PANNEL, Point2D(windowSize.x - 180, 360), Point2D(windowSize.x, 560), L"Hu Moments");
 
     graphicEngine.addLabel(GUI_ID_LABEL_HU_OWN, Point2D(pannelX, pannelY), 120, L"Own Calculation:", GUI_ID_HU_MOMENT_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_HU_OWN_1, Point2D(pannelX, pannelY + 20), 25, L"Hu 1:", GUI_ID_HU_MOMENT_PANNEL);
@@ -139,7 +147,7 @@ int main()
     graphicEngine.addLabel(GUI_ID_VALUE_HU_OPENCV_6, Point2D(pannelX + 115, pannelY + 120), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_HU_OPENCV_7, Point2D(pannelX + 115, pannelY + 140), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
 
-    graphicEngine.addSubwindow(GUI_ID_HU_GLCM_PANNEL, Point2D(windowSize.x - 180, 520), Point2D(windowSize.x, 720), L"GLCM values");
+    graphicEngine.addSubwindow(GUI_ID_HU_GLCM_PANNEL, Point2D(windowSize.x - 180, 560), Point2D(windowSize.x, 720), L"GLCM values");
 
     graphicEngine.addLabel(GUI_ID_LABEL_GLCM_ENERGY, Point2D(pannelX, pannelY), 120, L"Energy: ", GUI_ID_HU_GLCM_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_GLCM_CONTRAST, Point2D(pannelX, pannelY + 20), 120, L"Contrast: ", GUI_ID_HU_GLCM_PANNEL);

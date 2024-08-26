@@ -29,6 +29,7 @@
 #include "LbpService.h"
 #include "CompletedLbpService.h"
 #include "GLCMService.h"
+#include "HOGService.h"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -75,6 +76,7 @@ enum {
     GUI_ID_CHECKBOX_LBP,
     GUI_ID_CHECKBOX_COMPLETED_LBP,
     GUI_ID_CHECKBOX_GLCM,
+    GUI_ID_CHECKBOX_HOG,
 
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -173,6 +175,7 @@ private:
     LbpService* lbpService;
     CompletedLbpService* completedLbpService;
     GLCMService* glcmService;
+    HOGService* hogService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -189,7 +192,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, GLCMService* glcmService, DirectoryService* directoryService, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, GLCMService* glcmService, HOGService* hogService, DirectoryService* directoryService, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
@@ -211,6 +214,7 @@ private:
     void onLbp();
     void onCompletedLbp();
     void onGLCM();
+    void onHOG();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();

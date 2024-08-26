@@ -1,6 +1,6 @@
 #include "MyEventReceiver.h"
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, GLCMService* glcmService, DirectoryService* directoryService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, GLCMService* glcmService, HOGService* hogService, DirectoryService* directoryService, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
@@ -14,6 +14,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixe
     this->lbpService = lbpService;
     this->completedLbpService = completedLbpService;
     this->glcmService = glcmService;
+    this->hogService = hogService;
 
     this->stringSerivce = stringSerivce;
     this->directoryService = directoryService;
@@ -109,6 +110,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onGLCM();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_HOG))
+                {
+                    this->onHOG();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -139,6 +144,42 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
     return false;
 }
 
+void display_superimposed(const cv::Mat& A, const cv::Mat& B, const std::string& name)
+{
+    cv::Mat superimposed;
+    cv::addWeighted(A, 0.5, B, 0.5, 0.0, superimposed);
+    imshow(name, superimposed);
+}
+
+cv::Mat custom_normalization(const cv::Mat& src) {
+    double min, max;
+    cv::minMaxLoc(src, &min, &max);
+    cv::Mat dst = src * 200 / (max - min) + 128;
+    dst.convertTo(dst, CV_8U);
+    return dst;
+}
+
+void MyEventReceiver::onHOG()
+{
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(fileName.c_str());
+
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
+
+    // HOG
+    cv::Mat image = cv::imread(fileName);
+    this->hogService->process(image);
+
+    auto hist = this->hogService->retrieve(cv::Rect(0, 0, image.cols, image.rows));
+
+    display_superimposed(image, this->hogService->get_vector_mask(2), "vector_mask");
+    display_superimposed(custom_normalization(this->hogService->get_magnitudes()), this->hogService->get_vector_mask(2), "magnitude");
+    display_superimposed(custom_normalization(this->hogService->get_orientations()), this->hogService->get_vector_mask(2), "orientation");
+
+    // Clean up
+    this->removeTempFiles();
+}
+
 void MyEventReceiver::onGLCM()
 {
     std::string fileName = this->stringSerivce->toString(this->selectedFile);
@@ -146,10 +187,10 @@ void MyEventReceiver::onGLCM()
 
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
 
-    // Sobel Image
+    // GLCM
     GLCMResult result = this->glcmService->calculate(&img);
 
-    // Generate Diagram
+    // Generate FileName
     fileName = this->generateFileName();
     result.getGlImage().save(fileName.c_str());
     this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
