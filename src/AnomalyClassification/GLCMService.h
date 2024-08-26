@@ -7,12 +7,21 @@
 #include "../Shared/cimg/CImg.h"
 using namespace cimg_library;
 
+#include "CImgService.h"
+
+#include "GLCMResult.h"
+#include "ColorRGB.h"
 #include <vector>
 
 class GLCMService
 {
+private:
+	CImgService* imgService;
+
 public:
-	void calculate(CImg<unsigned char>* image, std::vector<double>* vec_energy);
+	GLCMService(CImgService* imgService);
+
+	GLCMResult calculate(CImg<unsigned char>* image);
 };
 
 #endif

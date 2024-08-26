@@ -1,6 +1,6 @@
 #include "MyEventReceiver.h"
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, DirectoryService* directoryService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, GLCMService* glcmService, DirectoryService* directoryService, StringSerivce* stringSerivce)
 {
     this->graphicEngine = graphicEngine;
     this->superPixelService = superPixelService;
@@ -13,6 +13,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixe
     this->sdSfService = sdSfService;
     this->lbpService = lbpService;
     this->completedLbpService = completedLbpService;
+    this->glcmService = glcmService;
 
     this->stringSerivce = stringSerivce;
     this->directoryService = directoryService;
@@ -104,6 +105,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onCompletedLbp();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GLCM))
+                {
+                    this->onGLCM();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -132,6 +137,43 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
     }
 
     return false;
+}
+
+void MyEventReceiver::onGLCM()
+{
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(fileName.c_str());
+
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
+
+    // Sobel Image
+    GLCMResult result = this->glcmService->calculate(&img);
+
+    // Generate Diagram
+    fileName = this->generateFileName();
+    result.getGlImage().save(fileName.c_str());
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    
+    wstring valueString = this->stringSerivce->doubleToWString(result.getEnergy());
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_ENERGY, valueString.c_str());
+
+    valueString = this->stringSerivce->doubleToWString(result.getContrast());
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_CONTRAST, valueString.c_str());
+
+    valueString = this->stringSerivce->doubleToWString(result.getHomogenity());
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_HOMOGENITY, valueString.c_str());
+
+    valueString = this->stringSerivce->doubleToWString(result.getIDM());
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_IDM, valueString.c_str());
+
+    valueString = this->stringSerivce->doubleToWString(result.getEntropy());
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_ENTROPY, valueString.c_str());
+
+    valueString = this->stringSerivce->doubleToWString(result.getMean());
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_MEAN, valueString.c_str());
+
+    // Clean up
+    this->removeTempFiles();
 }
 
 void MyEventReceiver::onCompletedLbp()

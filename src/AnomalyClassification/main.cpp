@@ -8,6 +8,7 @@
 #include "SuperPixelService.h"
 #include "ColorService.h"
 #include "StringSerivce.h"
+#include "CImgService.h"
 #include "ClassicSobelOperatorService.h"
 #include "ImprovedSobelOperatorService.h"
 #include "GeometricService.h"
@@ -17,12 +18,14 @@
 #include "HuMomentsService.h"
 #include "LbpService.h"
 #include "CompletedLbpService.h"
+#include "GLCMService.h"
 
 int main()
 {
     StringSerivce stringSerivce;
     ColorService colorService;
     MathSerivce mathSerivce;
+    CImgService imgService(&colorService);
     SuperPixelService superPixelService(&colorService, &mathSerivce);
     ClassicSobelOperatorService classicSobelOperatorService(&colorService);
     ImprovedSobelOperatorService improvedSobelOperatorService(&colorService);
@@ -34,9 +37,10 @@ int main()
     SdSfService sdSfService(&classicSobelOperatorService, &geometricService, &mathSerivce, &stringSerivce, &colorService);
     LbpService lbpService(&geometricService, &mathSerivce, &colorService);
     CompletedLbpService completedLbpService(&geometricService, &mathSerivce, &colorService);
+    GLCMService glcmService(&imgService);
 
     GraphicEngineExtended graphicEngine(&stringSerivce);
-    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &sdSfService, &lbpService, &completedLbpService, &directoryService, &stringSerivce);
+    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &sdSfService, &lbpService, &completedLbpService, &glcmService, &directoryService, &stringSerivce);
 
     Point2D windowSize(1280, 720);
 
@@ -53,7 +57,8 @@ int main()
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SDSF, Point2D(10, 150), L"SdSf", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_LBP, Point2D(10, 170), L"LBP", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_COMPLETED_LBP, Point2D(10, 190), L"Completed LBP", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 210), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GLCM, Point2D(10, 210), L"GLCM", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 230), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
 
     graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 250), 120, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(10, 285), 120, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
@@ -133,6 +138,22 @@ int main()
     graphicEngine.addLabel(GUI_ID_VALUE_HU_OPENCV_5, Point2D(pannelX + 115, pannelY + 100), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_HU_OPENCV_6, Point2D(pannelX + 115, pannelY + 120), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_HU_OPENCV_7, Point2D(pannelX + 115, pannelY + 140), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
+
+    graphicEngine.addSubwindow(GUI_ID_HU_GLCM_PANNEL, Point2D(windowSize.x - 180, 520), Point2D(windowSize.x, 720), L"GLCM values");
+
+    graphicEngine.addLabel(GUI_ID_LABEL_GLCM_ENERGY, Point2D(pannelX, pannelY), 120, L"Energy: ", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_GLCM_CONTRAST, Point2D(pannelX, pannelY + 20), 120, L"Contrast: ", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_GLCM_HOMOGENITY, Point2D(pannelX, pannelY + 40), 120, L"Homogenity: ", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_GLCM_IDM, Point2D(pannelX, pannelY + 60), 120, L"IDM: ", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_GLCM_ENTROPY, Point2D(pannelX, pannelY + 80), 120, L"Entropy: ", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_GLCM_MEAN, Point2D(pannelX, pannelY + 100), 120, L"Mean: ", GUI_ID_HU_GLCM_PANNEL);
+
+    graphicEngine.addLabel(GUI_ID_VALUE_GLCM_ENERGY, Point2D(pannelX + 60, pannelY), 60, L"", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_GLCM_CONTRAST, Point2D(pannelX + 60, pannelY + 20), 60, L"", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_GLCM_HOMOGENITY, Point2D(pannelX + 60, pannelY + 40), 60, L"", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_GLCM_IDM, Point2D(pannelX + 60, pannelY + 60), 60, L"", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_GLCM_ENTROPY, Point2D(pannelX + 60, pannelY + 80), 60, L"", GUI_ID_HU_GLCM_PANNEL);
+    graphicEngine.addLabel(GUI_ID_VALUE_GLCM_MEAN, Point2D(pannelX + 60, pannelY + 100), 60, L"", GUI_ID_HU_GLCM_PANNEL);
 
     graphicEngine.run((EventReceiver*)&receiver);
 }

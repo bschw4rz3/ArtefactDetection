@@ -126,6 +126,9 @@
     <ClCompile Include="GLCMService.cpp">
       <Filter>Quelldateien\detectors\texture</Filter>
     </ClCompile>
+    <ClCompile Include="CImgService.cpp">
+      <Filter>Quelldateien\helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -193,6 +196,12 @@
     </ClInclude>
     <ClInclude Include="GLCMService.h">
       <Filter>Headerdateien\detectors\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="CImgService.h">
+      <Filter>Headerdateien\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="GLCMResult.h">
+      <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

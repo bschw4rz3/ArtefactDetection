@@ -28,6 +28,7 @@
 #include "SdSfService.h"
 #include "LbpService.h"
 #include "CompletedLbpService.h"
+#include "GLCMService.h"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -53,6 +54,7 @@ enum {
     GUI_ID_GEOMETRICINFO_PANNEL,
     GUI_ID_IMAGE_PANNEL,
     GUI_ID_HU_MOMENT_PANNEL,
+    GUI_ID_HU_GLCM_PANNEL,
 
     GUI_ID_TABCONTROL,
     GUI_ID_IMAGE_1_TAB,
@@ -72,6 +74,7 @@ enum {
     GUI_ID_CHECKBOX_SDSF,
     GUI_ID_CHECKBOX_LBP,
     GUI_ID_CHECKBOX_COMPLETED_LBP,
+    GUI_ID_CHECKBOX_GLCM,
 
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -135,7 +138,20 @@ enum {
     GUI_ID_VALUE_HU_OPENCV_4,
     GUI_ID_VALUE_HU_OPENCV_5,
     GUI_ID_VALUE_HU_OPENCV_6,
-    GUI_ID_VALUE_HU_OPENCV_7
+    GUI_ID_VALUE_HU_OPENCV_7,
+
+    GUI_ID_LABEL_GLCM_ENERGY,
+    GUI_ID_LABEL_GLCM_CONTRAST,
+    GUI_ID_LABEL_GLCM_HOMOGENITY,
+    GUI_ID_LABEL_GLCM_IDM,
+    GUI_ID_LABEL_GLCM_ENTROPY,
+    GUI_ID_LABEL_GLCM_MEAN,
+    GUI_ID_VALUE_GLCM_ENERGY,
+    GUI_ID_VALUE_GLCM_CONTRAST,
+    GUI_ID_VALUE_GLCM_HOMOGENITY,
+    GUI_ID_VALUE_GLCM_IDM,
+    GUI_ID_VALUE_GLCM_ENTROPY,
+    GUI_ID_VALUE_GLCM_MEAN,
 };
 
 class MyEventReceiver : public EventReceiver
@@ -156,6 +172,7 @@ private:
     SdSfService* sdSfService;
     LbpService* lbpService;
     CompletedLbpService* completedLbpService;
+    GLCMService* glcmService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -172,7 +189,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, DirectoryService* directoryService, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, GLCMService* glcmService, DirectoryService* directoryService, StringSerivce* stringSerivce);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
@@ -193,6 +210,7 @@ private:
     void onSdSf();
     void onLbp();
     void onCompletedLbp();
+    void onGLCM();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();
