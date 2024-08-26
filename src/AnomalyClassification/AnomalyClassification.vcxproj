@@ -148,6 +148,7 @@
     <ClCompile Include="GLCMService.cpp" />
     <ClCompile Include="GraphicEngineExtended.cpp" />
     <ClCompile Include="HistogramValueService.cpp" />
+    <ClCompile Include="HOGService.cpp" />
     <ClCompile Include="HuMomentsService.cpp" />
     <ClCompile Include="ImprovedSobelOperatorService.cpp" />
     <ClCompile Include="LbpService.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="GLCMService.h" />
     <ClInclude Include="GraphicEngineExtended.h" />
     <ClInclude Include="HistogramValueService.h" />
+    <ClInclude Include="HOGService.h" />
     <ClInclude Include="HuMomentsService.h" />
     <ClInclude Include="ImprovedSobelOperatorService.h" />
     <ClInclude Include="KeyValuePair.h" />

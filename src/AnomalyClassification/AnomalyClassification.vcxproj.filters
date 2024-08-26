@@ -129,6 +129,9 @@
     <ClCompile Include="CImgService.cpp">
       <Filter>Quelldateien\helpers</Filter>
     </ClCompile>
+    <ClCompile Include="HOGService.cpp">
+      <Filter>Quelldateien\detectors\texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="GLCMResult.h">
       <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="HOGService.h">
+      <Filter>Headerdateien\detectors\texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
