@@ -1,6 +1,8 @@
 #ifndef Point2D_H
 #define Point2D_H
 
+#include <math.h>
+
 class Point2D
 {
 public:
@@ -10,7 +12,8 @@ public:
 	Point2D();
 	Point2D(int x, int y);
 
-	bool operator==(Point2D a);
+	bool operator==(const Point2D& a) const;
+	bool operator<(const Point2D& a) const;
 };
 
 #endif

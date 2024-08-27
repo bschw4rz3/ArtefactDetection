@@ -40,11 +40,7 @@ int main()
     CompletedLbpService completedLbpService(&geometricService, &mathSerivce, &colorService);
     GLCMService glcmService(&imgService);
 
-    size_t blocksize = 2;
-    size_t cellsize = 2;
-    size_t stride = 2;
-    size_t binning = 2;
-    HOGService hogService(blocksize, cellsize, stride, binning, HOGService::GRADIENT_UNSIGNED);
+    HOGService hogService(&classicSobelOperatorService, &imgService, &mathSerivce);
 
     GraphicEngineExtended graphicEngine(&stringSerivce);
     MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &sdSfService, &lbpService, &completedLbpService, &glcmService, &hogService, &directoryService, &stringSerivce);

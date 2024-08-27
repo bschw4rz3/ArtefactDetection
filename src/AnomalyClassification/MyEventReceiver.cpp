@@ -143,12 +143,32 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
 
     return false;
 }
-
-void display_superimposed(const cv::Mat& A, const cv::Mat& B, const std::string& name)
+/*
+void display_superimposed(const cv::Mat& A1, const cv::Mat& B, const std::string& fileName)
 {
-    cv::Mat superimposed;
-    cv::addWeighted(A, 0.5, B, 0.5, 0.0, superimposed);
-    imshow(name, superimposed);
+    cv::Mat A;
+    cv::Mat C;
+
+    cvtColor(A1, A, cv::COLOR_BGR2GRAY);
+
+    int aChannels = A.channels();
+    int bChannels = B.channels();
+
+    if(aChannels != bChannels)
+    {
+        throw "Ungleiche Channels";
+    }
+
+    try
+    {
+        cv::addWeighted(A, 0.5, B, 0.5, 0.0, C, C.type());
+    }
+    catch(cv::Exception e)
+    {
+        std::cout << e.what();
+    }
+    
+    cv::imwrite(fileName, C);
 }
 
 cv::Mat custom_normalization(const cv::Mat& src) {
@@ -157,7 +177,7 @@ cv::Mat custom_normalization(const cv::Mat& src) {
     cv::Mat dst = src * 200 / (max - min) + 128;
     dst.convertTo(dst, CV_8U);
     return dst;
-}
+}*/
 
 void MyEventReceiver::onHOG()
 {
@@ -167,14 +187,24 @@ void MyEventReceiver::onHOG()
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
 
     // HOG
-    cv::Mat image = cv::imread(fileName);
+    /*cv::Mat image = cv::imread(fileName);
     this->hogService->process(image);
 
     auto hist = this->hogService->retrieve(cv::Rect(0, 0, image.cols, image.rows));
 
-    display_superimposed(image, this->hogService->get_vector_mask(2), "vector_mask");
-    display_superimposed(custom_normalization(this->hogService->get_magnitudes()), this->hogService->get_vector_mask(2), "magnitude");
-    display_superimposed(custom_normalization(this->hogService->get_orientations()), this->hogService->get_vector_mask(2), "orientation");
+    //display_superimposed(image, this->hogService->get_vector_mask(2), "vector_mask");
+
+    // magnitude
+    fileName = this->generateFileName();
+    display_superimposed(custom_normalization(this->hogService->get_magnitudes()), this->hogService->get_vector_mask(2), fileName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+    // orientation
+    fileName = this->generateFileName();
+    display_superimposed(custom_normalization(this->hogService->get_orientations()), this->hogService->get_vector_mask(2), fileName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);*/
+
+    std::vector<double> theVector = this->hogService->calculate(&img);
 
     // Clean up
     this->removeTempFiles();

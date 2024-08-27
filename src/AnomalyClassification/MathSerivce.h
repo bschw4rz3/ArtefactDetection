@@ -10,8 +10,10 @@ class MathSerivce
 {
 public:
 	double degreesToRadians(double degreeAngel);
+	double radiansToDegrees(double radiant);
 
 	double sinDegrees(double deg);
+	double atanDegrees(double value);
 
 	double roundDigits(double value, int digit);
 

@@ -129,6 +129,9 @@
     <ClCompile Include="CImgService.cpp">
       <Filter>Quelldateien\helpers</Filter>
     </ClCompile>
+    <ClCompile Include="HOGServiceCV.cpp">
+      <Filter>Quelldateien\detectors\texture</Filter>
+    </ClCompile>
     <ClCompile Include="HOGService.cpp">
       <Filter>Quelldateien\detectors\texture</Filter>
     </ClCompile>
@@ -206,8 +209,14 @@
     <ClInclude Include="GLCMResult.h">
       <Filter>Headerdateien\models</Filter>
     </ClInclude>
+    <ClInclude Include="HOGServiceCV.h">
+      <Filter>Headerdateien\detectors\texture</Filter>
+    </ClInclude>
     <ClInclude Include="HOGService.h">
       <Filter>Headerdateien\detectors\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="HogCellResult.h">
+      <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
