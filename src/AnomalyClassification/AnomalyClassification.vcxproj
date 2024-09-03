@@ -142,8 +142,11 @@
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />
     <ClCompile Include="CompletedLbpService.cpp" />
+    <ClCompile Include="DependencyInjectionService.cpp" />
     <ClCompile Include="DirectoryService.cpp" />
     <ClCompile Include="DiscreteFourierTransformationSerivce.cpp" />
+    <ClCompile Include="DiscreteFourierTransformationSerivceCV.cpp" />
+    <ClCompile Include="GaborServiceCV.cpp" />
     <ClCompile Include="GeometricService.cpp" />
     <ClCompile Include="GLCMService.cpp" />
     <ClCompile Include="GraphicEngineExtended.cpp" />
@@ -161,13 +164,18 @@
     <ClCompile Include="StringService.cpp" />
     <ClCompile Include="SubregionResult.h" />
     <ClCompile Include="SuperPixelService.cpp" />
+    <ClCompile Include="WaveletTransformCV.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CImgService.h" />
     <ClInclude Include="ColorService.h" />
     <ClInclude Include="CompletedLbpService.h" />
+    <ClInclude Include="DependencyInjectionService.h" />
+    <ClInclude Include="DFTResult.h" />
     <ClInclude Include="DirectoryService.h" />
     <ClInclude Include="DiscreteFourierTransformationSerivce.h" />
+    <ClInclude Include="DiscreteFourierTransformationSerivceCV.h" />
+    <ClInclude Include="GaborServiceCV.h" />
     <ClInclude Include="GeometricService.h" />
     <ClInclude Include="GLCMResult.h" />
     <ClInclude Include="GLCMService.h" />
@@ -190,6 +198,7 @@
     <ClInclude Include="SuperPixelEntry.h" />
     <ClInclude Include="SuperPixelResult.h" />
     <ClInclude Include="SuperPixelService.h" />
+    <ClInclude Include="WaveletTransformCV.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\lib\Irrlicht.dll">

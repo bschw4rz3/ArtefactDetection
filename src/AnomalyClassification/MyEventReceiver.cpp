@@ -1,23 +1,26 @@
 #include "MyEventReceiver.h"
 
-MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, GLCMService* glcmService, HOGService* hogService, DirectoryService* directoryService, StringSerivce* stringSerivce)
+MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, DependencyInjectionService* di)
 {
     this->graphicEngine = graphicEngine;
-    this->superPixelService = superPixelService;
-    this->sobelOperatorSerivce = sobelOperatorSerivce;
-    this->improvedSobelOperatorService = improvedSobelOperatorService;
-    this->geometricService = geometricService;
-    this->histogramValueService = histogramValueService;
-    this->discreteFourierTransformationSerivce = discreteFourierTransformationSerivce;
-    this->huMomentsService = huMomentsService;
-    this->sdSfService = sdSfService;
-    this->lbpService = lbpService;
-    this->completedLbpService = completedLbpService;
-    this->glcmService = glcmService;
-    this->hogService = hogService;
+    this->superPixelService = di->superPixelService;
+    this->sobelOperatorSerivce = di->classicSobelOperatorService;
+    this->improvedSobelOperatorService = di->improvedSobelOperatorService;
+    this->geometricService = di->geometricService;
+    this->histogramValueService = di->histogramValueService;
+    this->discreteFourierTransformationSerivce = di->discreteFourierTransformationSerivce;
+    this->huMomentsService = di->huMomentsService;
+    this->sdSfService = di->sdSfService;
+    this->lbpService = di->lbpService;
+    this->completedLbpService = di->completedLbpService;
+    this->glcmService = di->glcmService;
+    this->hogService = di->hogService;
+    this->gaborServiceCV = di->gaborServiceCV;
+    this->waveletTransformCV = di->waveletTransformCV;
+    this->discreteFourierTransformationSerivceCV = di->discreteFourierTransformationSerivceCV;
 
-    this->stringSerivce = stringSerivce;
-    this->directoryService = directoryService;
+    this->stringSerivce = di->stringSerivce;
+    this->directoryService = di->directoryService;
 
     this->facet = NULL;
     this->context = NULL;
@@ -114,6 +117,18 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onHOG();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GABOR))
+                {
+                    this->onGaborFilter();
+                }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_WAVELET))
+                {
+                    this->onWavelet();
+                }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV))
+                {
+                    this->onDiscreteFourierTransformationCV();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -121,7 +136,7 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 this->graphicEngine->addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, L"..\\AnomalyGeneration\\testdata");
             }
 
-            return true;
+             return true;
         case EGET_FILE_SELECTED:
         {
             IGUIFileOpenDialog* dialog =
@@ -178,6 +193,47 @@ cv::Mat custom_normalization(const cv::Mat& src) {
     dst.convertTo(dst, CV_8U);
     return dst;
 }*/
+
+void MyEventReceiver::onDiscreteFourierTransformationCV()
+{
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    DFTResult result = this->discreteFourierTransformationSerivceCV->calculate(fileName);
+
+    std::string tempName = this->generateFileName();
+    cv::imwrite(tempName.c_str(), result.spectrumMagnitude*255);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+    tempName = this->generateFileName();
+    this->diagram(result.frequencies, tempName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+
+    // Clean up
+    this->removeTempFiles();
+}
+
+void MyEventReceiver::onWavelet()
+{
+    // Wavelet
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    this->waveletTransformCV->calculate(fileName);
+
+    // Clean up
+    this->removeTempFiles();
+}
+
+void MyEventReceiver::onGaborFilter()
+{
+    // Gabor
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    std::vector<double> fequence = this->gaborServiceCV->calculate(fileName);
+
+    std::string tempName = this->generateFileName();
+    this->diagram(fequence, tempName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+    // Clean up
+    this->removeTempFiles();
+}
 
 void MyEventReceiver::onHOG()
 {
@@ -680,8 +736,8 @@ void MyEventReceiver::diagram(std::vector<std::complex<double>> data, std::strin
 
     for (int i = 0; i < n; ++i)
     {
-        x[i] = data[i].real();
-        y[i] = data[i].imag();
+        y[i] = data[i].real();
+        x[i] = data[i].imag();
 
         const char* label = this->stringSerivce->intToString(i).c_str();
         z[i] = label;
@@ -706,5 +762,39 @@ void MyEventReceiver::diagram(std::vector<std::complex<double>> data, std::strin
     delete c;
     delete x;
     delete y;
+    delete z;
+}
+
+void MyEventReceiver::diagram(std::vector<double> data, std::string fileName)
+{
+    int n = data.size();
+    double* x = new double[n];
+    const char** z = new const char* [n];
+
+    for (int i = 0; i < n; ++i)
+    {
+        x[i] = data[i];
+
+        const char* label = this->stringSerivce->intToString(i).c_str();
+        z[i] = label;
+    }
+
+    XYChart* c = new XYChart(300, 300);
+    c->setPlotArea(50, 20, 240, 250);
+
+    // Add a line chart layer using the given data
+    c->addLineLayer(DoubleArray(x, n));
+
+    // Set the labels on the x axis.
+    c->xAxis()->setLabels(StringArray(z, n));
+
+    // Display 1 out of 3 labels on the x-axis.
+    c->xAxis()->setLabelStep(3);
+
+    c->makeChart(fileName.c_str());
+
+    //free up resources
+    delete c;
+    delete x;
     delete z;
 }

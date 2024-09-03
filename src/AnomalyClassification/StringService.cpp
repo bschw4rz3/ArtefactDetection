@@ -82,3 +82,19 @@ bool StringSerivce::contains(std::string string, std::string term)
 {
     return string.find(term) != std::string::npos;
 }
+
+std::vector<std::string> StringSerivce::split(std::string inputString, char delimiter)
+{
+    // Create a stringstream object with the input string 
+    std::stringstream ss(inputString);
+
+    // Tokenize the input string by comma delimiter 
+    std::string token;
+    std::vector<std::string> tokens;
+
+    while (getline(ss, token, delimiter)) {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}

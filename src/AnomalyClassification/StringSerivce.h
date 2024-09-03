@@ -1,8 +1,10 @@
 #ifndef StringSerivce_H
 #define StringSerivce_H
 
+#include <iostream>
 #include <string>
 #include <sstream>
+#include <vector>
 
 class StringSerivce
 {
@@ -18,6 +20,7 @@ public:
 	std::string doubleToString(double value);
 
 	bool contains(std::string string, std::string term);
+	std::vector<std::string> split(std::string inputString, char delimiter);
 };
 
 #endif

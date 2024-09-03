@@ -61,6 +61,12 @@
     <Filter Include="Headerdateien\detectors\texture">
       <UniqueIdentifier>{22c52341-ac2d-4e41-b1fc-c059fbd58694}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\detectors\transformation">
+      <UniqueIdentifier>{03620b87-9450-4a06-a595-788ec1b86055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\detectors\transformation">
+      <UniqueIdentifier>{d3f7be84-c7a3-4a1a-989e-d114f1410973}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -134,6 +140,18 @@
     </ClCompile>
     <ClCompile Include="HOGService.cpp">
       <Filter>Quelldateien\detectors\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="GaborServiceCV.cpp">
+      <Filter>Quelldateien\detectors\transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveletTransformCV.cpp">
+      <Filter>Quelldateien\detectors\transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="DependencyInjectionService.cpp">
+      <Filter>Quelldateien\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="DiscreteFourierTransformationSerivceCV.cpp">
+      <Filter>Quelldateien\detectors\geometric</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +234,21 @@
       <Filter>Headerdateien\detectors\texture</Filter>
     </ClInclude>
     <ClInclude Include="HogCellResult.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="GaborServiceCV.h">
+      <Filter>Headerdateien\detectors\transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveletTransformCV.h">
+      <Filter>Headerdateien\detectors\transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="DependencyInjectionService.h">
+      <Filter>Headerdateien\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="DiscreteFourierTransformationSerivceCV.h">
+      <Filter>Headerdateien\detectors\geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="DFTResult.h">
       <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>

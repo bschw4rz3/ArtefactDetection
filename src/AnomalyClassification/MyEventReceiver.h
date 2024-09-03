@@ -16,7 +16,7 @@
 #include "GraphicEngineExtended.h"
 #include "../IrrlichtWrapper/SAppContext.h"
 #include "../IrrlichtWrapper/EventReceiver.h"
-
+/*
 #include "SuperPixelService.h"
 #include "ClassicSobelOperatorService.h"
 #include "ImprovedSobelOperatorService.h"
@@ -30,6 +30,9 @@
 #include "CompletedLbpService.h"
 #include "GLCMService.h"
 #include "HOGService.h"
+#include "GaborServiceCV.h"*/
+
+#include "DependencyInjectionService.h"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -77,6 +80,9 @@ enum {
     GUI_ID_CHECKBOX_COMPLETED_LBP,
     GUI_ID_CHECKBOX_GLCM,
     GUI_ID_CHECKBOX_HOG,
+    GUI_ID_CHECKBOX_GABOR,
+    GUI_ID_CHECKBOX_WAVELET,
+    GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV,
 
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -176,6 +182,9 @@ private:
     CompletedLbpService* completedLbpService;
     GLCMService* glcmService;
     HOGService* hogService;
+    GaborServiceCV* gaborServiceCV;
+    WaveletTransformCV* waveletTransformCV;
+    DiscreteFourierTransformationSerivceCV* discreteFourierTransformationSerivceCV;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -192,7 +201,7 @@ private:
     int tempFileIndex;
 
 public:
-    MyEventReceiver(GraphicEngineExtended* graphic_engine, SuperPixelService* superPixelService, ClassicSobelOperatorService* sobelOperatorSerivce, ImprovedSobelOperatorService* improvedSobelOperatorService, GeometricService* geometricService, HistogramValueService* histogramValueService, DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce, HuMomentsService* huMomentsService, SdSfService* sdSfService, LbpService* lbpService, CompletedLbpService* completedLbpService, GLCMService* glcmService, HOGService* hogService, DirectoryService* directoryService, StringSerivce* stringSerivce);
+    MyEventReceiver(GraphicEngineExtended* graphic_engine, DependencyInjectionService* dependencyInjectionService);
     ~MyEventReceiver();
 
     virtual void OnInit(SAppContext* context);
@@ -205,16 +214,19 @@ private:
     void onCalculateSobelOperator();
     void onCalculateImprovedSobelOperator();
     void onDiscreteFourierTransformation();
-
-    void onSelectFile(core::stringc fileName);
-    void onResetImages();
-    void onCreateImagePannel();
     void onHuMoment();
     void onSdSf();
     void onLbp();
     void onCompletedLbp();
     void onGLCM();
     void onHOG();
+    void onGaborFilter();
+    void onWavelet();
+    void onDiscreteFourierTransformationCV();
+
+    void onSelectFile(core::stringc fileName);
+    void onResetImages();
+    void onCreateImagePannel();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();
@@ -223,6 +235,7 @@ private:
     void histogram(std::map<int, int> histogramData, int labelCount, std::string fileName);
     void histogram(std::map<std::string, int> histogramData, int labelCount, std::string fileName);
     void diagram(std::vector<std::complex<double>> data, std::string fileName);
+    void diagram(std::vector<double> data, std::string fileName);
 };
 
 #endif

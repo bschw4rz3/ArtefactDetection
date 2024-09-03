@@ -3,53 +3,21 @@
 #include <iostream>
 #include <string>
 
-#include "GraphicEngineExtended.h"
+#include "DependencyInjectionService.h"
 #include "MyEventReceiver.h"
-#include "SuperPixelService.h"
-#include "ColorService.h"
-#include "StringSerivce.h"
-#include "CImgService.h"
-#include "ClassicSobelOperatorService.h"
-#include "ImprovedSobelOperatorService.h"
-#include "GeometricService.h"
-#include "HistogramValueService.h"
-#include "DiscreteFourierTransformationSerivce.h"
-#include "DirectoryService.h"
-#include "HuMomentsService.h"
-#include "LbpService.h"
-#include "CompletedLbpService.h"
-#include "GLCMService.h"
-#include "HOGService.h"
 
 int main()
 {
-    StringSerivce stringSerivce;
-    ColorService colorService;
-    MathSerivce mathSerivce;
-    CImgService imgService(&colorService);
-    SuperPixelService superPixelService(&colorService, &mathSerivce);
-    ClassicSobelOperatorService classicSobelOperatorService(&colorService);
-    ImprovedSobelOperatorService improvedSobelOperatorService(&colorService);
-    GeometricService geometricService(&colorService);
-    HistogramValueService histogramValueService(&colorService);
-    DiscreteFourierTransformationSerivce discreteFourierTransformationSerivce(&classicSobelOperatorService, &colorService);
-    DirectoryService directoryService(&stringSerivce);
-    HuMomentsService huMomentsService(&colorService);
-    SdSfService sdSfService(&classicSobelOperatorService, &geometricService, &mathSerivce, &stringSerivce, &colorService);
-    LbpService lbpService(&geometricService, &mathSerivce, &colorService);
-    CompletedLbpService completedLbpService(&geometricService, &mathSerivce, &colorService);
-    GLCMService glcmService(&imgService);
+    DependencyInjectionService dependencyInjectionService;
 
-    HOGService hogService(&classicSobelOperatorService, &imgService, &mathSerivce);
-
-    GraphicEngineExtended graphicEngine(&stringSerivce);
-    MyEventReceiver receiver(&graphicEngine, &superPixelService, &classicSobelOperatorService, &improvedSobelOperatorService, &geometricService, &histogramValueService, &discreteFourierTransformationSerivce, &huMomentsService, &sdSfService, &lbpService, &completedLbpService, &glcmService, &hogService, &directoryService, &stringSerivce);
+    GraphicEngineExtended graphicEngine(dependencyInjectionService.stringSerivce);
+    MyEventReceiver receiver(&graphicEngine, &dependencyInjectionService);
 
     Point2D windowSize(1280, 720);
 
     graphicEngine.initiateOpenGL(L"Part Cover", windowSize);
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");
-    graphicEngine.addSubwindow(GUI_ID_OPERATION_PANNEL, Point2D(windowSize.x - 180, 0), Point2D(windowSize.x, 360), L"Operationpannel");
+    graphicEngine.addSubwindow(GUI_ID_OPERATION_PANNEL, Point2D(windowSize.x - 180, 0), Point2D(windowSize.x, 580), L"Operationpannel");
 
     graphicEngine.addLabel(0, Point2D(10, 30), 50, L"Methode:", GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SUPERPIXELS, Point2D(10, 50), L"Super Pixels", false, GUI_ID_OPERATION_PANNEL);
@@ -62,10 +30,13 @@ int main()
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_COMPLETED_LBP, Point2D(10, 190), L"Completed LBP", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GLCM, Point2D(10, 210), L"GLCM", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HOG, Point2D(10, 230), L"HOG", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 250), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GABOR, Point2D(10, 250), L"GaborFilter", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_WAVELET, Point2D(10, 270), L"Wavelet", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV, Point2D(10, 290), L"Discrete Fourier Transformation (CV)", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 310), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
 
-    graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 290), 120, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(10, 325), 120, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 525), 70, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(90, 525), 70, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
 
     int pannelX = 10;
     int pannelY = 30;
@@ -107,7 +78,7 @@ int main()
     graphicEngine.addLabel(GUI_ID_VALUE_POWER, Point2D(pannelX + 100, pannelY + 80), 60, L"", GUI_ID_GRAYINFO_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_ENTROPY, Point2D(pannelX + 100, pannelY + 100), 60, L"", GUI_ID_GRAYINFO_PANNEL);
 
-    graphicEngine.addSubwindow(GUI_ID_HU_MOMENT_PANNEL, Point2D(windowSize.x - 180, 360), Point2D(windowSize.x, 560), L"Hu Moments");
+    graphicEngine.addSubwindow(GUI_ID_HU_MOMENT_PANNEL, Point2D(windowSize.x - 360, 480), Point2D(windowSize.x-180, 480+200), L"Hu Moments");
 
     graphicEngine.addLabel(GUI_ID_LABEL_HU_OWN, Point2D(pannelX, pannelY), 120, L"Own Calculation:", GUI_ID_HU_MOMENT_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_HU_OWN_1, Point2D(pannelX, pannelY + 20), 25, L"Hu 1:", GUI_ID_HU_MOMENT_PANNEL);

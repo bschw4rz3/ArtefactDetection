@@ -14,8 +14,7 @@ DiscreteFourierTransformationSerivce::DiscreteFourierTransformationSerivce(Class
  *               only elements past input length are changed and if smaller the
  *               result is truncated to output length.
  */
-void dft(const std::vector<std::complex<double>>& input,
-	std::vector<std::complex<double>>& output)
+void dft(const std::vector<std::complex<double>>& input, std::vector<std::complex<double>>& output)
 {
 	auto M_I_2PI_DL = -(6.28318530718i / (double)input.size());
 
@@ -58,10 +57,12 @@ std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculat
 			ColorRGB rgbColor = this->colorService->byte2rgb(byteColor, sobelImage.width(), sobelImage.height());
 			int grayColor = rgbColor.getGrayValue();
 
-			if (grayColor == 255)
+			/*if (grayColor == 255)
 			{
 				vector.push_back(std::complex<double>(x, y));
-			}
+			}*/
+
+			vector.push_back(std::complex<double>(grayColor, 0));
 		}
 	}
 
