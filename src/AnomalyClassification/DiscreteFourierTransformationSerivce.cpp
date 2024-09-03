@@ -35,10 +35,15 @@ void dft(const std::vector<std::complex<double>>& input, std::vector<std::comple
  */
 void idft(const std::vector<std::complex<double>>& input, std::vector<std::complex<double>>& output)
 {
-	for (size_t k = 0; k < output.size(); ++k) {
+	for (size_t k = 0; k < output.size(); ++k) 
+	{
 		output[k] = 0;
 		for (size_t n = 0; n < input.size(); ++n)
-			output[k] += input[n] * pow(2.718281828459045, (6.28318530718i * (double)k * (double)n) / (double)input.size());
+		{ 
+			const std::complex<double> e = (6.28318530718i * (double)k * (double)n) / (double)input.size();
+			std::complex<double> f = pow(2.718281828459045, e);
+			output[k] += input[n] * f;
+		}
 
 		output[k] /= input.size();
 	}
@@ -57,17 +62,16 @@ std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculat
 			ColorRGB rgbColor = this->colorService->byte2rgb(byteColor, sobelImage.width(), sobelImage.height());
 			int grayColor = rgbColor.getGrayValue();
 
-			/*if (grayColor == 255)
+			if (grayColor == 255)
 			{
 				vector.push_back(std::complex<double>(x, y));
-			}*/
+			}
 
-			vector.push_back(std::complex<double>(grayColor, 0));
 		}
 	}
 
 	std::vector<std::complex<double>> output(dataSetLength);
-	idft(vector, output);
+	dft(vector, output);
 
 	return output;
 }
