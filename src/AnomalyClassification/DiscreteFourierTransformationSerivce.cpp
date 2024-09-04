@@ -1,8 +1,9 @@
 #include "DiscreteFourierTransformationSerivce.h"
 
-DiscreteFourierTransformationSerivce::DiscreteFourierTransformationSerivce(ClassicSobelOperatorService* classicSobelOperatorService, ColorService* colorService)
+DiscreteFourierTransformationSerivce::DiscreteFourierTransformationSerivce(ClassicSobelOperatorService* classicSobelOperatorService, CImgService* cImgService, ColorService* colorService)
 {
 	this->classicSobelOperatorService = classicSobelOperatorService;
+	this->cImgService = cImgService;
 	this->colorService = colorService;
 }
 
@@ -49,31 +50,15 @@ void idft(const std::vector<std::complex<double>>& input, std::vector<std::compl
 	}
 }
 
-std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate(CImg<unsigned char>* image, int dataSetLength)
+FDResult DiscreteFourierTransformationSerivce::calculate(CImg<unsigned char>* image, int dataSetLength)
 {
-	std::vector<std::complex<double>> vector;
 	CImg<unsigned char> sobelImage = this->classicSobelOperatorService->getGradientImage(image);
-
-	for (int x = 0; x < sobelImage.width(); x++)
-	{
-		for (int y = 0; y < sobelImage.height(); y++)
-		{
-			unsigned char* byteColor = sobelImage.data(x, y);
-			ColorRGB rgbColor = this->colorService->byte2rgb(byteColor, sobelImage.width(), sobelImage.height());
-			int grayColor = rgbColor.getGrayValue();
-
-			if (grayColor == 255)
-			{
-				vector.push_back(std::complex<double>(x, y));
-			}
-
-		}
-	}
+	std::vector<std::complex<double>> fequence = this->cImgService->getContureAsComplexVector(&sobelImage, ColorRGB(0, 0, 0));
 
 	std::vector<std::complex<double>> output(dataSetLength);
-	dft(vector, output);
+	dft(fequence, output);
 
-	return output;
+	return FDResult(sobelImage, fequence);
 }
 
 std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate_dft(const std::vector<std::complex<double>>& signal)

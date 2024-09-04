@@ -86,9 +86,9 @@ int GeometricService::calculateScope(CImg<unsigned char>* image, ColorRGB backgr
 	return boarderPixels;
 }
 
-Point2D GeometricService::calculateDefectFocus(CImg<unsigned char>* image, ColorRGB backgroundColor)
+Point2D GeometricService::calculateCentroid(CImg<unsigned char>* image, ColorRGB backgroundColor)
 {
-	double blackPixels = 0;
+	double partPixels = 0;
 
 	double sumX = 0;
 	double sumY = 0;
@@ -105,12 +105,12 @@ Point2D GeometricService::calculateDefectFocus(CImg<unsigned char>* image, Color
 				sumX += x;
 				sumY += y;
 
-				blackPixels++;
+				partPixels++;
 			}
 		}
 	}
 
-	return Point2D(sumX/blackPixels, sumY/blackPixels);
+	return Point2D(sumX/partPixels, sumY/partPixels);
 }
 
 double GeometricService::calculateRectangularity(CImg<unsigned char>* image, ColorRGB backgroundColor)

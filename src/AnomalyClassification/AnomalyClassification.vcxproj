@@ -144,6 +144,7 @@
     <ClCompile Include="CompletedLbpService.cpp" />
     <ClCompile Include="DependencyInjectionService.cpp" />
     <ClCompile Include="DirectoryService.cpp" />
+    <ClCompile Include="DiscreteFourierDescriptorService.cpp" />
     <ClCompile Include="DiscreteFourierTransformationSerivce.cpp" />
     <ClCompile Include="DiscreteFourierTransformationSerivceCV.cpp" />
     <ClCompile Include="GaborServiceCV.cpp" />
@@ -173,8 +174,10 @@
     <ClInclude Include="DependencyInjectionService.h" />
     <ClInclude Include="DFTResult.h" />
     <ClInclude Include="DirectoryService.h" />
+    <ClInclude Include="DiscreteFourierDescriptorService.h" />
     <ClInclude Include="DiscreteFourierTransformationSerivce.h" />
     <ClInclude Include="DiscreteFourierTransformationSerivceCV.h" />
+    <ClInclude Include="FDResult.h" />
     <ClInclude Include="GaborServiceCV.h" />
     <ClInclude Include="GeometricService.h" />
     <ClInclude Include="GLCMResult.h" />

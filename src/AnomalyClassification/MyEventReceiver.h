@@ -83,6 +83,7 @@ enum {
     GUI_ID_CHECKBOX_GABOR,
     GUI_ID_CHECKBOX_WAVELET,
     GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV,
+    GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR,
 
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -185,6 +186,7 @@ private:
     GaborServiceCV* gaborServiceCV;
     WaveletTransformCV* waveletTransformCV;
     DiscreteFourierTransformationSerivceCV* discreteFourierTransformationSerivceCV;
+    DiscreteFourierDescriptorService* discreteFourierDescriptorService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -223,6 +225,7 @@ private:
     void onGaborFilter();
     void onWavelet();
     void onDiscreteFourierTransformationCV();
+    void onFourierDiscriptor();
 
     void onSelectFile(core::stringc fileName);
     void onResetImages();

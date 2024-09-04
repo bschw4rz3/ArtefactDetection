@@ -153,6 +153,9 @@
     <ClCompile Include="DiscreteFourierTransformationSerivceCV.cpp">
       <Filter>Quelldateien\detectors\geometric</Filter>
     </ClCompile>
+    <ClCompile Include="DiscreteFourierDescriptorService.cpp">
+      <Filter>Quelldateien\detectors\geometric</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -249,6 +252,12 @@
       <Filter>Headerdateien\detectors\geometric</Filter>
     </ClInclude>
     <ClInclude Include="DFTResult.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="DiscreteFourierDescriptorService.h">
+      <Filter>Headerdateien\detectors\geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="FDResult.h">
       <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>

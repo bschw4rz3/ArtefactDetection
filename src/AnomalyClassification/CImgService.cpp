@@ -1,8 +1,9 @@
 #include "CImgService.h"
 
-CImgService::CImgService(ColorService* colorService)
+CImgService::CImgService(GeometricService* geometricService, ColorService* colorService)
 {
     this->colorService = colorService;
+    this->geometricService = geometricService;
 }
 
 ColorRGB CImgService::getPixel(const CImg<unsigned char>* image, int x, int y)
@@ -125,3 +126,34 @@ void CImgService::normalizeGrayMatrix(CImg<unsigned char>* image, int whitePixel
         }
     }
 }
+
+std::vector<std::complex<double>> CImgService::getContureAsComplexVector(CImg<unsigned char>* contureImage, ColorRGB backgroundColor, bool normalizedToCentriod)
+{
+    Point2D centriod(0, 0);
+    std::vector<std::complex<double>> vector;
+
+    int backgroundGrayColor = backgroundColor.getGrayValue();
+
+    if (normalizedToCentriod)
+    {
+        centriod = this->geometricService->calculateCentroid(contureImage, backgroundColor);
+    }
+
+    for (int x = 0; x < contureImage->width(); x++)
+    {
+        for (int y = 0; y < contureImage->height(); y++)
+        {
+            unsigned char* byteColor = contureImage->data(x, y);
+            ColorRGB rgbColor = this->colorService->byte2rgb(byteColor, contureImage->width(), contureImage->height());
+            int grayColor = rgbColor.getGrayValue();
+
+            if (grayColor != backgroundGrayColor)
+            {
+                vector.push_back(std::complex<double>(x - centriod.x, y - centriod.y));
+            }
+        }
+    }
+
+    return vector;
+}
+

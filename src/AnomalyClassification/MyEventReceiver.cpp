@@ -18,6 +18,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->gaborServiceCV = di->gaborServiceCV;
     this->waveletTransformCV = di->waveletTransformCV;
     this->discreteFourierTransformationSerivceCV = di->discreteFourierTransformationSerivceCV;
+    this->discreteFourierDescriptorService = di->discreteFourierDescriptorService;
 
     this->stringSerivce = di->stringSerivce;
     this->directoryService = di->directoryService;
@@ -129,6 +130,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onDiscreteFourierTransformationCV();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR))
+                {
+                    this->onFourierDiscriptor();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -194,6 +199,28 @@ cv::Mat custom_normalization(const cv::Mat& src) {
     return dst;
 }*/
 
+void MyEventReceiver::onFourierDiscriptor()
+{
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(fileName.c_str());
+
+    FDResult result = this->discreteFourierDescriptorService->calculate(&img);
+
+    // Add Sobelimage
+    std::string tempName = this->generateFileName();
+    result.sobelImage.save_png(tempName.c_str());
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+
+    // Add Diagram
+    tempName = this->generateFileName();
+    this->diagram(result.fequence, tempName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    
+    // Clean up
+    this->removeTempFiles();
+}
+
 void MyEventReceiver::onDiscreteFourierTransformationCV()
 {
     std::string fileName = this->stringSerivce->toString(this->selectedFile);
@@ -204,7 +231,7 @@ void MyEventReceiver::onDiscreteFourierTransformationCV()
     this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     tempName = this->generateFileName();
-    this->diagram(result.frequencies, tempName);
+    this->diagram(result.radialProfile, tempName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     // Clean up
@@ -448,10 +475,16 @@ void MyEventReceiver::onDiscreteFourierTransformation()
     CImg<unsigned char> img(cFile.c_str());
 
     // Output the chart
-    std::vector<std::complex<double>> dftResult = this->discreteFourierTransformationSerivce->calculate(&img, 2000);
+    FDResult result = this->discreteFourierTransformationSerivce->calculate(&img, 2000);
+    
+    // Add sobel image
     std::string fileName = this->generateFileName();
-    this->diagram(dftResult, fileName);
+    result.sobelImage.save_png(fileName.c_str());
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
 
+    // Generate Diagram
+    fileName = this->generateFileName();
+    this->diagram(result.fequence, fileName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     // Clean Up
@@ -566,7 +599,7 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     std::wstring scropWithUnit = this->stringSerivce->doubleToWString(scope) + L" px";
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_SCOPE, scropWithUnit.c_str());
 
-    Point2D defectFocus = this->geometricService->calculateDefectFocus(&img, backgroundColor);
+    Point2D defectFocus = this->geometricService->calculateCentroid(&img, backgroundColor);
     std::wstring defectFocusString = L"(" + this->stringSerivce->doubleToWString(defectFocus.x) + L"px/" + this->stringSerivce->doubleToWString(defectFocus.y)+L"px)";
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_DEFECT_FOCUS, defectFocusString.c_str());
 

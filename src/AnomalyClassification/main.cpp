@@ -33,7 +33,8 @@ int main()
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GABOR, Point2D(10, 250), L"GaborFilter", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_WAVELET, Point2D(10, 270), L"Wavelet", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV, Point2D(10, 290), L"Discrete Fourier Transformation (CV)", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 310), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR, Point2D(10, 310), L"Fourier Discriptor", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 330), L"Unknown", false, GUI_ID_OPERATION_PANNEL);    
 
     graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 525), 70, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(90, 525), 70, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
@@ -114,7 +115,7 @@ int main()
     graphicEngine.addLabel(GUI_ID_VALUE_HU_OPENCV_6, Point2D(pannelX + 115, pannelY + 120), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_HU_OPENCV_7, Point2D(pannelX + 115, pannelY + 140), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
 
-    graphicEngine.addSubwindow(GUI_ID_HU_GLCM_PANNEL, Point2D(windowSize.x - 180, 560), Point2D(windowSize.x, 720), L"GLCM values");
+    graphicEngine.addSubwindow(GUI_ID_HU_GLCM_PANNEL, Point2D(windowSize.x - 180, 570), Point2D(windowSize.x, 720), L"GLCM values");
 
     graphicEngine.addLabel(GUI_ID_LABEL_GLCM_ENERGY, Point2D(pannelX, pannelY), 120, L"Energy: ", GUI_ID_HU_GLCM_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_GLCM_CONTRAST, Point2D(pannelX, pannelY + 20), 120, L"Contrast: ", GUI_ID_HU_GLCM_PANNEL);

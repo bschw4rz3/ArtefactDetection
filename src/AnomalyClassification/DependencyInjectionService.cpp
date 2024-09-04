@@ -5,13 +5,14 @@ DependencyInjectionService::DependencyInjectionService()
     this->stringSerivce = new StringSerivce();
     this->colorService = new ColorService();
     this->mathSerivce = new MathSerivce();
-    this->imgService = new CImgService(this->colorService);
+    this->geometricService = new GeometricService(this->colorService);
+    this->imgService = new CImgService(this->geometricService, this->colorService);
+
     this->superPixelService = new SuperPixelService(this->colorService, this->mathSerivce);
     this->classicSobelOperatorService = new ClassicSobelOperatorService(this->colorService);
     this->improvedSobelOperatorService = new ImprovedSobelOperatorService(this->colorService);
-    this->geometricService = new GeometricService(this->colorService);
     this->histogramValueService = new HistogramValueService(this->colorService);
-    this->discreteFourierTransformationSerivce = new DiscreteFourierTransformationSerivce(this->classicSobelOperatorService, this->colorService);
+    this->discreteFourierTransformationSerivce = new DiscreteFourierTransformationSerivce(this->classicSobelOperatorService, this->imgService, this->colorService);
     this->directoryService = new DirectoryService(this->stringSerivce);
     this->huMomentsService = new HuMomentsService(this->colorService);
     this->sdSfService = new SdSfService(this->classicSobelOperatorService, this->geometricService, this->mathSerivce, this->stringSerivce, this->colorService);
@@ -22,6 +23,7 @@ DependencyInjectionService::DependencyInjectionService()
     this->hogService = new HOGService(this->classicSobelOperatorService, this->imgService, this->mathSerivce);
     this->waveletTransformCV = new WaveletTransformCV(this->stringSerivce);
     this->discreteFourierTransformationSerivceCV = new DiscreteFourierTransformationSerivceCV();
+    this->discreteFourierDescriptorService = new DiscreteFourierDescriptorService(this->classicSobelOperatorService, this->imgService);
 }
 
 DependencyInjectionService::~DependencyInjectionService()
@@ -46,4 +48,5 @@ DependencyInjectionService::~DependencyInjectionService()
     delete this->hogService;
     delete this->waveletTransformCV;
     delete this->discreteFourierTransformationSerivceCV;
+    delete this->discreteFourierDescriptorService;
 }

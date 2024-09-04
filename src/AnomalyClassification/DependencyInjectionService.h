@@ -21,6 +21,7 @@
 #include "WaveletTransformCV.h"
 #include "SdSfService.h"
 #include "DiscreteFourierTransformationSerivceCV.h"
+#include "DiscreteFourierDescriptorService.h"
 
 class DependencyInjectionService
 {
@@ -45,6 +46,7 @@ public:
     HOGService* hogService;
     WaveletTransformCV* waveletTransformCV;
     DiscreteFourierTransformationSerivceCV* discreteFourierTransformationSerivceCV;
+    DiscreteFourierDescriptorService* discreteFourierDescriptorService;
 
 public:
     DependencyInjectionService();

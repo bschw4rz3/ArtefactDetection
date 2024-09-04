@@ -7,18 +7,21 @@
 #include "../Shared/cimg/CImg.h"
 using namespace cimg_library;
 
-#include "ColorService.h"
-
-#include "ColorRGB.h"
 #include <vector>
+#include <complex>
+
+#include "GeometricService.h"
+#include "ColorService.h"
+#include "ColorRGB.h"
 
 class CImgService
 {
 private:
     ColorService* colorService;
+    GeometricService* geometricService;
 
 public:
-    CImgService(ColorService* colorService);
+    CImgService(GeometricService* geometricService, ColorService* colorService);
 
     ColorRGB getPixel(const CImg<unsigned char>* image, int x, int y);
 
@@ -30,6 +33,7 @@ public:
     void divide(CImg<unsigned char>* image, double value);
 
     void normalizeGrayMatrix(CImg<unsigned char>* image, int whitePixels, int blackPixels, double factor);
+    std::vector<std::complex<double>> getContureAsComplexVector(CImg<unsigned char>* contureImage, ColorRGB backgroundColor, bool normalizedToCentriod = true);
 };
 
 #endif

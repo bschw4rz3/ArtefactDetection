@@ -25,7 +25,7 @@ public:
 
 	int countDefectPixels(CImg<unsigned char>* image, ColorRGB backgroundColor);
 	int calculateScope(CImg<unsigned char>* image, ColorRGB backgroundColor);
-	Point2D calculateDefectFocus(CImg<unsigned char>* image, ColorRGB backgroundColor);
+	Point2D calculateCentroid(CImg<unsigned char>* image, ColorRGB backgroundColor);
 	double calculateRectangularity(CImg<unsigned char>* image, ColorRGB backgroundColor);
 
 	std::vector<Point2D> getConturePixelPositions(CImg<unsigned char>* image, ColorRGB backgroundColor);
