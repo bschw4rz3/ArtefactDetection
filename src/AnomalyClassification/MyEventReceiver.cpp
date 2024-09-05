@@ -211,7 +211,6 @@ void MyEventReceiver::onFourierDiscriptor()
     result.sobelImage.save_png(tempName.c_str());
     this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-
     // Add Diagram
     tempName = this->generateFileName();
     this->diagram(result.fequence, tempName);

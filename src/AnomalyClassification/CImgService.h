@@ -33,7 +33,15 @@ public:
     void divide(CImg<unsigned char>* image, double value);
 
     void normalizeGrayMatrix(CImg<unsigned char>* image, int whitePixels, int blackPixels, double factor);
-    std::vector<std::complex<double>> getContureAsComplexVector(CImg<unsigned char>* contureImage, ColorRGB backgroundColor, bool normalizedToCentriod = true);
+    std::vector<std::complex<double>> getContureAsComplexVector(CImg<unsigned char>* contureImage, ColorRGB backgroundColor, bool normalizedToCentriod = true, bool trueToConture = false);
+
+    std::vector<std::complex<double>> getContureByContureAsComplexVector(CImg<unsigned char>* contureImage, int backgroundGrayColor, Point2D centriod);
+    std::vector<std::complex<double>> getContureByColumnAsComplexVector(CImg<unsigned char>* contureImage, int backgroundGrayColor, Point2D centriod);
+
+    bool isIn(const std::vector<std::vector<Point2D>>& contureVectors, Point2D point);
+    bool isIn(const std::vector<Point2D>& contureVectors, Point2D point);
+
+    void addPointNear(Point2D currentPoint, CImg<unsigned char>* contureImage, std::vector<Point2D>& contureVector, int backgroundGrayColor);
 };
 
 #endif
