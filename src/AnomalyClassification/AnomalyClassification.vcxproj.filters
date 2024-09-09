@@ -156,6 +156,12 @@
     <ClCompile Include="DiscreteFourierDescriptorService.cpp">
       <Filter>Quelldateien\detectors\geometric</Filter>
     </ClCompile>
+    <ClCompile Include="DaubechiesFourWaveletService.cpp">
+      <Filter>Quelldateien\detectors\transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="MorletWaveletService.cpp">
+      <Filter>Quelldateien\detectors\transformation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -258,6 +264,18 @@
       <Filter>Headerdateien\detectors\geometric</Filter>
     </ClInclude>
     <ClInclude Include="FDResult.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="DaubechiesFourWaveletService.h">
+      <Filter>Headerdateien\detectors\transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="MorletWaveletService.h">
+      <Filter>Headerdateien\detectors\transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveletResult.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiplyResult.h">
       <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>

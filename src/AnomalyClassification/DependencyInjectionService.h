@@ -22,6 +22,8 @@
 #include "SdSfService.h"
 #include "DiscreteFourierTransformationSerivceCV.h"
 #include "DiscreteFourierDescriptorService.h"
+#include "DaubechiesFourWaveletService.h"
+#include "MorletWaveletService.h"
 
 class DependencyInjectionService
 {
@@ -47,6 +49,8 @@ public:
     WaveletTransformCV* waveletTransformCV;
     DiscreteFourierTransformationSerivceCV* discreteFourierTransformationSerivceCV;
     DiscreteFourierDescriptorService* discreteFourierDescriptorService;
+    DaubechiesFourWaveletService* daubechiesFourWaveletService;
+    MorletWaveletService* morletWaveletService;
 
 public:
     DependencyInjectionService();

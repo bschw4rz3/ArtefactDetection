@@ -66,7 +66,8 @@ enum {
     GUI_ID_IMAGE_3_TAB,
 
     GUI_ID_IMAGE_1,
-    GUI_ID_IMAGE_2,
+    GUI_ID_IMAGE_2_0,
+    GUI_ID_IMAGE_2_1,
     GUI_ID_IMAGE_3,
 
     GUI_ID_CHECKBOX_SUPERPIXELS,
@@ -84,6 +85,8 @@ enum {
     GUI_ID_CHECKBOX_WAVELET,
     GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV,
     GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR,
+    GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET,
+    GUI_ID_CHECKBOX_MORLET_WAVELET,
 
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -187,6 +190,8 @@ private:
     WaveletTransformCV* waveletTransformCV;
     DiscreteFourierTransformationSerivceCV* discreteFourierTransformationSerivceCV;
     DiscreteFourierDescriptorService* discreteFourierDescriptorService;
+    DaubechiesFourWaveletService* daubechiesFourWaveletService;
+    MorletWaveletService* morletWaveletService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -226,6 +231,8 @@ private:
     void onWavelet();
     void onDiscreteFourierTransformationCV();
     void onFourierDiscriptor();
+    void onDaubechiesFourWavelet();
+    void onMorletFourWavelet();
 
     void onSelectFile(core::stringc fileName);
     void onResetImages();
@@ -237,8 +244,9 @@ private:
 
     void histogram(std::map<int, int> histogramData, int labelCount, std::string fileName);
     void histogram(std::map<std::string, int> histogramData, int labelCount, std::string fileName);
-    void diagram(std::vector<std::complex<double>> data, std::string fileName);
+    void diagram(std::vector<std::complex<double>> data, std::string fileName, std::vector<double> discription = std::vector<double>(0), std::string title = "");
     void diagram(std::vector<double> data, std::string fileName);
+    void diagram(std::vector<std::complex<double>> data, std::string fileName, std::vector<std::complex<double>> complexDiscription, std::string title = "");
 };
 
 #endif

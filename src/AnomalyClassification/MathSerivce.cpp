@@ -14,6 +14,12 @@ double MathSerivce::sinDegrees(double degreeAngel)
     return sin(radAngel);
 }
 
+double MathSerivce::cosDegrees(double degreeAngel)
+{
+    double radAngel = this->degreesToRadians(degreeAngel);
+    return cos(radAngel);
+}
+
 double MathSerivce::atanDegrees(double value)
 {
     double result = atan(value);
@@ -30,4 +36,9 @@ double MathSerivce::roundDigits(double value, int digit)
 
     double factor = pow(digit, 2);
     return round(value * factor)/ factor;
+}
+
+double MathSerivce::calculateEuler(std::complex<double> time, double w_0)
+{
+    return this->sinDegrees(w_0 * time.real()) + this->cosDegrees(w_0 * time.imag());
 }

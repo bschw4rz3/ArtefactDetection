@@ -19,6 +19,8 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->waveletTransformCV = di->waveletTransformCV;
     this->discreteFourierTransformationSerivceCV = di->discreteFourierTransformationSerivceCV;
     this->discreteFourierDescriptorService = di->discreteFourierDescriptorService;
+    this->daubechiesFourWaveletService = di->daubechiesFourWaveletService;
+    this->morletWaveletService = di->morletWaveletService;
 
     this->stringSerivce = di->stringSerivce;
     this->directoryService = di->directoryService;
@@ -134,6 +136,14 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onFourierDiscriptor();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET))
+                {
+                    this->onDaubechiesFourWavelet();
+                }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_MORLET_WAVELET))
+                {
+                    this->onMorletFourWavelet();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -199,6 +209,50 @@ cv::Mat custom_normalization(const cv::Mat& src) {
     return dst;
 }*/
 
+void MyEventReceiver::onMorletFourWavelet()
+{
+    std::vector<std::complex<double>> complexTime;
+    std::vector<double> labels;
+
+    for (double t = 0.0; t <= 50.0; t+=0.1)
+    {
+        labels.push_back(t);
+        complexTime.push_back(std::complex<double>(sin(pow(t, 1.3)), 0));
+    }
+
+    WaveletResult result = this->morletWaveletService->calculate(complexTime);
+
+    // Add Diagram
+    
+    std::string tempName = this->generateFileName();
+    this->diagram(complexTime, tempName, labels, "Inputsignal:");
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    /*
+    std::string tempName = this->generateFileName();
+    this->diagram(result.frequence, tempName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    */
+    tempName = this->generateFileName();
+    this->diagram(result.waveletOutput, tempName, labels, "Selected Wavelet:");
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 300), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    /*
+    tempName = this->generateFileName();
+    this->diagram(result.convolvedSignal, tempName, std::vector<double>(), "Convolve wave:");
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);*/
+
+    tempName = this->generateFileName();
+    this->diagram(result.frequence, tempName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+
+    // Clean up
+    this->removeTempFiles();
+}
+
+void MyEventReceiver::onDaubechiesFourWavelet()
+{
+    //this->daubechiesFourWaveletService->calculate();
+}
+
 void MyEventReceiver::onFourierDiscriptor()
 {
     std::string fileName = this->stringSerivce->toString(this->selectedFile);
@@ -209,7 +263,7 @@ void MyEventReceiver::onFourierDiscriptor()
     // Add Sobelimage
     std::string tempName = this->generateFileName();
     result.sobelImage.save_png(tempName.c_str());
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     // Add Diagram
     tempName = this->generateFileName();
@@ -227,7 +281,7 @@ void MyEventReceiver::onDiscreteFourierTransformationCV()
 
     std::string tempName = this->generateFileName();
     cv::imwrite(tempName.c_str(), result.spectrumMagnitude*255);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     tempName = this->generateFileName();
     this->diagram(result.radialProfile, tempName);
@@ -255,7 +309,7 @@ void MyEventReceiver::onGaborFilter()
 
     std::string tempName = this->generateFileName();
     this->diagram(fequence, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     // Clean up
     this->removeTempFiles();
@@ -279,7 +333,7 @@ void MyEventReceiver::onHOG()
     // magnitude
     fileName = this->generateFileName();
     display_superimposed(custom_normalization(this->hogService->get_magnitudes()), this->hogService->get_vector_mask(2), fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     // orientation
     fileName = this->generateFileName();
@@ -305,7 +359,7 @@ void MyEventReceiver::onGLCM()
     // Generate FileName
     fileName = this->generateFileName();
     result.getGlImage().save(fileName.c_str());
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
     
     wstring valueString = this->stringSerivce->doubleToWString(result.getEnergy());
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_ENERGY, valueString.c_str());
@@ -342,7 +396,7 @@ void MyEventReceiver::onCompletedLbp()
     // Generate Diagram
     fileName = this->generateFileName();
     this->histogram(result.getLbpHistogram(), 5, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
     
     fileName = this->generateFileName();
     this->histogram(result.getUniformityHistogram(), 3, fileName);
@@ -365,7 +419,7 @@ void MyEventReceiver::onLbp()
     // Generate Diagram
     fileName = this->generateFileName();
     this->histogram(result.getLbpHistogram(), 5, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
     
     fileName = this->generateFileName();
     this->histogram(result.getUniformityHistogram(), 3, fileName);
@@ -385,7 +439,7 @@ void MyEventReceiver::onSdSf()
     
     std::string sobelName = this->generateFileName();
     sobelImage.save(sobelName.c_str());
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     // Create SD-SF-Diagram
     std::map<std::string, int> distanceHistogram = this->sdSfService->calculateSdSf(&sobelImage);
@@ -435,7 +489,7 @@ void MyEventReceiver::onHuMoment()
     std::string sobelName = this->generateFileName();
     sobelImage.save(sobelName.c_str());
 
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     double hu = this->huMomentsService->calculateHu1(&sobelImage);
     std::wstring huString = this->stringSerivce->doubleToWString(hu);
@@ -479,7 +533,7 @@ void MyEventReceiver::onDiscreteFourierTransformation()
     // Add sobel image
     std::string fileName = this->generateFileName();
     result.sobelImage.save_png(fileName.c_str());
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     // Generate Diagram
     fileName = this->generateFileName();
@@ -500,7 +554,7 @@ void MyEventReceiver::onCalculateSuperPixels()
     std::string fileName = this->generateFileName();
 
     this->superPixelToImage(result.superPixelClusters, img.width(), img.height(), fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     fileName = this->generateFileName();
 
@@ -659,8 +713,8 @@ void MyEventReceiver::superPixelToImage(std::vector<std::vector<SuperPixelEntry>
 
 void MyEventReceiver::onCreateImagePannel()
 {
-    this->graphicEngine->addSubwindow(GUI_ID_IMAGE_PANNEL, Point2D(0, 0), Point2D(330, 480), L"Image");
-    this->graphicEngine->addTabControl(GUI_ID_TABCONTROL, Point2D(0, 20), Point2D(330, 480), GUI_ID_IMAGE_PANNEL);
+    this->graphicEngine->addSubwindow(GUI_ID_IMAGE_PANNEL, Point2D(0, 0), Point2D(330, 800), L"Image");
+    this->graphicEngine->addTabControl(GUI_ID_TABCONTROL, Point2D(0, 20), Point2D(330, 800), GUI_ID_IMAGE_PANNEL);
     this->graphicEngine->addTab(GUI_ID_IMAGE_1_TAB, L"Input image", GUI_ID_TABCONTROL);
     this->graphicEngine->addTab(GUI_ID_IMAGE_2_TAB, L"Process image", GUI_ID_TABCONTROL);
     this->graphicEngine->addTab(GUI_ID_IMAGE_3_TAB, L"Output image", GUI_ID_TABCONTROL);
@@ -673,9 +727,9 @@ void MyEventReceiver::onResetImages()
         this->graphicEngine->removeElement(GUI_ID_IMAGE_1);
     }
 
-    if(this->graphicEngine->exists(GUI_ID_IMAGE_2))
+    if(this->graphicEngine->exists(GUI_ID_IMAGE_2_0))
     {
-        this->graphicEngine->removeElement(GUI_ID_IMAGE_2);
+        this->graphicEngine->removeElement(GUI_ID_IMAGE_2_0);
     }
 
     if (this->graphicEngine->exists(GUI_ID_IMAGE_3))
@@ -755,46 +809,84 @@ void MyEventReceiver::histogram(std::map<std::string, int> histogramData, int la
 
     //free up resources
     delete c;
-    delete x;
-    delete z;
+    delete[] x;
+    delete[] z;
 }
 
-void MyEventReceiver::diagram(std::vector<std::complex<double>> data, std::string fileName)
+void MyEventReceiver::diagram(std::vector<std::complex<double>> data, std::string fileName, std::vector<std::complex<double>> complexDiscription, std::string title)
+{
+    std::vector<double> discription;
+
+    for (int i = 0; i < complexDiscription.size(); i++)
+    {
+        discription.push_back(complexDiscription[i].real());
+    }
+
+    this->diagram(data, fileName, discription, title);
+}
+
+void MyEventReceiver::diagram(std::vector<std::complex<double>> data, std::string fileName, std::vector<double> discription, std::string title)
 {
     int n = data.size();
     double* x = new double[n];
     double* y = new double[n];
-    const char** z = new const char* [n];
+    char** z = new char* [n];
 
-    for (int i = 0; i < n; ++i)
+    for (uint32_t i = 0; i < n; ++i)
     {
-        y[i] = data[i].real();
-        x[i] = data[i].imag();
+        x[i] = data[i].real();
+        y[i] = data[i].imag();
 
-        const char* label = this->stringSerivce->intToString(i).c_str();
-        z[i] = label;
+        if (discription.size() == 0)
+        {
+            z[i] = new char[20];
+            itoa(i, z[i], 10);
+        }
+        else
+        {
+            std::string discriptionString = this->stringSerivce->doubleToString(discription[i]);
+
+            z[i] = new char[discriptionString.size()+1];
+            discriptionString.copy(z[i], discriptionString.size());
+            z[i][discriptionString.size()] = '\0';
+        }
     }
 
     XYChart* c = new XYChart(300, 300);
     c->setPlotArea(50, 20, 240, 250);
 
+    c->addTitle(title.c_str());
+
+    int realColor = 0xff0000;
+    int imagColor = 0x00cc00;
+
     // Add a line chart layer using the given data
-    c->addLineLayer(DoubleArray(x, n));
-    c->addLineLayer(DoubleArray(y, n));
+    c->addLineLayer(DoubleArray(x, n), realColor, "Real");
+    c->addLineLayer(DoubleArray(y, n), imagColor, "Imaginär");
 
     // Set the labels on the x axis.
     c->xAxis()->setLabels(StringArray(z, n));
 
     // Display 1 out of 3 labels on the x-axis.
-    c->xAxis()->setLabelStep(3);
+    c->xAxis()->setLabelStep(n/3);
+
+    LegendBox* b = c->addLegend(70, 10, false, "Arial", 12);
+    b->setBackground(Chart::Transparent, Chart::Transparent);
+    b->setLineStyleKey();
 
     c->makeChart(fileName.c_str());
 
     //free up resources
     delete c;
-    delete x;
-    delete y;
-    delete z;
+    delete[] x;
+    delete[] y;
+
+    for (int i = 0; i < n; ++i)
+    {
+        delete[] z[i];
+    }
+
+    delete[] z;
 }
 
 void MyEventReceiver::diagram(std::vector<double> data, std::string fileName)
@@ -827,6 +919,7 @@ void MyEventReceiver::diagram(std::vector<double> data, std::string fileName)
 
     //free up resources
     delete c;
-    delete x;
-    delete z;
+    delete[] x;
+
+    delete[] z;
 }

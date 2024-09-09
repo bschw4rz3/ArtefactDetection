@@ -142,6 +142,7 @@
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />
     <ClCompile Include="CompletedLbpService.cpp" />
+    <ClCompile Include="DaubechiesFourWaveletService.cpp" />
     <ClCompile Include="DependencyInjectionService.cpp" />
     <ClCompile Include="DirectoryService.cpp" />
     <ClCompile Include="DiscreteFourierDescriptorService.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="LbpService.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathSerivce.cpp" />
+    <ClCompile Include="MorletWaveletService.cpp" />
     <ClCompile Include="MyEventReceiver.cpp" />
     <ClCompile Include="ClassicSobelOperatorService.cpp" />
     <ClCompile Include="SdSfService.cpp" />
@@ -171,6 +173,7 @@
     <ClInclude Include="CImgService.h" />
     <ClInclude Include="ColorService.h" />
     <ClInclude Include="CompletedLbpService.h" />
+    <ClInclude Include="DaubechiesFourWaveletService.h" />
     <ClInclude Include="DependencyInjectionService.h" />
     <ClInclude Include="DFTResult.h" />
     <ClInclude Include="DirectoryService.h" />
@@ -194,6 +197,8 @@
     <ClInclude Include="LbpResult.h" />
     <ClInclude Include="LbpService.h" />
     <ClInclude Include="MathSerivce.h" />
+    <ClInclude Include="MorletWaveletService.h" />
+    <ClInclude Include="MultiplyResult.h" />
     <ClInclude Include="MyEventReceiver.h" />
     <ClInclude Include="ClassicSobelOperatorService.h" />
     <ClInclude Include="SdSfService.h" />
@@ -201,6 +206,7 @@
     <ClInclude Include="SuperPixelEntry.h" />
     <ClInclude Include="SuperPixelResult.h" />
     <ClInclude Include="SuperPixelService.h" />
+    <ClInclude Include="WaveletResult.h" />
     <ClInclude Include="WaveletTransformCV.h" />
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +222,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.vcxproj">
       <Project>{f77671a4-6742-4209-bf98-cd53ffd43778}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\WaveletLib\WaveletLib.vcxproj">
+      <Project>{45b12e44-12ca-4f4b-b36d-29ebe86584e4}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
