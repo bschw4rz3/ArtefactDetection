@@ -24,6 +24,8 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
 
     this->stringSerivce = di->stringSerivce;
     this->directoryService = di->directoryService;
+    this->mathSerivce = di->mathSerivce;
+    this->colorService = di->colorService;
 
     this->facet = NULL;
     this->context = NULL;
@@ -214,35 +216,44 @@ void MyEventReceiver::onMorletFourWavelet()
     std::vector<std::complex<double>> complexTime;
     std::vector<double> labels;
 
-    for (double t = 0.0; t <= 50.0; t+=0.1)
+    double A = 1;
+    double omega = 10;
+    double timeFactor = 0.01;
+    double timeMax = 15;
+    double maxFrequence = 30;
+
+    for (double t = 0.0; t <= timeMax; t+=timeFactor)
     {
         labels.push_back(t);
-        complexTime.push_back(std::complex<double>(sin(pow(t, 1.3)), 0));
+        complexTime.push_back(std::complex<double>(A * cos(((omega*t)+pow(t, 1.0))-2.0), 0));
     }
 
-    WaveletResult result = this->morletWaveletService->calculate(complexTime);
+    labels.push_back(timeMax+timeFactor);
+
+    WaveletResult result = this->morletWaveletService->calculate(complexTime, maxFrequence, timeFactor);
 
     // Add Diagram
-    
     std::string tempName = this->generateFileName();
     this->diagram(complexTime, tempName, labels, "Inputsignal:");
     this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
-    /*
-    std::string tempName = this->generateFileName();
-    this->diagram(result.frequence, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
-    */
-    tempName = this->generateFileName();
-    this->diagram(result.waveletOutput, tempName, labels, "Selected Wavelet:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 300), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
-    /*
-    tempName = this->generateFileName();
-    this->diagram(result.convolvedSignal, tempName, std::vector<double>(), "Convolve wave:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);*/
 
     tempName = this->generateFileName();
-    this->diagram(result.frequence, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->diagram(result.waveletOutput, tempName, labels, "Selected Wavelet:");
+    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 420), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+    tempName = this->generateFileName();
+    this->heatMap(result.frequenceTime, labels, tempName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+
+    /*
+    tempName = this->generateFileName();
+    this->diagram(result.bScoreVector, tempName, labels, "Best Score:");
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_1, Point2D(8, 520), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    */
+
+    tempName = this->generateFileName();
+    this->diagram(result.convolvedSignal, tempName, labels, "best Convolved Vector:");
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_1, Point2D(8, 520), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     // Clean up
     this->removeTempFiles();
@@ -268,7 +279,7 @@ void MyEventReceiver::onFourierDiscriptor()
     // Add Diagram
     tempName = this->generateFileName();
     this->diagram(result.fequence, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     
     // Clean up
     this->removeTempFiles();
@@ -285,7 +296,7 @@ void MyEventReceiver::onDiscreteFourierTransformationCV()
 
     tempName = this->generateFileName();
     this->diagram(result.radialProfile, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     // Clean up
     this->removeTempFiles();
@@ -309,7 +320,7 @@ void MyEventReceiver::onGaborFilter()
 
     std::string tempName = this->generateFileName();
     this->diagram(fequence, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     // Clean up
     this->removeTempFiles();
@@ -338,7 +349,7 @@ void MyEventReceiver::onHOG()
     // orientation
     fileName = this->generateFileName();
     display_superimposed(custom_normalization(this->hogService->get_orientations()), this->hogService->get_vector_mask(2), fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);*/
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);*/
 
     std::vector<double> theVector = this->hogService->calculate(&img);
 
@@ -400,7 +411,7 @@ void MyEventReceiver::onCompletedLbp()
     
     fileName = this->generateFileName();
     this->histogram(result.getUniformityHistogram(), 3, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
     
     // Clean up
     this->removeTempFiles();
@@ -423,7 +434,7 @@ void MyEventReceiver::onLbp()
     
     fileName = this->generateFileName();
     this->histogram(result.getUniformityHistogram(), 3, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
     
     // Clean up
     this->removeTempFiles();
@@ -446,7 +457,7 @@ void MyEventReceiver::onSdSf()
 
     fileName = this->generateFileName();
     this->histogram(distanceHistogram, 4, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     // Clean up
     this->removeTempFiles();
@@ -538,7 +549,7 @@ void MyEventReceiver::onDiscreteFourierTransformation()
     // Generate Diagram
     fileName = this->generateFileName();
     this->diagram(result.fequence, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     // Clean Up
     this->removeTempFiles();
@@ -559,7 +570,7 @@ void MyEventReceiver::onCalculateSuperPixels()
     fileName = this->generateFileName();
 
     this->superPixelToImage(result.subregions, img.width(), img.height(), fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     this->removeTempFiles();
 }
@@ -573,7 +584,7 @@ void MyEventReceiver::onCalculateSobelOperator()
     std::string tempFileName = this->generateFileName();
     tempImage.save_png(tempFileName.c_str());
     
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(tempFileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(tempFileName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     this->removeTempFiles();
 }
@@ -587,7 +598,7 @@ void MyEventReceiver::onCalculateImprovedSobelOperator()
     std::string tempFileName = this->generateFileName();
     tempImage.save_png(tempFileName.c_str());
     
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3, Point2D(10, 10), this->stringSerivce->toWString(tempFileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(tempFileName).c_str(), GUI_ID_IMAGE_3_TAB);
 
     this->removeTempFiles();
 }
@@ -713,8 +724,8 @@ void MyEventReceiver::superPixelToImage(std::vector<std::vector<SuperPixelEntry>
 
 void MyEventReceiver::onCreateImagePannel()
 {
-    this->graphicEngine->addSubwindow(GUI_ID_IMAGE_PANNEL, Point2D(0, 0), Point2D(330, 800), L"Image");
-    this->graphicEngine->addTabControl(GUI_ID_TABCONTROL, Point2D(0, 20), Point2D(330, 800), GUI_ID_IMAGE_PANNEL);
+    this->graphicEngine->addSubwindow(GUI_ID_IMAGE_PANNEL, Point2D(0, 0), Point2D(500, 1060), L"Image");
+    this->graphicEngine->addTabControl(GUI_ID_TABCONTROL, Point2D(0, 20), Point2D(500, 1060), GUI_ID_IMAGE_PANNEL);
     this->graphicEngine->addTab(GUI_ID_IMAGE_1_TAB, L"Input image", GUI_ID_TABCONTROL);
     this->graphicEngine->addTab(GUI_ID_IMAGE_2_TAB, L"Process image", GUI_ID_TABCONTROL);
     this->graphicEngine->addTab(GUI_ID_IMAGE_3_TAB, L"Output image", GUI_ID_TABCONTROL);
@@ -732,9 +743,9 @@ void MyEventReceiver::onResetImages()
         this->graphicEngine->removeElement(GUI_ID_IMAGE_2_0);
     }
 
-    if (this->graphicEngine->exists(GUI_ID_IMAGE_3))
+    if (this->graphicEngine->exists(GUI_ID_IMAGE_3_0))
     {
-        this->graphicEngine->removeElement(GUI_ID_IMAGE_3);
+        this->graphicEngine->removeElement(GUI_ID_IMAGE_3_0);
     }
 
     if (this->graphicEngine->exists(GUI_ID_IMAGE_1_TAB))
@@ -792,8 +803,8 @@ void MyEventReceiver::histogram(std::map<std::string, int> histogramData, int la
         i++;
     }
 
-    XYChart* c = new XYChart(300, 300);
-    c->setPlotArea(50, 20, 240, 250);
+    XYChart* c = new XYChart(400, 400);
+    c->setPlotArea(50, 20, 340, 350);
 
     // Add a line chart layer using the given data
     c->addBarLayer(DoubleArray(x, n));
@@ -852,8 +863,8 @@ void MyEventReceiver::diagram(std::vector<std::complex<double>> data, std::strin
         }
     }
 
-    XYChart* c = new XYChart(300, 300);
-    c->setPlotArea(50, 20, 240, 250);
+    XYChart* c = new XYChart(400, 400);
+    c->setPlotArea(50, 20, 340, 350);
 
     c->addTitle(title.c_str());
 
@@ -903,8 +914,8 @@ void MyEventReceiver::diagram(std::vector<double> data, std::string fileName)
         z[i] = label;
     }
 
-    XYChart* c = new XYChart(300, 300);
-    c->setPlotArea(50, 20, 240, 250);
+    XYChart* c = new XYChart(400, 400);
+    c->setPlotArea(50, 20, 340, 350);
 
     // Add a line chart layer using the given data
     c->addLineLayer(DoubleArray(x, n));
@@ -922,4 +933,168 @@ void MyEventReceiver::diagram(std::vector<double> data, std::string fileName)
     delete[] x;
 
     delete[] z;
+}
+
+void MyEventReceiver::heatMap(TimeFrequenceResult timeFrequence, std::vector<double> labels, std::string fileName)
+{
+    double timeMin = DBL_MAX;
+    double timeMax = -DBL_MAX;
+
+    // The x and y coordinates of the grid
+    double* dataX = labels.data();
+    const int dataX_size = timeFrequence.getTimeScala(1).size();
+    double* dataY = this->generateNewArray(timeFrequence.getMaxFrequence());
+    const int dataY_size = timeFrequence.getMaxFrequence();
+
+    // The values at the grid points. In this example, we will compute the values using the formula
+    // z = x * sin(y) + y * sin(x).
+    int dataZ_size = dataX_size * (dataY_size+1);
+    double* dataZ = new double[dataZ_size];
+    for (int yIndex = 0; yIndex <= dataY_size; ++yIndex)
+    {
+        double y = this->mathSerivce->roundDigits(dataY[yIndex], 2);
+
+        std::vector<double> time = timeFrequence.getTimeScala(yIndex);
+
+        for (int xIndex = 0; xIndex < dataX_size; ++xIndex)
+        {
+            double value = this->mathSerivce->roundDigits(time[xIndex], 3);
+
+            if (value < timeMin)
+            {
+                timeMin = value;
+            }
+            else if (value > timeMax)
+            {
+                timeMax = value;
+            }
+
+            if (value <= 0 || isnan(value) || isinf(value))
+            {
+                value = 0;
+            }
+
+            dataZ[yIndex * dataX_size + xIndex] = value;
+        }
+    }
+    /*
+    for (int i = 0; i < dataZ_size; i++)
+    {
+        double orgValue = dataZ[i];
+        double value = this->mathSerivce->roundDigits(orgValue / timeMax, 4);
+
+        if (value <= 0)
+        {
+            value = 0.05;
+        }
+
+        dataZ[i] = value;
+    }*/
+
+    // Create a XYChart object of size 600 x 500 pixels
+    XYChart* c = new XYChart(500, 500);
+
+    // Add a title to the chart using 15 points Arial Bold Italic font
+    c->addTitle("Wavlet scalogram", "Arial Bold Italic", 15);
+
+    // Set the plotarea at (75, 40) and of size 400 x 400 pixels. Use semi-transparent black
+    // (80000000) dotted lines for both horizontal and vertical grid lines
+    c->setPlotArea(40, 40, 380, 380, -1, -1, -1, c->dashLineColor(0x80000000, Chart::DotLine), -1);
+
+    // Set x-axis and y-axis title using 12 points Arial Bold Italic font
+    c->xAxis()->setTitle("Time", "Arial Bold Italic", 12);
+    c->yAxis()->setTitle("Frequence", "Arial Bold Italic", 12);
+
+    // Set x-axis and y-axis labels to use Arial Bold font
+    c->xAxis()->setLabelStyle("Arial Bold");
+    c->yAxis()->setLabelStyle("Arial Bold");
+
+    // When auto-scaling, use tick spacing of 40 pixels as a guideline
+    c->yAxis()->setTickDensity(40);
+    c->xAxis()->setTickDensity(40);
+
+    // Add a contour layer using the given data
+    ContourLayer* layer = c->addContourLayer(DoubleArray(dataX, dataX_size), DoubleArray(dataY,
+        dataY_size), DoubleArray(dataZ, dataZ_size));
+
+    // Move the grid lines in front of the contour layer
+    //c->getPlotArea()->moveGridBefore(layer);
+
+    // Add a color axis (the legend) in which the top left corner is anchored at (505, 40). Set the
+    // length to 400 pixels and the labels on the right side.
+    ColorAxis* cAxis = layer->setColorAxis(420, 20, Chart::TopLeft, 250, Chart::Right);
+
+    // Add a title to the color axis using 12 points Arial Bold Italic font
+    cAxis->setTitle("Legende", "Arial Bold Italic", 12);
+
+    // Set color axis labels to use Arial Bold font
+    cAxis->setLabelStyle("Arial Bold");
+
+    // Output the chart
+    c->makeChart(fileName.c_str());
+
+    //free up resources
+    delete c;
+    delete[] dataZ;
+}
+
+double* MyEventReceiver::generateNewArray(int to)
+{
+    double* array = new double[to];
+
+    for (int i = 0; i < to; ++i) {
+        array[i] = i;
+    }
+
+    return array;
+}
+
+void MyEventReceiver::heatMapImg(TimeFrequenceResult timeFrequence, std::string fileName)
+{
+    const unsigned int size_z = 1;
+    const unsigned int size_c = 3;
+
+    double timeMin = DBL_MAX;
+    double timeMax = -DBL_MAX;
+
+    const int timeScalaSize = timeFrequence.getTimeScala(1).size();
+    const int frequenceSize = timeFrequence.getMaxFrequence();
+
+    CImg<unsigned char> transposeMatrix(frequenceSize, timeScalaSize, size_z, size_c, 0);
+
+    for (int yIndex = 1; yIndex < frequenceSize; ++yIndex) {
+
+        std::vector<double> time = timeFrequence.getTimeScala(yIndex);
+
+        for (int xIndex = 0; xIndex < timeScalaSize; ++xIndex) {
+            double value = time[xIndex];
+
+            if (value < timeMin)
+            {
+                timeMin = value;
+            }
+            else if (value > timeMax)
+            {
+                timeMax = value;
+            }
+        }
+    }
+
+    for (int yIndex = 1; yIndex < frequenceSize; ++yIndex) 
+    {
+        std::vector<double> time = timeFrequence.getTimeScala(yIndex);
+
+        for (int xIndex = 0; xIndex < timeScalaSize; ++xIndex) 
+        {
+            double value = time[xIndex] / timeMax * 255.0;
+
+            const unsigned char* color = this->colorService->rgb2byte(ColorRGB(value, value, value));
+            transposeMatrix.draw_point(yIndex, xIndex, color);
+        }
+    }
+
+    const unsigned char* color = this->colorService->rgb2byte(ColorRGB(255, 255, 255));
+    transposeMatrix.draw_text(frequenceSize / 2, timeScalaSize - 20, "Frequence", color);
+
+    transposeMatrix.save_png(fileName.c_str());
 }

@@ -68,7 +68,8 @@ enum {
     GUI_ID_IMAGE_1,
     GUI_ID_IMAGE_2_0,
     GUI_ID_IMAGE_2_1,
-    GUI_ID_IMAGE_3,
+    GUI_ID_IMAGE_3_0,
+    GUI_ID_IMAGE_3_1,
 
     GUI_ID_CHECKBOX_SUPERPIXELS,
     GUI_ID_CHECKBOX_SOBEL,
@@ -173,6 +174,8 @@ private:
     SAppContext* context;
     StringSerivce* stringSerivce;
     DirectoryService* directoryService;
+    MathSerivce* mathSerivce;
+    ColorService* colorService;
 
     SuperPixelService* superPixelService;
     ClassicSobelOperatorService* sobelOperatorSerivce;
@@ -247,6 +250,10 @@ private:
     void diagram(std::vector<std::complex<double>> data, std::string fileName, std::vector<double> discription = std::vector<double>(0), std::string title = "");
     void diagram(std::vector<double> data, std::string fileName);
     void diagram(std::vector<std::complex<double>> data, std::string fileName, std::vector<std::complex<double>> complexDiscription, std::string title = "");
+    void heatMap(TimeFrequenceResult timeFrequence, std::vector<double> labels, std::string fileName);
+    void heatMapImg(TimeFrequenceResult timeFrequence, std::string fileName);
+
+    double* generateNewArray(int to);
 };
 
 #endif

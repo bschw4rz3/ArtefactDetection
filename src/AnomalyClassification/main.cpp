@@ -13,7 +13,7 @@ int main()
     GraphicEngineExtended graphicEngine(dependencyInjectionService.stringSerivce);
     MyEventReceiver receiver(&graphicEngine, &dependencyInjectionService);
 
-    Point2D windowSize(1280, 720);
+    Point2D windowSize(1280, 1040);
 
     graphicEngine.initiateOpenGL(L"Part Cover", windowSize);
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");

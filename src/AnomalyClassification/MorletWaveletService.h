@@ -17,7 +17,7 @@ private:
 public:
 	MorletWaveletService(MathSerivce* mathSerivce);
 	
-	WaveletResult calculate(std::vector<std::complex<double>> input);
+	WaveletResult calculate(std::vector<std::complex<double>> input, double maxHerz, double timeFactor);
 
 private:
 	std::complex<double> MorletWavelet(std::complex<double> t, double sigma, double omega0);
@@ -25,6 +25,8 @@ private:
 
 	MultiplyResult convolve(const std::vector<std::complex<double>>& signal, const std::vector<std::complex<double>>& wavelet);
 	MultiplyResult multiply(const std::vector<std::complex<double>>& signal, const std::vector<std::complex<double>>& wavelet);
+
+	double calculateWaveletFunctionOffset(double timeFactor, double omega0, double sigma, double a, double tollerance);
 
 };
 #endif
