@@ -88,6 +88,7 @@ enum {
     GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR,
     GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET,
     GUI_ID_CHECKBOX_MORLET_WAVELET,
+    GUI_ID_CHECKBOX_MORLET_WAVELET_FFT,
 
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -195,6 +196,7 @@ private:
     DiscreteFourierDescriptorService* discreteFourierDescriptorService;
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
     MorletWaveletService* morletWaveletService;
+    MorletWaveletServiceFFT* morletWaveletServiceFFT;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -236,6 +238,7 @@ private:
     void onFourierDiscriptor();
     void onDaubechiesFourWavelet();
     void onMorletFourWavelet();
+    void onMorletFourWaveletFFT();
 
     void onSelectFile(core::stringc fileName);
     void onResetImages();
@@ -254,6 +257,7 @@ private:
     void heatMapImg(TimeFrequenceResult timeFrequence, std::string fileName);
 
     double* generateNewArray(int to);
+    double* generateNewArrayFromExsistingFrequence(TimeFrequenceResult timeFrequence);
 };
 
 #endif

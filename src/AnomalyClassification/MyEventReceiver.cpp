@@ -21,6 +21,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->discreteFourierDescriptorService = di->discreteFourierDescriptorService;
     this->daubechiesFourWaveletService = di->daubechiesFourWaveletService;
     this->morletWaveletService = di->morletWaveletService;
+    this->morletWaveletServiceFFT = di->morletWaveletServiceFFT;
 
     this->stringSerivce = di->stringSerivce;
     this->directoryService = di->directoryService;
@@ -146,6 +147,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 {
                     this->onMorletFourWavelet();
                 }
+                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_MORLET_WAVELET_FFT))
+                {
+                    this->onMorletFourWaveletFFT();
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -210,6 +215,15 @@ cv::Mat custom_normalization(const cv::Mat& src) {
     dst.convertTo(dst, CV_8U);
     return dst;
 }*/
+
+void MyEventReceiver::onMorletFourWaveletFFT()
+{
+    std::map<double, std::vector<double>> result = this->morletWaveletServiceFFT->calculate();
+
+    std::string tempName = this->generateFileName();
+    this->heatMap(TimeFrequenceResult(result, 40), std::vector<double>(), tempName);
+    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+}
 
 void MyEventReceiver::onMorletFourWavelet()
 {
@@ -937,24 +951,42 @@ void MyEventReceiver::diagram(std::vector<double> data, std::string fileName)
 
 void MyEventReceiver::heatMap(TimeFrequenceResult timeFrequence, std::vector<double> labels, std::string fileName)
 {
+    bool xIsGenerated = false;
+
     double timeMin = DBL_MAX;
     double timeMax = -DBL_MAX;
 
     // The x and y coordinates of the grid
-    double* dataX = labels.data();
+    double* dataX = NULL;
     const int dataX_size = timeFrequence.getTimeScala(1).size();
-    double* dataY = this->generateNewArray(timeFrequence.getMaxFrequence());
-    const int dataY_size = timeFrequence.getMaxFrequence();
+
+    if (labels.size() == 0)
+    {
+        dataX = this->generateNewArray(dataX_size);
+        xIsGenerated = true;
+    }
+    else
+    {
+        dataX = labels.data();
+    }
+
+    double* dataY = this->generateNewArrayFromExsistingFrequence(timeFrequence);
+    const int dataY_size = timeFrequence.frequenceTimeMap.size();
 
     // The values at the grid points. In this example, we will compute the values using the formula
     // z = x * sin(y) + y * sin(x).
     int dataZ_size = dataX_size * (dataY_size+1);
     double* dataZ = new double[dataZ_size];
-    for (int yIndex = 0; yIndex <= dataY_size; ++yIndex)
+    for (int yIndex = 0; yIndex < dataY_size; ++yIndex)
     {
         double y = this->mathSerivce->roundDigits(dataY[yIndex], 2);
 
-        std::vector<double> time = timeFrequence.getTimeScala(yIndex);
+        if (yIndex != 0 && y == 0)
+        {
+            break;
+        }
+
+        std::vector<double> time = timeFrequence.getTimeScala(y);
 
         for (int xIndex = 0; xIndex < dataX_size; ++xIndex)
         {
@@ -1035,7 +1067,32 @@ void MyEventReceiver::heatMap(TimeFrequenceResult timeFrequence, std::vector<dou
 
     //free up resources
     delete c;
+    delete[] dataY;
     delete[] dataZ;
+
+    if (xIsGenerated)
+    {
+        delete[] dataX;
+    }
+}
+
+double* MyEventReceiver::generateNewArrayFromExsistingFrequence(TimeFrequenceResult timeFrequence)
+{
+    int to = timeFrequence.frequenceTimeMap.size();
+    double* array = new double[to];
+
+    int arrayIndex = 0;
+
+    for (int i = 0; i <= timeFrequence.getMaxFrequence(); ++i)
+    {
+        if (timeFrequence.frequenceTimeMap.find(i) != timeFrequence.frequenceTimeMap.end())
+        {
+            array[arrayIndex] = i;
+            arrayIndex++;
+        }
+    }
+
+    return array;
 }
 
 double* MyEventReceiver::generateNewArray(int to)

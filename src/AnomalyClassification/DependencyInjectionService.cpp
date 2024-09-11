@@ -26,6 +26,7 @@ DependencyInjectionService::DependencyInjectionService()
     this->discreteFourierDescriptorService = new DiscreteFourierDescriptorService(this->classicSobelOperatorService, this->imgService);
     this->daubechiesFourWaveletService = new DaubechiesFourWaveletService(this->classicSobelOperatorService, this->imgService);
     this->morletWaveletService = new MorletWaveletService(this->mathSerivce);
+    this->morletWaveletServiceFFT = new MorletWaveletServiceFFT();
 }
 
 DependencyInjectionService::~DependencyInjectionService()
@@ -52,4 +53,6 @@ DependencyInjectionService::~DependencyInjectionService()
     delete this->discreteFourierTransformationSerivceCV;
     delete this->discreteFourierDescriptorService;
     delete this->daubechiesFourWaveletService;
+    delete this->morletWaveletService;
+    delete this->morletWaveletServiceFFT;
 }

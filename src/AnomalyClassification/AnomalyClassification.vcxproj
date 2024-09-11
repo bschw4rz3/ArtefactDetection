@@ -161,6 +161,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathSerivce.cpp" />
     <ClCompile Include="MorletWaveletService.cpp" />
+    <ClCompile Include="MorletWaveletServiceFFT.cpp" />
     <ClCompile Include="MyEventReceiver.cpp" />
     <ClCompile Include="ClassicSobelOperatorService.cpp" />
     <ClCompile Include="SdSfService.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="LbpService.h" />
     <ClInclude Include="MathSerivce.h" />
     <ClInclude Include="MorletWaveletService.h" />
+    <ClInclude Include="MorletWaveletServiceFFT.h" />
     <ClInclude Include="MultiplyResult.h" />
     <ClInclude Include="MyEventReceiver.h" />
     <ClInclude Include="ClassicSobelOperatorService.h" />

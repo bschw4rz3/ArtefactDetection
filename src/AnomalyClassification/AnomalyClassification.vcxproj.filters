@@ -165,6 +165,9 @@
     <ClCompile Include="TimeFrequenceResult.h">
       <Filter>Headerdateien\models</Filter>
     </ClCompile>
+    <ClCompile Include="MorletWaveletServiceFFT.cpp">
+      <Filter>Quelldateien\detectors\transformation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -280,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="MultiplyResult.h">
       <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="MorletWaveletServiceFFT.h">
+      <Filter>Headerdateien\detectors\transformation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

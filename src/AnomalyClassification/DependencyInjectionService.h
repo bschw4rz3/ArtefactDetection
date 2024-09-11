@@ -24,6 +24,7 @@
 #include "DiscreteFourierDescriptorService.h"
 #include "DaubechiesFourWaveletService.h"
 #include "MorletWaveletService.h"
+#include "MorletWaveletServiceFFT.h"
 
 class DependencyInjectionService
 {
@@ -51,6 +52,7 @@ public:
     DiscreteFourierDescriptorService* discreteFourierDescriptorService;
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
     MorletWaveletService* morletWaveletService;
+    MorletWaveletServiceFFT* morletWaveletServiceFFT;
 
 public:
     DependencyInjectionService();

@@ -36,7 +36,8 @@ int main()
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR, Point2D(10, 310), L"Fourier Discriptor", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET, Point2D(10, 330), L"Daubechies four wavelet", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_MORLET_WAVELET, Point2D(10, 350), L"Morelet wavelet", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 370), L"Unknown", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_MORLET_WAVELET_FFT, Point2D(10, 370), L"Morelet FFT", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 390), L"Unknown", false, GUI_ID_OPERATION_PANNEL);
 
     graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 525), 70, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(90, 525), 70, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
