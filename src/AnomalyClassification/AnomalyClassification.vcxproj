@@ -160,6 +160,7 @@
     <ClCompile Include="HOGServiceCV.cpp" />
     <ClCompile Include="HuMomentsService.cpp" />
     <ClCompile Include="ImprovedSobelOperatorService.cpp" />
+    <ClCompile Include="kNearestNeighborsService.cpp" />
     <ClCompile Include="LbpService.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathSerivce.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="HuMomentsService.h" />
     <ClInclude Include="ImprovedSobelOperatorService.h" />
     <ClInclude Include="KeyValuePair.h" />
+    <ClInclude Include="kNearestNeighborsService.h" />
     <ClInclude Include="LbpHistogramResult.h" />
     <ClInclude Include="LbpResult.h" />
     <ClInclude Include="LbpService.h" />

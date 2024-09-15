@@ -168,10 +168,8 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                     this->onBiorWavlet();
                 }
 
-                
                 // Clean up
                 this->removeTempFiles();
-                
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -871,9 +869,19 @@ void MyEventReceiver::onResetImages()
         this->graphicEngine->removeElement(GUI_ID_IMAGE_2_0);
     }
 
+    if(this->graphicEngine->exists(GUI_ID_IMAGE_2_1))
+    {
+        this->graphicEngine->removeElement(GUI_ID_IMAGE_2_1);
+    }
+
     if (this->graphicEngine->exists(GUI_ID_IMAGE_3_0))
     {
         this->graphicEngine->removeElement(GUI_ID_IMAGE_3_0);
+    }
+
+    if (this->graphicEngine->exists(GUI_ID_IMAGE_3_1))
+    {
+        this->graphicEngine->removeElement(GUI_ID_IMAGE_3_1);
     }
 
     if (this->graphicEngine->exists(GUI_ID_IMAGE_1_TAB))
@@ -932,7 +940,7 @@ void MyEventReceiver::histogram(std::map<std::string, int> histogramData, int la
     }
 
     XYChart* c = new XYChart(500, 500);
-    c->setPlotArea(50, 20, 340, 350);
+    c->setPlotArea(50, 20, 430, 440);
 
     // Add a line chart layer using the given data
     c->addBarLayer(DoubleArray(x, n));
@@ -992,7 +1000,7 @@ void MyEventReceiver::diagram(std::vector<std::complex<double>> data, std::strin
     }
 
     XYChart* c = new XYChart(500, 500);
-    c->setPlotArea(50, 20, 340, 350);
+    c->setPlotArea(50, 20, 430, 440);
 
     c->addTitle(title.c_str());
 
@@ -1043,7 +1051,7 @@ void MyEventReceiver::diagram(std::vector<double> data, std::string fileName)
     }
 
     XYChart* c = new XYChart(500, 500);
-    c->setPlotArea(50, 20, 340, 350);
+    c->setPlotArea(50, 20, 430, 440);
 
     // Add a line chart layer using the given data
     c->addLineLayer(DoubleArray(x, n));

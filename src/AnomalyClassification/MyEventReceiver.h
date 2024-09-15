@@ -220,7 +220,7 @@ private:
     int tempFileIndex;
 
     bool imageVectorCentered = true; 
-    bool imageVectorByConture = true;
+    bool imageVectorByConture = false;
 
 public:
     MyEventReceiver(GraphicEngineExtended* graphic_engine, DependencyInjectionService* dependencyInjectionService);
