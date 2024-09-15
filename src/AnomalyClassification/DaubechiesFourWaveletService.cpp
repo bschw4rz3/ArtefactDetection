@@ -1,34 +1,42 @@
 #include "DaubechiesFourWaveletService.h"
 
-DaubechiesFourWaveletService::DaubechiesFourWaveletService(ClassicSobelOperatorService* sobelService, CImgService* cImgService)
+DaubechiesFourWaveletService::DaubechiesFourWaveletService()
 {
-    this->sobelService = sobelService;
-    this->cImgService = cImgService;
+    // Daubechies 4 Coefficients (low-pass filter)
+    const double sqrt10 = sqrt(10.0);
+    const std::complex<double> sqrt5_2_sqrt10_pos = sqrt(std::complex<double>(5.0 + 2.0 * sqrt10));
+    const std::complex<double> sqrt5_2_sqrt10_neg = sqrt(std::complex<double>(5.0 - 2.0 * sqrt10));
+    const double denom = 16.0 * sqrt(2.0);
+
+    this->low_pass_filter = {
+        (1.0 + sqrt10 + sqrt5_2_sqrt10_pos) / denom,
+        (5.0 + sqrt10 - sqrt5_2_sqrt10_pos) / denom,
+        (5.0 - sqrt10 + sqrt5_2_sqrt10_neg) / denom,
+        (1.0 - sqrt10 - sqrt5_2_sqrt10_neg) / denom
+    };
+
+    // High-pass filter is derived from the low-pass filter by alternating signs and reversing the order
+    this->high_pass_filter = {
+        low_pass_filter[3], -low_pass_filter[2],
+        low_pass_filter[1], -low_pass_filter[0]
+    };
 }
 
-void DaubechiesFourWaveletService::calculate(const CImg<unsigned char>* image, ColorRGB backgroundColor, bool normalizedToCentriod, bool trueToConture)
-{    
-    CImg<unsigned char> contureImage = this->sobelService->getGradientImage(image);
-    std::vector<std::complex<double>> inputVector = this->cImgService->getContureAsComplexVector(&contureImage, backgroundColor, normalizedToCentriod, trueToConture);
-    /*
-    for ()
-    {
+// Daubechies Wavelet Transform (Single Level)
+void DaubechiesFourWaveletService::dbx_wavelet_transform(const std::vector<std::complex<double>>& input, std::vector<std::complex<double>>& approx, std::vector<std::complex<double>>& detail) {
+    // Convolve input signal with low-pass and high-pass filters
+    std::vector<std::complex<double>> low_pass_convolution = this->convolve(input, low_pass_filter);
+    std::vector<std::complex<double>> high_pass_convolution = this->convolve(input, high_pass_filter);
 
-    }
+    // Downsample the convolved signals
+    approx = low_pass_convolution; //this->downsample(low_pass_convolution);
+    detail = high_pass_convolution; //this->downsample(high_pass_convolution);
+}
 
-    int n = inputVector.size();
-    double* v = wavelet::daub4_transform(n, u);
-    double* w = wavelet::daub4_transform_inverse(n, v);
+std::map<int, std::vector<std::complex<double>>> DaubechiesFourWaveletService::calculate(std::vector<std::complex<double>> input, int levels)
+{  
+    // Berechne die Wavelet-Transformation
+    return this->multi_level_wavelet(input, levels);
 
-    std::vector<double> daubTransform;
-    std::vector<double> daubTransformInverse;
-    
-    for (int i = 0; i < n; i++)
-    {
-        uniform.push_back(u[i]);
-        daubTransform.push_back(v[i]);
-        daubTransformInverse.push_back(w[i]);
-    }*/
 
-    return;
 }

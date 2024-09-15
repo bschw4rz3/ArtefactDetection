@@ -24,9 +24,12 @@ DependencyInjectionService::DependencyInjectionService()
     this->waveletTransformCV = new WaveletTransformCV(this->stringSerivce);
     this->discreteFourierTransformationSerivceCV = new DiscreteFourierTransformationSerivceCV();
     this->discreteFourierDescriptorService = new DiscreteFourierDescriptorService(this->classicSobelOperatorService, this->imgService);
-    this->daubechiesFourWaveletService = new DaubechiesFourWaveletService(this->classicSobelOperatorService, this->imgService);
+    this->daubechiesFourWaveletService = new DaubechiesFourWaveletService();
     this->morletWaveletService = new MorletWaveletService(this->mathSerivce);
     this->morletWaveletServiceFFT = new MorletWaveletServiceFFT();
+    this->haarWavletService = new HaarWavletService();
+    this->daubechiesSecondWaveletService = new DaubechiesSecondWaveletService();
+    this->biorWavletService = new BiorWavletService();
 }
 
 DependencyInjectionService::~DependencyInjectionService()
@@ -55,4 +58,7 @@ DependencyInjectionService::~DependencyInjectionService()
     delete this->daubechiesFourWaveletService;
     delete this->morletWaveletService;
     delete this->morletWaveletServiceFFT;
+    delete this->haarWavletService;
+    delete this->daubechiesSecondWaveletService;
+    delete this->biorWavletService;
 }

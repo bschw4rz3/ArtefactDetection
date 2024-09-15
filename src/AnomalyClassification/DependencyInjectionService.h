@@ -25,6 +25,9 @@
 #include "DaubechiesFourWaveletService.h"
 #include "MorletWaveletService.h"
 #include "MorletWaveletServiceFFT.h"
+#include "HaarWavletService.h"
+#include "DaubechiesSecondWaveletService.h"
+#include "BiorWavletService.h"
 
 class DependencyInjectionService
 {
@@ -53,6 +56,9 @@ public:
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
     MorletWaveletService* morletWaveletService;
     MorletWaveletServiceFFT* morletWaveletServiceFFT;
+    HaarWavletService* haarWavletService;
+    DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
+    BiorWavletService* biorWavletService;
 
 public:
     DependencyInjectionService();

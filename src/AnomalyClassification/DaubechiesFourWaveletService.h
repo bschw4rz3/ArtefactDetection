@@ -8,6 +8,11 @@
 using namespace cimg_library;
 
 #include <iostream>
+#include <vector>
+#include <complex>
+#include <cmath>
+#include <valarray>
+#include <iostream>
 #include <iomanip>
 #include <vector>
 
@@ -15,17 +20,17 @@ using namespace cimg_library;
 #include "ClassicSobelOperatorService.h"
 
 #include "../WaveletLib/wavelet.h"
+#include "DaubechiesSecondWaveletService.h"
 
-class DaubechiesFourWaveletService
+class DaubechiesFourWaveletService : DaubechiesSecondWaveletService
 {
-private:
-	ClassicSobelOperatorService* sobelService;
-	CImgService* cImgService;
-
 public:
-	DaubechiesFourWaveletService(ClassicSobelOperatorService* sobelService, CImgService* cImgService);
+	DaubechiesFourWaveletService();
 
-	void calculate(const CImg<unsigned char>* image, ColorRGB backgroundColor, bool normalizedToCentriod, bool trueToConture);
+	std::map<int, std::vector<std::complex<double>>> calculate(std::vector<std::complex<double>> input, int levels = 3);
+
+private:
+    void dbx_wavelet_transform(const std::vector<std::complex<double>>& input, std::vector<std::complex<double>>& approx, std::vector<std::complex<double>>& detail);
 };
 
 #endif

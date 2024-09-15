@@ -137,12 +137,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BiorWavletService.cpp" />
     <ClCompile Include="CImgService.cpp" />
     <ClCompile Include="ColorLib.h" />
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />
     <ClCompile Include="CompletedLbpService.cpp" />
     <ClCompile Include="DaubechiesFourWaveletService.cpp" />
+    <ClCompile Include="DaubechiesSecondWaveletService.cpp" />
     <ClCompile Include="DependencyInjectionService.cpp" />
     <ClCompile Include="DirectoryService.cpp" />
     <ClCompile Include="DiscreteFourierDescriptorService.cpp" />
@@ -152,6 +154,7 @@
     <ClCompile Include="GeometricService.cpp" />
     <ClCompile Include="GLCMService.cpp" />
     <ClCompile Include="GraphicEngineExtended.cpp" />
+    <ClCompile Include="HaarWavletService.cpp" />
     <ClCompile Include="HistogramValueService.cpp" />
     <ClCompile Include="HOGService.cpp" />
     <ClCompile Include="HOGServiceCV.cpp" />
@@ -172,10 +175,12 @@
     <ClCompile Include="WaveletTransformCV.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BiorWavletService.h" />
     <ClInclude Include="CImgService.h" />
     <ClInclude Include="ColorService.h" />
     <ClInclude Include="CompletedLbpService.h" />
     <ClInclude Include="DaubechiesFourWaveletService.h" />
+    <ClInclude Include="DaubechiesSecondWaveletService.h" />
     <ClInclude Include="DependencyInjectionService.h" />
     <ClInclude Include="DFTResult.h" />
     <ClInclude Include="DirectoryService.h" />
@@ -188,6 +193,7 @@
     <ClInclude Include="GLCMResult.h" />
     <ClInclude Include="GLCMService.h" />
     <ClInclude Include="GraphicEngineExtended.h" />
+    <ClInclude Include="HaarWavletService.h" />
     <ClInclude Include="HistogramValueService.h" />
     <ClInclude Include="HogCellResult.h" />
     <ClInclude Include="HOGService.h" />

@@ -58,7 +58,7 @@ FDResult DiscreteFourierTransformationSerivce::calculate(CImg<unsigned char>* im
 	std::vector<std::complex<double>> output(dataSetLength);
 	dft(fequence, output);
 
-	return FDResult(sobelImage, fequence);
+	return FDResult(sobelImage, fequence, output);
 }
 
 std::vector<std::complex<double>> DiscreteFourierTransformationSerivce::calculate_dft(const std::vector<std::complex<double>>& signal)

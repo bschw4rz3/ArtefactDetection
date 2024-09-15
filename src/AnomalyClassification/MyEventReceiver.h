@@ -89,6 +89,9 @@ enum {
     GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET,
     GUI_ID_CHECKBOX_MORLET_WAVELET,
     GUI_ID_CHECKBOX_MORLET_WAVELET_FFT,
+    GUI_ID_CHECKBOX_HAAR_WAVLET,
+    GUI_ID_CHECKBOX_DAUBECHIES_SECOND,
+    GUI_ID_CHECKBOX_BIOR_WAVLET,
 
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -177,6 +180,7 @@ private:
     DirectoryService* directoryService;
     MathSerivce* mathSerivce;
     ColorService* colorService;
+    CImgService* cImgService;
 
     SuperPixelService* superPixelService;
     ClassicSobelOperatorService* sobelOperatorSerivce;
@@ -197,6 +201,9 @@ private:
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
     MorletWaveletService* morletWaveletService;
     MorletWaveletServiceFFT* morletWaveletServiceFFT;
+    HaarWavletService* haarWaeletService;
+    DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
+    BiorWavletService* biorWavlet;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
@@ -211,6 +218,9 @@ private:
 
     std::wstring selectedFile;
     int tempFileIndex;
+
+    bool imageVectorCentered = true; 
+    bool imageVectorByConture = true;
 
 public:
     MyEventReceiver(GraphicEngineExtended* graphic_engine, DependencyInjectionService* dependencyInjectionService);
@@ -239,6 +249,9 @@ private:
     void onDaubechiesFourWavelet();
     void onMorletFourWavelet();
     void onMorletFourWaveletFFT();
+    void onHaarWavelet();
+    void onDaubechiesSecond();
+    void onBiorWavlet();
 
     void onSelectFile(core::stringc fileName);
     void onResetImages();
@@ -254,10 +267,14 @@ private:
     void diagram(std::vector<double> data, std::string fileName);
     void diagram(std::vector<std::complex<double>> data, std::string fileName, std::vector<std::complex<double>> complexDiscription, std::string title = "");
     void heatMap(TimeFrequenceResult timeFrequence, std::vector<double> labels, std::string fileName);
+    void heatMap(std::map<int, std::vector<std::complex<double>>> input, int maxLevel, std::vector<double> labels, std::string fileName);
     void heatMapImg(TimeFrequenceResult timeFrequence, std::string fileName);
 
     double* generateNewArray(int to);
+    double* generateNewArrayFromExsistingFrequence(std::map<int, std::vector<std::complex<double>>> frequenceTimeMap, int maxFrequence);
     double* generateNewArrayFromExsistingFrequence(TimeFrequenceResult timeFrequence);
+
+    std::map<double, std::vector<double>> toDoubleMap(std::map<double, std::vector<std::complex<double>>> a);
 };
 
 #endif

@@ -15,12 +15,12 @@ class MorletWaveletServiceFFT
 public:
 	MorletWaveletServiceFFT();
 
-	std::map<double, std::vector<double>> calculate();
+	virtual std::map<double, std::vector<double>> calculate(std::vector<std::complex<double>> signal);
 
-private:
-	std::map<double, std::vector<double>> computeScalogram(const std::vector<double>& signal, const std::vector<double>& frequencies, double dt);
-	std::vector<std::complex<double>> convolution(const std::vector<double>& signal, const std::vector<std::complex<double>>& wavelet);
-	std::vector<std::complex<double>> moreletWavelet(int n, double freq, double dt);
+protected:
+	virtual std::map<double, std::vector<double>> computeScalogram(const std::vector<std::complex<double>>& signal, const std::vector<double>& frequencies, double dt);
+	virtual std::vector<std::complex<double>> convolution(const std::vector<std::complex<double>>& signal, const std::vector<std::complex<double>>& wavelet);
+	virtual std::vector<std::complex<double>> waveletFunction(int n, double freq, double dt);
 
 };
 

@@ -168,6 +168,15 @@
     <ClCompile Include="MorletWaveletServiceFFT.cpp">
       <Filter>Quelldateien\detectors\transformation</Filter>
     </ClCompile>
+    <ClCompile Include="HaarWavletService.cpp">
+      <Filter>Quelldateien\detectors\transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="DaubechiesSecondWaveletService.cpp">
+      <Filter>Quelldateien\detectors\transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="BiorWavletService.cpp">
+      <Filter>Quelldateien\detectors\transformation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -285,6 +294,15 @@
       <Filter>Headerdateien\models</Filter>
     </ClInclude>
     <ClInclude Include="MorletWaveletServiceFFT.h">
+      <Filter>Headerdateien\detectors\transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="HaarWavletService.h">
+      <Filter>Headerdateien\detectors\transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="DaubechiesSecondWaveletService.h">
+      <Filter>Headerdateien\detectors\transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="BiorWavletService.h">
       <Filter>Headerdateien\detectors\transformation</Filter>
     </ClInclude>
   </ItemGroup>
