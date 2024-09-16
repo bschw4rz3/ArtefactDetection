@@ -176,6 +176,14 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 this->onResetImages();
                 this->graphicEngine->addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, L"..\\AnomalyGeneration\\testdata");
             }
+            else if(id == GUI_ID_BUTTON_GENERATE_TRAININGS_DATA)
+            {
+                this->onGenerateTrainingsData();
+            }
+            else if(id == GUI_ID_BUTTON_CLASSIFY)
+            {
+                this->onClassify();
+            }
 
              return true;
         case EGET_FILE_SELECTED:
@@ -187,7 +195,16 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
             return true;
         }
         case EGET_CHECKBOX_CHANGED:
-            this->graphicEngine->resetMethodCheckBoxs();
+
+            if(id == GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE || id == GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR  || id == GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE)
+            {
+                this->graphicEngine->resetCheckBoxsByWindowId(GUI_ID_CLASSIFY_PANNEL);
+            }
+            else
+            {
+                this->graphicEngine->resetCheckBoxsByWindowId(GUI_ID_OPERATION_PANNEL);
+            }
+
             this->graphicEngine->setGUIElementChecked(id, true);
 
             return true;
@@ -199,6 +216,17 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
 
     return false;
 }
+
+void MyEventReceiver::onGenerateTrainingsData()
+{
+
+}
+
+void MyEventReceiver::onClassify()
+{
+
+}
+
 /*
 void display_superimposed(const cv::Mat& A1, const cv::Mat& B, const std::string& fileName)
 {

@@ -1,27 +1,6 @@
-// main.cpp : Diese Datei enthält die Funktion "main". Hier beginnt und endet die Ausführung des Programms.
-//
+#include "DefectGenerationService.h"
 
-#pragma warning(disable:4146)
-#pragma warning(disable:4996)
-
-#define cimg_use_png
-
-#include "../Shared/cimg/CImg.h"
-using namespace cimg_library;
-
-#include <conio.h>
-#include <direct.h>
-
-#include <format>
-#include <iostream>
-#include <chrono>
-#include <string> 
-#include "header/DrawCalculations.h"
-#include "header/RandomService.h"
-#include "header/DrawBumpCalculations.h"
-#include "header/Anomaly.h"
-
-bool contains(std::vector<AnomalyType> list, AnomalyType type)
+bool DefectGenerationService::contains(std::vector<AnomalyType> list, AnomalyType type)
 {
     for(int i = 0;i < list.size();i++)
     {
@@ -34,7 +13,7 @@ bool contains(std::vector<AnomalyType> list, AnomalyType type)
     return false;
 }
 
-bool containsWithePixels(CImg<unsigned char> &tmp)
+bool DefectGenerationService::containsWithePixels(CImg<unsigned char> &tmp)
 {
     for (int x = 0; x < tmp.width(); x++)
     {
@@ -52,10 +31,8 @@ bool containsWithePixels(CImg<unsigned char> &tmp)
     return false;
 }
 
-std::string getTestdataImagePath(std::vector<AnomalyType> anomalyTypeList, int index)
+std::string DefectGenerationService::getTestdataImagePath(std::vector<AnomalyType> anomalyTypeList, int index, std::string path)
 {
-    std::string path = "testdata/";
-
     if (contains(anomalyTypeList, AnomalyType::Defect) || contains(anomalyTypeList, AnomalyType::MinorDefect))
     {
         path = path + "defect/";
@@ -72,9 +49,9 @@ std::string getTestdataImagePath(std::vector<AnomalyType> anomalyTypeList, int i
     return path + std::to_string(index) + ".png";
 }
 
-void saveImage(CImg<unsigned char>& tmp, int wx, int hy, int size_z, int size_c, std::vector<AnomalyType>& anomalyTypeList, int& index)
+void DefectGenerationService::saveImage(CImg<unsigned char>& tmp, int wx, int hy, int size_z, int size_c, std::vector<AnomalyType>& anomalyTypeList, int& index, std::string dirPath)
 {
-    std::string complitePath = getTestdataImagePath(anomalyTypeList, index);
+    std::string complitePath = getTestdataImagePath(anomalyTypeList, index, dirPath);
     FILE* file = std::fopen(complitePath.c_str(), "r");
 
     while (file != NULL)
@@ -82,7 +59,7 @@ void saveImage(CImg<unsigned char>& tmp, int wx, int hy, int size_z, int size_c,
         fclose(file);
 
         index++;
-        complitePath = getTestdataImagePath(anomalyTypeList, index);
+        complitePath = getTestdataImagePath(anomalyTypeList, index, dirPath);
 
         file = fopen(complitePath.c_str(), "r");
     }
@@ -98,7 +75,7 @@ void saveImage(CImg<unsigned char>& tmp, int wx, int hy, int size_z, int size_c,
     fclose(file);
 }
 
-void cutSubPics(CImg<unsigned int>& bg, std::vector<Anomaly>& anomalyList, int w, int h, int size_z, int size_c)
+void DefectGenerationService::cutSubPics(CImg<unsigned int>& bg, std::vector<Anomaly>& anomalyList, int w, int h, int size_z, int size_c, std::string dirPath)
 {
     int wx = 200;
     int hy = 200;
@@ -128,12 +105,12 @@ void cutSubPics(CImg<unsigned int>& bg, std::vector<Anomaly>& anomalyList, int w
                 continue;
             }
 
-            saveImage(tmp, wx, hy, size_z, size_c, anomalyTypeList, index);
+            saveImage(tmp, wx, hy, size_z, size_c, anomalyTypeList, index, dirPath);
         }
     }
 }
 
-void cutAnomalies(CImg<unsigned int>& bg, std::vector<Anomaly>& anomalyList, int w, int h, int size_z, int size_c)
+void DefectGenerationService::cutAnomalies(CImg<unsigned int>& bg, std::vector<Anomaly>& anomalyList, int w, int h, int size_z, int size_c, std::string dirPath)
 {
     int index = 0;
 
@@ -152,11 +129,11 @@ void cutAnomalies(CImg<unsigned int>& bg, std::vector<Anomaly>& anomalyList, int
         std::vector<AnomalyType> anomalyTypeList;
         anomalyTypeList.push_back(anomalyList[i].anomalyType);
 
-        saveImage(tmp, tmp.width(), tmp.height(), size_z, size_c, anomalyTypeList, index);
+        saveImage(tmp, tmp.width(), tmp.height(), size_z, size_c, anomalyTypeList, index, dirPath);
     }
 }
 
-int main()
+void DefectGenerationService::generateAnomalieDirectories(std::string dirPath)
 {
     int w = 1000;
     int h = 800;
@@ -272,10 +249,10 @@ int main()
 
     bg.display();
 
-    mkdir("testdata");
-    mkdir("testdata/defect");
-    mkdir("testdata/artefact");
-    mkdir("testdata/none");
+    mkdir(dirPath.c_str());
+    mkdir((dirPath + "/defect").c_str());
+    mkdir((dirPath + "/artefact").c_str());
+    mkdir((dirPath + "/none").c_str());
 
-    cutAnomalies(bg, anomalyList, w, h, size_z, size_c);
+    cutAnomalies(bg, anomalyList, w, h, size_z, size_c, dirPath);
 }

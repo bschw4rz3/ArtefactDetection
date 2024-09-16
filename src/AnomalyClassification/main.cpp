@@ -137,5 +137,15 @@ int main()
     graphicEngine.addLabel(GUI_ID_VALUE_GLCM_ENTROPY, Point2D(pannelX + 60, pannelY + 80), 60, L"", GUI_ID_HU_GLCM_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_GLCM_MEAN, Point2D(pannelX + 60, pannelY + 100), 60, L"", GUI_ID_HU_GLCM_PANNEL);
 
+    graphicEngine.addSubwindow(GUI_ID_CLASSIFY_PANNEL, Point2D(500, 0), Point2D(windowSize.x - 360, 1060), L"Classify");
+
+    graphicEngine.addLabel(GUI_ID_LABEL_CHECKBOX_CLASSIFY, Point2D(pannelX, pannelY + 10), 60, L"Classify method:", GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR, Point2D(pannelX, pannelY + 30), L"k-Nearest-Neighbor", false, GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE, Point2D(pannelX, pannelY + 50), L"support vector machine", false, GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE, Point2D(pannelX, pannelY + 70), L"decision trees", false, GUI_ID_CLASSIFY_PANNEL);
+
+    graphicEngine.addButton(GUI_ID_BUTTON_GENERATE_TRAININGS_DATA, Point2D(pannelX + 180, pannelY + 20), 200, L"Generate trainings data", L"Generiere neu Trainingsdaten", GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CLASSIFY, Point2D(pannelX + 180, pannelY + 60), 200, L"Classify", L"Klassifizieren des aktuellen Bildes", GUI_ID_CLASSIFY_PANNEL);
+
     graphicEngine.run((EventReceiver*)&receiver);
 }

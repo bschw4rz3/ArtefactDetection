@@ -8,14 +8,37 @@ GraphicEngineExtended::GraphicEngineExtended(StringSerivce* stringSerivce) : Gra
 void GraphicEngineExtended::addCheckbox(int id, Point2D position, const wchar_t* text, bool checked, int parentId)
 {
     this->checkboxIds.push_back(id);
+
+    if(this->checkboxIdsByWindow.find(parentId) == this->checkboxIdsByWindow.end())
+    {
+        this->checkboxIdsByWindow.insert(std::pair<int, std::vector<int>>(parentId, std::vector<int>()));
+    }
+
+    this->checkboxIdsByWindow[parentId].push_back(id);
+
     GraphicEngine::addCheckbox(id, position, text, checked, parentId);
 }
 
-void GraphicEngineExtended::resetMethodCheckBoxs()
+void GraphicEngineExtended::resetCheckBoxs()
 {
     for (int i = 0; i < this->checkboxIds.size(); i++)
     {
         int id = this->checkboxIds[i];
+        IGUICheckBox* element = (IGUICheckBox*) this->guiElementMap[id];
+        element->setChecked(false);
+    }
+}
+
+void GraphicEngineExtended::resetCheckBoxsByWindowId(int parentId)
+{
+    if(this->checkboxIdsByWindow.find(parentId) == this->checkboxIdsByWindow.end())
+    {
+        return;
+    }
+
+    for (int i = 0; i < this->checkboxIdsByWindow[parentId].size(); i++)
+    {
+        int id = this->checkboxIdsByWindow[parentId][i];
         IGUICheckBox* element = (IGUICheckBox*) this->guiElementMap[id];
         element->setChecked(false);
     }

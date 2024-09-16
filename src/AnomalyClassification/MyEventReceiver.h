@@ -59,6 +59,7 @@ enum {
     GUI_ID_IMAGE_PANNEL,
     GUI_ID_HU_MOMENT_PANNEL,
     GUI_ID_HU_GLCM_PANNEL,
+    GUI_ID_CLASSIFY_PANNEL,
 
     GUI_ID_TABCONTROL,
     GUI_ID_IMAGE_1_TAB,
@@ -169,6 +170,14 @@ enum {
     GUI_ID_VALUE_GLCM_IDM,
     GUI_ID_VALUE_GLCM_ENTROPY,
     GUI_ID_VALUE_GLCM_MEAN,
+
+    GUI_ID_LABEL_CHECKBOX_CLASSIFY,
+    GUI_ID_BUTTON_GENERATE_TRAININGS_DATA,
+    GUI_ID_BUTTON_CLASSIFY,
+    GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR,
+    GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE,
+    GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE
+    
 };
 
 class MyEventReceiver : public EventReceiver
@@ -256,6 +265,8 @@ private:
     void onSelectFile(core::stringc fileName);
     void onResetImages();
     void onCreateImagePannel();
+    void onGenerateTrainingsData();
+    void onClassify();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();

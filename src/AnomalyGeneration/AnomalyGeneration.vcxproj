@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="DefectGenerationService.cpp" />
     <ClCompile Include="source\Anomaly.cpp" />
     <ClCompile Include="source\CalculationService.cpp" />
     <ClCompile Include="source\DrawBumpCalculations.cpp" />
@@ -136,6 +136,7 @@
     <ClCompile Include="source\RandomService.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DefectGenerationService.h" />
     <ClInclude Include="header\Anomaly.h" />
     <ClInclude Include="header\CalculationService.h" />
     <ClInclude Include="header\DrawBumpCalculations.h" />
