@@ -14,10 +14,10 @@ SuperPixelService::SuperPixelService(ColorService* colorService, MathSerivce* ma
 * L = Distance to cluster superpixels of 8 neighbor pixels
 * T = Is the threshold for the subsection calculation
 */
-SubregionResult SuperPixelService::calculateSuperPixelsAndSubregions(CImg<unsigned char>& image, int maxCluster, double m, double E, double L, double T)
+SubregionResult SuperPixelService::calculateSuperPixelsAndSubregions(CImg<unsigned char>* image, int maxCluster, double m, double E, double L, double T)
 {
 	std::vector<std::vector<SuperPixelEntry>> colorMatrix = this->imageToMatrix(image);
-	Point2D pixelDimensions(image.width(), image.height());
+	Point2D pixelDimensions(image->width(), image->height());
 
 	SuperPixelResult superPixelResult = this->calculateSuperPixel(colorMatrix, pixelDimensions, maxCluster, m, E);
 
@@ -133,10 +133,10 @@ SubregionResult SuperPixelService::calculateSuperPixelsAndSubregions(CImg<unsign
 * m = If m is 0 is set to S (S is sqrt(pixelSizeN / maxCluster)). You can set a own m for distance calculations
 * E = Is the error threshold for the distance of the new and old cluster centers
 */
-SuperPixelResult SuperPixelService::calculateSuperPixels(CImg<unsigned char>& image, int maxCluster, double m, double E)
+SuperPixelResult SuperPixelService::calculateSuperPixels(CImg<unsigned char>* image, int maxCluster, double m, double E)
 {
 	std::vector<std::vector<SuperPixelEntry>> colorMatrix = this->imageToMatrix(image);
-	Point2D pixelDimensions(image.width(), image.height());
+	Point2D pixelDimensions(image->width(), image->height());
 
 	return this->calculateSuperPixel(colorMatrix, pixelDimensions, maxCluster, m, E);
 }
@@ -308,12 +308,12 @@ double SuperPixelService::calculateGradientof(Point2D position, const std::vecto
 	return value;
 }
 
-std::vector<std::vector<SuperPixelEntry>> SuperPixelService::imageToMatrix(CImg<unsigned char>& image)
+std::vector<std::vector<SuperPixelEntry>> SuperPixelService::imageToMatrix(CImg<unsigned char>* image)
 {
 	std::vector<std::vector<SuperPixelEntry>> result;
 
-	int width = image.width();
-	int height = image.height();
+	int width = image->width();
+	int height = image->height();
 
 	for (int x = 0; x < width; x++)
 	{
@@ -321,7 +321,7 @@ std::vector<std::vector<SuperPixelEntry>> SuperPixelService::imageToMatrix(CImg<
 
 		for (int y = 0; y < height; y++)
 		{
-			unsigned char* ptr = image.data(x, y);
+			unsigned char* ptr = image->data(x, y);
 
 			unsigned char r = ptr[0];
 			unsigned char g = ptr[0 + width * height];

@@ -8,6 +8,8 @@ DependencyInjectionService::DependencyInjectionService()
     this->geometricService = new GeometricService(this->colorService);
     this->imgService = new CImgService(this->geometricService, this->colorService);
 
+    this->defectGenerationService = new DefectGenerationService();
+
     this->superPixelService = new SuperPixelService(this->colorService, this->mathSerivce);
     this->classicSobelOperatorService = new ClassicSobelOperatorService(this->colorService);
     this->improvedSobelOperatorService = new ImprovedSobelOperatorService(this->colorService);
@@ -30,6 +32,8 @@ DependencyInjectionService::DependencyInjectionService()
     this->haarWavletService = new HaarWavletService();
     this->daubechiesSecondWaveletService = new DaubechiesSecondWaveletService();
     this->biorWavletService = new BiorWavletService();
+
+    this->kNearestNeighborsService = new KNearestNeighborsService();
 }
 
 DependencyInjectionService::~DependencyInjectionService()
@@ -42,6 +46,9 @@ DependencyInjectionService::~DependencyInjectionService()
     delete this->classicSobelOperatorService;
     delete this->improvedSobelOperatorService;
     delete this->geometricService;
+
+    delete this->defectGenerationService;
+
     delete this->histogramValueService;
     delete this->discreteFourierTransformationSerivce;
     delete this->directoryService;
@@ -61,4 +68,6 @@ DependencyInjectionService::~DependencyInjectionService()
     delete this->haarWavletService;
     delete this->daubechiesSecondWaveletService;
     delete this->biorWavletService;
+
+    delete this->kNearestNeighborsService;
 }

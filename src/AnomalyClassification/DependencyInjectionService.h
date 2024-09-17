@@ -29,6 +29,10 @@
 #include "DaubechiesSecondWaveletService.h"
 #include "BiorWavletService.h"
 
+#include "KNearestNeighborsService.h"
+
+#include "../AnomalyGeneration/DefectGenerationService.h"
+
 class DependencyInjectionService
 {
 public:
@@ -37,6 +41,9 @@ public:
     MathSerivce* mathSerivce;
     CImgService* imgService;
     SuperPixelService* superPixelService;
+
+    DefectGenerationService* defectGenerationService;
+
     ClassicSobelOperatorService* classicSobelOperatorService;
     ImprovedSobelOperatorService* improvedSobelOperatorService;
     GeometricService* geometricService;
@@ -59,6 +66,8 @@ public:
     HaarWavletService* haarWavletService;
     DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
     BiorWavletService* biorWavletService;
+
+    KNearestNeighborsService* kNearestNeighborsService;
 
 public:
     DependencyInjectionService();

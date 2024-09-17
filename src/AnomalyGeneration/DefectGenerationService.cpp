@@ -133,7 +133,7 @@ void DefectGenerationService::cutAnomalies(CImg<unsigned int>& bg, std::vector<A
     }
 }
 
-void DefectGenerationService::generateAnomalieDirectories(std::string dirPath)
+void DefectGenerationService::generateAnomalieDirectories(std::string dirPath, int iterationCount)
 {
     int w = 1000;
     int h = 800;
@@ -163,96 +163,99 @@ void DefectGenerationService::generateAnomalieDirectories(std::string dirPath)
     DrawBumpCalculations drawBumpCalculations(&randomService);
     DrawCalculations c(&drawCircelCalculations, &drawBumpCalculations);
 
-    c.drawRectPart(&bg, PixelPosition(xPos, yPos), (w/2)-50, (h/2)-50, 10, 1, withe, black);
-    
-    int countOfAnomalies = randomService.randomFromTo(0,10);
-
-    for(int i = 0;i<countOfAnomalies;i++)
-    {
-        double anomalyType = randomService.randomOneScaled();
-
-        int positionX = randomService.randomFromTo(0,w);
-        int positionY = randomService.randomFromTo(0,h);
-
-        if(anomalyType < 0.25)
-        {
-            int size = randomService.randomFromTo(1,10);
-            double pixelDistribution = randomService.randomFromTo(0,10);
-            double pixelStreung = randomService.randomFromTo(0,2.0);
-
-            PixelPosition position(positionX, positionY);
-            std::vector<PixelPosition> pixels = c.drawLiddelRandomBumb(&bg, position, size, pixelStreung, pixelDistribution, black);
-            anomalyList.push_back(Anomaly(pixels, AnomalyType::MinorDefect));
-        }
-        else if(anomalyType < 0.5)
-        {
-            PixelPosition positionFrom(positionX, positionY);
-            
-            positionX = randomService.randomFromTo(0,w);
-            positionY = randomService.randomFromTo(0,h);
-
-            PixelPosition positionTo(positionX, positionY);
-
-            int brigth = randomService.randomFromTo(0,30);
-            int countOfLines = randomService.randomFromTo(0,10);
-            int pixelCount = randomService.randomFromTo(0,20000);
-
-            std::vector<PixelPosition> pixels = c.drawScratch(&bg, positionFrom, positionTo, brigth, countOfLines, pixelCount, black);
-            anomalyList.push_back(Anomaly(pixels, AnomalyType::Defect));
-        }
-        else if(anomalyType < 0.75)
-        {
-            int radius = randomService.randomFromTo(0,150);
-            int rotationInterval = randomService.randomFromTo(0,50);
-            double pixelStreuung = randomService.randomFromTo(0,50);
-            double pixelCount = randomService.randomFromTo(0,10);
-            double pixelDistribution = randomService.randomFromTo(0,10);
-            double fadeFromTo = randomService.randomFromTo(0,1);
-            double fadeOutY = randomService.randomFromTo(0,1);
-            double rotation = randomService.randomFromTo(0,360);
-
-            PixelPosition position(positionX, positionY);    
-            
-            std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, black);
-            anomalyList.push_back(Anomaly(pixels, AnomalyType::Artefact));
-        }
-        else if(anomalyType < 1.0)
-        {
-            int radius = randomService.randomFromTo(0,150);
-            int rotationInterval = randomService.randomFromTo(0,50);
-            double pixelStreuung = randomService.randomFromTo(0,20);
-            double pixelCount = randomService.randomFromTo(0,10);
-            double pixelDistribution = randomService.randomFromTo(0,10);
-            double fadeFromTo = randomService.randomFromTo(0,1);
-            double fadeOutY = randomService.randomFromTo(0,1);
-            double rotation = randomService.randomFromTo(0,360);
-
-            PixelPosition position(positionX, positionY);
-
-            std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(NULL, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, withe);
-            Anomaly anomaly(pixels, AnomalyType::Artefact);
-            
-            PixelPosition from = anomaly.getFrom();
-            PixelPosition to = anomaly.getTo();
-
-            PixelPosition diff = to-from;
-            double w = abs(diff.x / 2);
-            double h = abs(diff.y / 2);
-            PixelPosition rectPosition(from.x + w, from.y + h);
-
-            c.drawRect(&bg, rectPosition, w, h, black);
-            c.drawPixelList(&bg, pixels, withe);
-
-            anomalyList.push_back(anomaly);
-        }
-    }
-
-    bg.display();
-
     mkdir(dirPath.c_str());
     mkdir((dirPath + "/defect").c_str());
     mkdir((dirPath + "/artefact").c_str());
     mkdir((dirPath + "/none").c_str());
+    
+    for(int j = 0;j<iterationCount;j++)
+    {
+        c.drawRectPart(&bg, PixelPosition(xPos, yPos), (w/2)-50, (h/2)-50, 10, 1, withe, black);
+    
+        int countOfAnomalies = randomService.randomFromTo(0,10);
 
-    cutAnomalies(bg, anomalyList, w, h, size_z, size_c, dirPath);
+        for(int i = 0;i<countOfAnomalies;i++)
+        {
+            double anomalyType = randomService.randomOneScaled();
+
+            int positionX = randomService.randomFromTo(0,w);
+            int positionY = randomService.randomFromTo(0,h);
+
+            if(anomalyType < 0.25)
+            {
+                int size = randomService.randomFromTo(1,10);
+                double pixelDistribution = randomService.randomFromTo(0,10);
+                double pixelStreung = randomService.randomFromTo(0,2.0);
+
+                PixelPosition position(positionX, positionY);
+                std::vector<PixelPosition> pixels = c.drawLiddelRandomBumb(&bg, position, size, pixelStreung, pixelDistribution, black);
+                anomalyList.push_back(Anomaly(pixels, AnomalyType::MinorDefect));
+            }
+            else if(anomalyType < 0.5)
+            {
+                PixelPosition positionFrom(positionX, positionY);
+            
+                positionX = randomService.randomFromTo(0,w);
+                positionY = randomService.randomFromTo(0,h);
+
+                PixelPosition positionTo(positionX, positionY);
+
+                int brigth = randomService.randomFromTo(0,30);
+                int countOfLines = randomService.randomFromTo(0,10);
+                int pixelCount = randomService.randomFromTo(0,20000);
+
+                std::vector<PixelPosition> pixels = c.drawScratch(&bg, positionFrom, positionTo, brigth, countOfLines, pixelCount, black);
+                anomalyList.push_back(Anomaly(pixels, AnomalyType::Defect));
+            }
+            else if(anomalyType < 0.75)
+            {
+                int radius = randomService.randomFromTo(0,150);
+                int rotationInterval = randomService.randomFromTo(0,50);
+                double pixelStreuung = randomService.randomFromTo(0,50);
+                double pixelCount = randomService.randomFromTo(0,10);
+                double pixelDistribution = randomService.randomFromTo(0,10);
+                double fadeFromTo = randomService.randomFromTo(0,1);
+                double fadeOutY = randomService.randomFromTo(0,1);
+                double rotation = randomService.randomFromTo(0,360);
+
+                PixelPosition position(positionX, positionY);    
+            
+                std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, black);
+                anomalyList.push_back(Anomaly(pixels, AnomalyType::Artefact));
+            }
+            else if(anomalyType < 1.0)
+            {
+                int radius = randomService.randomFromTo(0,150);
+                int rotationInterval = randomService.randomFromTo(0,50);
+                double pixelStreuung = randomService.randomFromTo(0,20);
+                double pixelCount = randomService.randomFromTo(0,10);
+                double pixelDistribution = randomService.randomFromTo(0,10);
+                double fadeFromTo = randomService.randomFromTo(0,1);
+                double fadeOutY = randomService.randomFromTo(0,1);
+                double rotation = randomService.randomFromTo(0,360);
+
+                PixelPosition position(positionX, positionY);
+
+                std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(NULL, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, withe);
+                Anomaly anomaly(pixels, AnomalyType::Artefact);
+            
+                PixelPosition from = anomaly.getFrom();
+                PixelPosition to = anomaly.getTo();
+
+                PixelPosition diff = to-from;
+                double w = abs(diff.x / 2);
+                double h = abs(diff.y / 2);
+                PixelPosition rectPosition(from.x + w, from.y + h);
+
+                c.drawRect(&bg, rectPosition, w, h, black);
+                c.drawPixelList(&bg, pixels, withe);
+
+                anomalyList.push_back(anomaly);
+            }
+        }
+
+        //bg.display();
+
+        cutAnomalies(bg, anomalyList, w, h, size_z, size_c, dirPath);
+    }
 }

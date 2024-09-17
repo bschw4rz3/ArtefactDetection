@@ -12,7 +12,7 @@ struct DataPoint {
     int label;                // Klassenlabel
 };
 
-class kNearestNeighborsService
+class KNearestNeighborsService
 {
 public:
     std::vector<DataPoint> classify(std::vector<DataPoint> trainingData, std::vector<std::vector<double>> testData, int k);

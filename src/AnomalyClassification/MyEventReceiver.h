@@ -16,21 +16,8 @@
 #include "GraphicEngineExtended.h"
 #include "../IrrlichtWrapper/SAppContext.h"
 #include "../IrrlichtWrapper/EventReceiver.h"
-/*
-#include "SuperPixelService.h"
-#include "ClassicSobelOperatorService.h"
-#include "ImprovedSobelOperatorService.h"
-#include "GeometricService.h"
-#include "HistogramValueService.h"
-#include "DiscreteFourierTransformationSerivce.h"
-#include "HuMomentsService.h"
-#include "DirectoryService.h"
-#include "SdSfService.h"
-#include "LbpService.h"
-#include "CompletedLbpService.h"
-#include "GLCMService.h"
-#include "HOGService.h"
-#include "GaborServiceCV.h"*/
+
+#include "FeatureResult.h"
 
 #include "DependencyInjectionService.h"
 
@@ -191,6 +178,8 @@ private:
     ColorService* colorService;
     CImgService* cImgService;
 
+    DefectGenerationService* defectGenerationService;
+
     SuperPixelService* superPixelService;
     ClassicSobelOperatorService* sobelOperatorSerivce;
     ImprovedSobelOperatorService* improvedSobelOperatorService;
@@ -214,6 +203,8 @@ private:
     DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
     BiorWavletService* biorWavlet;
 
+    KNearestNeighborsService* kNearestNeighborsService;
+
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
 
@@ -226,6 +217,7 @@ private:
     int imageCountOfLastRun;
 
     std::wstring selectedFile;
+    std::string trainingsdata;
     int tempFileIndex;
 
     bool imageVectorCentered = true; 
@@ -241,32 +233,35 @@ public:
     virtual bool OnEvent(const SEvent& event);
 
 private:
-    void onCalculateSuperPixels();
-    void onCalculateSobelOperator();
-    void onCalculateImprovedSobelOperator();
-    void onDiscreteFourierTransformation();
-    void onHuMoment();
-    void onSdSf();
-    void onLbp();
-    void onCompletedLbp();
-    void onGLCM();
-    void onHOG();
-    void onGaborFilter();
-    void onWavelet();
-    void onDiscreteFourierTransformationCV();
-    void onFourierDiscriptor();
-    void onDaubechiesFourWavelet();
-    void onMorletFourWavelet();
-    void onMorletFourWaveletFFT();
-    void onHaarWavelet();
-    void onDaubechiesSecond();
-    void onBiorWavlet();
+    void onCalculateSuperPixels(CImg<unsigned char>* img);
+    void onCalculateSobelOperator(CImg<unsigned char>* img);
+    void onCalculateImprovedSobelOperator(CImg<unsigned char>* img);
+    FeatureResult onDiscreteFourierTransformation(CImg<unsigned char>* img, bool silence);
+    FeatureResult onHuMoment(std::string fileName, CImg<unsigned char>* img, bool silence);
+    FeatureResult onSdSf(CImg<unsigned char>* img, bool silence);
+    FeatureResult onLbp(CImg<unsigned char>* img, bool silence);
+    FeatureResult onCompletedLbp(CImg<unsigned char>* img, bool silence);
+    FeatureResult onGLCM(CImg<unsigned char>* img, bool silence);
+    FeatureResult onHOG(CImg<unsigned char>* img, bool silence);
+    FeatureResult onGaborFilter(std::string fileName, bool silence);
+    FeatureResult onWavelet(std::string fileName, bool silence);
+    FeatureResult onDiscreteFourierTransformationCV(std::string fileName, bool silence);
+    FeatureResult onFourierDiscriptor(CImg<unsigned char>* img, bool silence);
+    FeatureResult onDaubechiesFourWavelet(CImg<unsigned char>* img, bool silence);
+    FeatureResult onMorletFourWavelet(CImg<unsigned char>* img, bool silence);
+    FeatureResult onMorletFourWaveletFFT(CImg<unsigned char>* img, bool silence);
+    FeatureResult onHaarWavelet(CImg<unsigned char>* img, bool silence);
+    FeatureResult onDaubechiesSecond(CImg<unsigned char>* img, bool silence);
+    FeatureResult onBiorWavlet(CImg<unsigned char>* img, bool silence);
 
+    FeatureResult onExecuteFeatureExtraction(std::string fileName, CImg<unsigned char>* img, bool silence);
     void onSelectFile(core::stringc fileName);
     void onResetImages();
     void onCreateImagePannel();
     void onGenerateTrainingsData();
-    void onClassify();
+
+    void onClassifyKNearest();
+    std::vector<DataPoint> loadTraingsdataForKNearest();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();
@@ -286,6 +281,13 @@ private:
     double* generateNewArrayFromExsistingFrequence(TimeFrequenceResult timeFrequence);
 
     std::map<double, std::vector<double>> toDoubleMap(std::map<double, std::vector<std::complex<double>>> a);
+    std::map<double, std::vector<double>> toDoubleMap(std::map<int, std::vector<std::complex<double>>> a);
+    std::vector<double> toDoubleVector(std::vector<std::complex<double>> list);
+
+    FeatureResult calculateFeatureVector(std::map<double, std::vector<double>> heatMap);
+    FeatureResult calculateFeatureVector(std::map<int, std::vector<double>> heatMap);
+    FeatureResult calculateFeatureVector(std::vector<double> vector);
+    FeatureResult calculateFeatureVector(std::map<std::string, int> map);
 };
 
 #endif

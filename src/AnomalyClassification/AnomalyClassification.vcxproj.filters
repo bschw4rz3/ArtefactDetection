@@ -183,7 +183,7 @@
     <ClCompile Include="BiorWavletService.cpp">
       <Filter>Quelldateien\detectors\transformation</Filter>
     </ClCompile>
-    <ClCompile Include="kNearestNeighborsService.cpp">
+    <ClCompile Include="KNearestNeighborsService.cpp">
       <Filter>Quelldateien\classifications</Filter>
     </ClCompile>
   </ItemGroup>
@@ -314,8 +314,11 @@
     <ClInclude Include="BiorWavletService.h">
       <Filter>Headerdateien\detectors\transformation</Filter>
     </ClInclude>
-    <ClInclude Include="kNearestNeighborsService.h">
+    <ClInclude Include="KNearestNeighborsService.h">
       <Filter>Headerdateien\classifications</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureResult.h">
+      <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

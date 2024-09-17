@@ -160,7 +160,7 @@
     <ClCompile Include="HOGServiceCV.cpp" />
     <ClCompile Include="HuMomentsService.cpp" />
     <ClCompile Include="ImprovedSobelOperatorService.cpp" />
-    <ClCompile Include="kNearestNeighborsService.cpp" />
+    <ClCompile Include="KNearestNeighborsService.cpp" />
     <ClCompile Include="LbpService.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathSerivce.cpp" />
@@ -189,6 +189,7 @@
     <ClInclude Include="DiscreteFourierTransformationSerivce.h" />
     <ClInclude Include="DiscreteFourierTransformationSerivceCV.h" />
     <ClInclude Include="FDResult.h" />
+    <ClInclude Include="FeatureResult.h" />
     <ClInclude Include="GaborServiceCV.h" />
     <ClInclude Include="GeometricService.h" />
     <ClInclude Include="GLCMResult.h" />
@@ -202,7 +203,7 @@
     <ClInclude Include="HuMomentsService.h" />
     <ClInclude Include="ImprovedSobelOperatorService.h" />
     <ClInclude Include="KeyValuePair.h" />
-    <ClInclude Include="kNearestNeighborsService.h" />
+    <ClInclude Include="KNearestNeighborsService.h" />
     <ClInclude Include="LbpHistogramResult.h" />
     <ClInclude Include="LbpResult.h" />
     <ClInclude Include="LbpService.h" />
@@ -228,6 +229,9 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AnomalyGeneration\AnomalyGeneration.vcxproj">
+      <Project>{2caf7e36-4ecd-4b46-85e7-4cb52c01c2e3}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\IrrlichtWrapper\IrrlichtWrapper.vcxproj">
       <Project>{1e6dcb38-0cda-4b70-8e1a-eb1991fdb0b0}</Project>
     </ProjectReference>

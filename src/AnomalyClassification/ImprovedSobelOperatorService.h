@@ -22,11 +22,11 @@ private:
 public:
 	ImprovedSobelOperatorService(ColorService* colorService);
 
-	CImg<unsigned char> getGradientImage(const CImg<unsigned char>& image);
+	CImg<unsigned char> getGradientImage(const CImg<unsigned char>* image);
 
 private:
-	void setPixel(CImg<unsigned char>& image, int x, int y, ColorRGB color);
-	ColorRGB getPixel(const CImg<unsigned char>& image, int x, int y);
+	void setPixel(CImg<unsigned char>* image, int x, int y, ColorRGB color);
+	ColorRGB getPixel(const CImg<unsigned char>* image, int x, int y);
 };
 
 #endif

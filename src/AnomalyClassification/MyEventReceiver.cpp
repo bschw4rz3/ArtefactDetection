@@ -26,11 +26,15 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->daubechiesSecondWaveletService = di->daubechiesSecondWaveletService;
     this->biorWavlet = di->biorWavletService;
 
+    this->defectGenerationService = di->defectGenerationService;
+
     this->stringSerivce = di->stringSerivce;
     this->directoryService = di->directoryService;
     this->mathSerivce = di->mathSerivce;
     this->colorService = di->colorService;
     this->cImgService = di->imgService;
+
+    this->kNearestNeighborsService = di->kNearestNeighborsService;
 
     this->facet = NULL;
     this->context = NULL;
@@ -41,6 +45,8 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->progressSymbol = '-';
     this->selectedFile = L"";
     this->tempFileIndex = 0;
+
+    this->trainingsdata = "./trainingsdata/";
 }
 
 MyEventReceiver::~MyEventReceiver()
@@ -87,89 +93,10 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
 
             if (id == GUI_ID_BUTTON_CACLULATE)
             {
-                if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SUPERPIXELS))
-                {
-                    this->onCalculateSuperPixels();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SOBEL))
-                {
-                    this->onCalculateSobelOperator();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_IMPROVED_SOBEL))
-                {
-                    this->onCalculateImprovedSobelOperator();
-                }
-                else if(this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION))
-                {
-                    this->onDiscreteFourierTransformation();
-                }
-                else if(this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_HU_MOMENT))
-                {
-                    this->onHuMoment();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SDSF))
-                {
-                    this->onSdSf();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_LBP))
-                {
-                    this->onLbp();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_COMPLETED_LBP))
-                {
-                    this->onCompletedLbp();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GLCM))
-                {
-                    this->onGLCM();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_HOG))
-                {
-                    this->onHOG();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GABOR))
-                {
-                    this->onGaborFilter();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_WAVELET))
-                {
-                    this->onWavelet();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV))
-                {
-                    this->onDiscreteFourierTransformationCV();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR))
-                {
-                    this->onFourierDiscriptor();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET))
-                {
-                    this->onDaubechiesFourWavelet();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_MORLET_WAVELET))
-                {
-                    this->onMorletFourWavelet();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_MORLET_WAVELET_FFT))
-                {
-                    this->onMorletFourWaveletFFT();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_HAAR_WAVLET))
-                {
-                    this->onHaarWavelet();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DAUBECHIES_SECOND))
-                {
-                    this->onDaubechiesSecond();
-                }
-                else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_BIOR_WAVLET))
-                {
-                    this->onBiorWavlet();
-                }
+                std::string fileName = this->stringSerivce->toString(this->selectedFile);
+                CImg<unsigned char> img(fileName.c_str());
 
-                // Clean up
-                this->removeTempFiles();
+                this->onExecuteFeatureExtraction(fileName, &img, false);
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -182,7 +109,7 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
             }
             else if(id == GUI_ID_BUTTON_CLASSIFY)
             {
-                this->onClassify();
+                this->onClassifyKNearest();
             }
 
              return true;
@@ -217,193 +144,262 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
     return false;
 }
 
+FeatureResult MyEventReceiver::onExecuteFeatureExtraction(std::string fileName, CImg<unsigned char>* img, bool silence)
+{
+    FeatureResult result = FeatureResult(NAN);
+
+    if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SUPERPIXELS))
+    {
+        this->onCalculateSuperPixels(img);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SOBEL))
+    {
+        this->onCalculateSobelOperator(img);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_IMPROVED_SOBEL))
+    {
+        this->onCalculateImprovedSobelOperator(img);
+    }
+    else if(this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION))
+    {
+        result = this->onDiscreteFourierTransformation(img, silence);
+    }
+    else if(this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_HU_MOMENT))
+    {
+        result = this->onHuMoment(fileName, img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SDSF))
+    {
+        result = this->onSdSf(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_LBP))
+    {
+        result = this->onLbp(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_COMPLETED_LBP))
+    {
+        result = this->onCompletedLbp(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GLCM))
+    {
+        result = this->onGLCM(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_HOG))
+    {
+        result = this->onHOG(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GABOR))
+    {
+        result = this->onGaborFilter(fileName, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_WAVELET))
+    {
+        result = this->onWavelet(fileName, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV))
+    {
+        result = this->onDiscreteFourierTransformationCV(fileName, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR))
+    {
+        result = this->onFourierDiscriptor(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET))
+    {
+        result = this->onDaubechiesFourWavelet(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_MORLET_WAVELET))
+    {
+        result = this->onMorletFourWavelet(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_MORLET_WAVELET_FFT))
+    {
+        result = this->onMorletFourWaveletFFT(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_HAAR_WAVLET))
+    {
+        result = this->onHaarWavelet(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DAUBECHIES_SECOND))
+    {
+        result = this->onDaubechiesSecond(img, silence);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_BIOR_WAVLET))
+    {
+        result = this->onBiorWavlet(img, silence);
+    }
+
+    // Clean up
+    this->removeTempFiles();
+
+    return result;
+}
+
 void MyEventReceiver::onGenerateTrainingsData()
 {
-
+    rmdir(this->trainingsdata.c_str());
+    this->defectGenerationService->generateAnomalieDirectories(this->trainingsdata, 10);
 }
 
-void MyEventReceiver::onClassify()
+void MyEventReceiver::onClassifyKNearest()
 {
+    std::vector<DataPoint> trainingData = this->loadTraingsdataForKNearest(); 
+    std::vector<std::vector<double>> testData;
 
-}
-
-/*
-void display_superimposed(const cv::Mat& A1, const cv::Mat& B, const std::string& fileName)
-{
-    cv::Mat A;
-    cv::Mat C;
-
-    cvtColor(A1, A, cv::COLOR_BGR2GRAY);
-
-    int aChannels = A.channels();
-    int bChannels = B.channels();
-
-    if(aChannels != bChannels)
-    {
-        throw "Ungleiche Channels";
-    }
-
-    try
-    {
-        cv::addWeighted(A, 0.5, B, 0.5, 0.0, C, C.type());
-    }
-    catch(cv::Exception e)
-    {
-        std::cout << e.what();
-    }
-    
-    cv::imwrite(fileName, C);
-}
-
-cv::Mat custom_normalization(const cv::Mat& src) {
-    double min, max;
-    cv::minMaxLoc(src, &min, &max);
-    cv::Mat dst = src * 200 / (max - min) + 128;
-    dst.convertTo(dst, CV_8U);
-    return dst;
-}*/
-
-void MyEventReceiver::onBiorWavlet()
-{
     std::string fileName = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(fileName.c_str());
 
-    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(&img);
+    this->kNearestNeighborsService->classify(trainingData, testData, 2);
+}
+
+std::vector<DataPoint> MyEventReceiver::loadTraingsdataForKNearest()
+{
+    std::string filePaths[2] { this->trainingsdata + "/defect", this->trainingsdata + "/artefact" };
+
+    for(int classIndex = 0; classIndex < 2 ;classIndex++)
+    {
+        std::vector<std::string> fileNames = this->directoryService->getFileNames(filePaths[classIndex]);
+        
+        for(int i = 0;i < fileNames.size();i++)
+        {
+            CImg<unsigned char> img(fileNames[i].c_str());
+
+            this->onExecuteFeatureExtraction(fileNames[i], &img, true);
+
+        }
+    }
+
+    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+    CImg<unsigned char> img(fileName.c_str());
+
+    return std::vector<DataPoint>();
+}
+
+FeatureResult MyEventReceiver::onBiorWavlet(CImg<unsigned char>* img, bool silence)
+{
+    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(img);
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&sobel);
 
     std::vector<std::complex<double>> complexTime = this->cImgService->getContureAsComplexVector(&sobel, backgroundColor, this->imageVectorCentered, this->imageVectorByConture);
     std::map<double, std::vector<std::complex<double>>> result = this->biorWavlet->calculate(complexTime, 10);
 
+    std::map<double, std::vector<double>> doubleResult = this->toDoubleMap(result);
+
+    if(!silence)
+    {
+        // Add Diagram
+        std::string tempName = this->generateFileName();
+        this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+        tempName = this->generateFileName();
+        this->heatMap(TimeFrequenceResult(doubleResult, 30), std::vector<double>(), tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
     
-    // Add Diagram
-    std::string tempName = this->generateFileName();
-    this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
-
-    tempName = this->generateFileName();
-    this->heatMap(TimeFrequenceResult(this->toDoubleMap(result), 30), std::vector<double>(), tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
-
+    return this->calculateFeatureVector(doubleResult);
 }
 
-void MyEventReceiver::onDaubechiesFourWavelet()
+FeatureResult MyEventReceiver::onDaubechiesFourWavelet(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
-    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(&img);
+    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(img);
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&sobel);
     Point2D center = this->geometricService->calculateCentroid(&sobel, backgroundColor);
 
     std::vector<std::complex<double>> complexTime = this->cImgService->getContureAsComplexVector(&sobel, backgroundColor, this->imageVectorCentered, this->imageVectorByConture);
     std::map<int, std::vector<std::complex<double>>> result = this->daubechiesFourWaveletService->calculate(complexTime);
 
-    // Add Diagram
-    std::string tempName = this->generateFileName();
-    this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    if(!silence)
+    {
+        // Add Diagram
+        std::string tempName = this->generateFileName();
+        this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    tempName = this->generateFileName();
-    this->heatMap(result, 10, std::vector<double>(), tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+        tempName = this->generateFileName();
+        this->heatMap(result, 10, std::vector<double>(), tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }   
+
+    return this->calculateFeatureVector(this->toDoubleMap(result));
 }
 
-void MyEventReceiver::onDaubechiesSecond()
+FeatureResult MyEventReceiver::onDaubechiesSecond(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
-    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(&img);
+    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(img);
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&sobel);
     Point2D center = this->geometricService->calculateCentroid(&sobel, backgroundColor);
 
     std::vector<std::complex<double>> complexTime = this->cImgService->getContureAsComplexVector(&sobel, backgroundColor, this->imageVectorCentered, this->imageVectorByConture);
     std::map<int, std::vector<std::complex<double>>> result = this->daubechiesSecondWaveletService->calculate(complexTime);
+    std::map<double, std::vector<double>> resultDouble = this->toDoubleMap(result);
 
-    // Add Diagram
-    std::string tempName = this->generateFileName();
-    this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    if(!silence)
+    {
+        // Add Diagram
+        std::string tempName = this->generateFileName();
+        this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    tempName = this->generateFileName();
-    this->heatMap(result, 10, std::vector<double>(), tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+        tempName = this->generateFileName();
+        this->heatMap(result, 10, std::vector<double>(), tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    return this->calculateFeatureVector(resultDouble);
 }
 
-void MyEventReceiver::onHaarWavelet()
+FeatureResult MyEventReceiver::onHaarWavelet(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
-    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(&img);
+    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(img);
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&sobel);
     Point2D center = this->geometricService->calculateCentroid(&sobel, backgroundColor);
 
     std::vector<std::complex<double>> complexTime = this->cImgService->getContureAsComplexVector(&sobel, backgroundColor, this->imageVectorCentered, this->imageVectorByConture);
     std::map<double, std::vector<double>> result = this->haarWaeletService->calculate(complexTime);
-
     
-    // Add Diagram
-    std::string tempName = this->generateFileName();
-    this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    if(!silence)
+    {
+        // Add Diagram
+        std::string tempName = this->generateFileName();
+        this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    tempName = this->generateFileName();
-    this->heatMap(TimeFrequenceResult(result, 40), std::vector<double>(), tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+        tempName = this->generateFileName();
+        this->heatMap(TimeFrequenceResult(result, 40), std::vector<double>(), tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    return this->calculateFeatureVector(result);
 }
 
-void MyEventReceiver::onMorletFourWaveletFFT()
+FeatureResult MyEventReceiver::onMorletFourWaveletFFT(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
-    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(&img);
+    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(img);
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&sobel);
     Point2D center = this->geometricService->calculateCentroid(&sobel, backgroundColor);
 
     std::vector<std::complex<double>> complexTime = this->cImgService->getContureAsComplexVector(&sobel, backgroundColor, this->imageVectorCentered, this->imageVectorByConture);
-
-    /*
-    double A = 1;
-    double omega = 10;
-    double timeFactor = 0.01;
-    double timeMax = 30;
-    double maxFrequence = 40;
-
-    std::vector<double> complexTime;
-    std::vector<std::complex<double>> complexTime2;
-    std::vector<double> labels;
-
-    for (double t = 0.0; t <= timeMax; t+=timeFactor)
-    {
-        labels.push_back(t);
-        double value = A * cos(((omega*t)+pow(t, 3.0))-2.0);
-
-        complexTime.push_back(value);
-        complexTime2.push_back(value);
-    }
-
-    labels.push_back(timeMax+timeFactor);*/
-
     std::map<double, std::vector<double>> result = this->morletWaveletServiceFFT->calculate(complexTime);
 
-    // Add Diagram
-    std::string tempName = this->generateFileName();
-    this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    if(!silence)
+    {
+        // Add Diagram
+        std::string tempName = this->generateFileName();
+        this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    tempName = this->generateFileName();
-    this->heatMap(TimeFrequenceResult(result, 40), std::vector<double>(), tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+        tempName = this->generateFileName();
+        this->heatMap(TimeFrequenceResult(result, 40), std::vector<double>(), tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    return this->calculateFeatureVector(result);
 }
 
-void MyEventReceiver::onMorletFourWavelet()
+FeatureResult MyEventReceiver::onMorletFourWavelet(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
-    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(&img);
+    CImg<unsigned char> sobel = this->sobelOperatorSerivce->getGradientImage(img);
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&sobel);
     Point2D center = this->geometricService->calculateCentroid(&sobel, backgroundColor);
 
@@ -411,144 +407,121 @@ void MyEventReceiver::onMorletFourWavelet()
     
     double maxFrequence = 30;
     double timeFactor = 1;
-/*
-    double A = 1;
-    double omega = 10;
-    double timeFactor = 0.01;
-    double timeMax = 30;
-    
-    for (double t = 0.0; t <= timeMax; t+=timeFactor)
-    {
-        labels.push_back(t);
-        complexTime.push_back(std::complex<double>(A * cos(((omega*t)+pow(t, 3.0))-2.0), 0));
-    }
-
-    labels.push_back(timeMax+timeFactor);*/
 
     WaveletResult result = this->morletWaveletService->calculate(complexTime, maxFrequence, timeFactor);
 
-    // Add Diagram
-    std::string tempName = this->generateFileName();
-    this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    if(!silence)
+    {
+        // Add Diagram
+        std::string tempName = this->generateFileName();
+        this->diagram(complexTime, tempName, std::vector<double>(), "Inputsignal:");
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    tempName = this->generateFileName();
-    this->diagram(result.waveletOutput, tempName, std::vector<double>(), "Selected Wavelet:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 420), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+        tempName = this->generateFileName();
+        this->diagram(result.waveletOutput, tempName, std::vector<double>(), "Selected Wavelet:");
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 420), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    tempName = this->generateFileName();
-    this->heatMap(result.frequenceTime, std::vector<double>(), tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+        tempName = this->generateFileName();
+        this->heatMap(result.frequenceTime, std::vector<double>(), tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
 
-    /*
-    tempName = this->generateFileName();
-    this->diagram(result.bScoreVector, tempName, labels, "Best Score:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_1, Point2D(8, 520), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
-    */
+        tempName = this->generateFileName();
+        this->diagram(result.convolvedSignal, tempName, std::vector<double>(), "best Convolved Vector:");
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_1, Point2D(8, 520), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
 
-    tempName = this->generateFileName();
-    this->diagram(result.convolvedSignal, tempName, std::vector<double>(), "best Convolved Vector:");
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_1, Point2D(8, 520), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    return this->calculateFeatureVector(result.frequenceTime.frequenceTimeMap);
 }
 
-void MyEventReceiver::onFourierDiscriptor()
+FeatureResult MyEventReceiver::onFourierDiscriptor(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
+    FDResult result = this->discreteFourierDescriptorService->calculate(img);
 
-    FDResult result = this->discreteFourierDescriptorService->calculate(&img);
+    if(!silence)
+    {
+        // Add Sobelimage
+        std::string tempName = this->generateFileName();
+        result.sobelImage.save_png(tempName.c_str());
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    // Add Sobelimage
-    std::string tempName = this->generateFileName();
-    result.sobelImage.save_png(tempName.c_str());
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+        // Add Diagram of conture
+        tempName = this->generateFileName();
+        this->diagram(result.contourVector, tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 520), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    // Add Diagram of conture
-    tempName = this->generateFileName();
-    this->diagram(result.contourVector, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 520), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+        // Add Diagram
+        tempName = this->generateFileName();
+        this->diagram(result.fequence, tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
 
-    // Add Diagram
-    tempName = this->generateFileName();
-    this->diagram(result.fequence, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    return this->calculateFeatureVector(this->toDoubleVector(result.fequence));
 }
 
-void MyEventReceiver::onDiscreteFourierTransformationCV()
+FeatureResult MyEventReceiver::onDiscreteFourierTransformationCV(std::string fileName, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
     DFTResult result = this->discreteFourierTransformationSerivceCV->calculate(fileName);
 
-    std::string tempName = this->generateFileName();
-    cv::imwrite(tempName.c_str(), result.spectrumMagnitude*255);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
+    if(!silence)
+    {
+        std::string tempName = this->generateFileName();
+        cv::imwrite(tempName.c_str(), result.spectrumMagnitude*255);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    tempName = this->generateFileName();
-    this->diagram(result.radialProfile, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+        tempName = this->generateFileName();
+        this->diagram(result.radialProfile, tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    return this->calculateFeatureVector(result.frequencies);
 }
 
-void MyEventReceiver::onWavelet()
+FeatureResult MyEventReceiver::onWavelet(std::string fileName, bool silence)
 {
     // Wavelet
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
     this->waveletTransformCV->calculate(fileName);
+
+    return FeatureResult(NAN);
 }
 
-void MyEventReceiver::onGaborFilter()
+FeatureResult MyEventReceiver::onGaborFilter(std::string fileName, bool silence)
 {
     // Gabor
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
     std::vector<double> fequence = this->gaborServiceCV->calculate(fileName);
 
-    std::string tempName = this->generateFileName();
-    this->diagram(fequence, tempName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    if(!silence)
+    {
+        std::string tempName = this->generateFileName();
+        this->diagram(fequence, tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+    
+    return this->calculateFeatureVector(fequence);
 }
 
-void MyEventReceiver::onHOG()
+FeatureResult MyEventReceiver::onHOG(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(img);
+    std::vector<double> theVector = this->hogService->calculate(img);
 
-    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
-
-    // HOG
-    /*cv::Mat image = cv::imread(fileName);
-    this->hogService->process(image);
-
-    auto hist = this->hogService->retrieve(cv::Rect(0, 0, image.cols, image.rows));
-
-    //display_superimposed(image, this->hogService->get_vector_mask(2), "vector_mask");
-
-    // magnitude
-    fileName = this->generateFileName();
-    display_superimposed(custom_normalization(this->hogService->get_magnitudes()), this->hogService->get_vector_mask(2), fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
-
-    // orientation
-    fileName = this->generateFileName();
-    display_superimposed(custom_normalization(this->hogService->get_orientations()), this->hogService->get_vector_mask(2), fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);*/
-
-    std::vector<double> theVector = this->hogService->calculate(&img);
+    return this->calculateFeatureVector(theVector);
 }
 
-void MyEventReceiver::onGLCM()
+FeatureResult MyEventReceiver::onGLCM(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
-    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(img);
 
     // GLCM
-    GLCMResult result = this->glcmService->calculate(&img);
+    GLCMResult result = this->glcmService->calculate(img);
 
     // Generate FileName
-    fileName = this->generateFileName();
-    result.getGlImage().save(fileName.c_str());
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
-    
+    if(!silence)
+    {
+        std::string fileName = this->generateFileName();
+        result.getGlImage().save(fileName.c_str());
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    }
+
     wstring valueString = this->stringSerivce->doubleToWString(result.getEnergy());
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_ENERGY, valueString.c_str());
 
@@ -566,73 +539,78 @@ void MyEventReceiver::onGLCM()
 
     valueString = this->stringSerivce->doubleToWString(result.getMean());
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_MEAN, valueString.c_str());
+
+    return FeatureResult(result.getEnergy(), result.getContrast(), result.getHomogenity(), result.getIDM(), result.getEntropy(), result.getMean());
 }
 
-void MyEventReceiver::onCompletedLbp()
+FeatureResult MyEventReceiver::onCompletedLbp(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
-    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(img);
 
     // Sobel Image
-    LbpHistogramResult result = this->completedLbpService->calculateLbpHistogram(&img, 8, 10);
+    LbpHistogramResult result = this->completedLbpService->calculateLbpHistogram(img, 8, 10);
 
-    // Generate Diagram
-    fileName = this->generateFileName();
-    this->histogram(result.getLbpHistogram(), 5, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    if(!silence)
+    {
+        // Generate Diagram
+        std::string fileName = this->generateFileName();
+        this->histogram(result.getLbpHistogram(), 5, fileName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
     
-    fileName = this->generateFileName();
-    this->histogram(result.getUniformityHistogram(), 3, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+        fileName = this->generateFileName();
+        this->histogram(result.getUniformityHistogram(), 3, fileName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    return this->calculateFeatureVector(result.getUniformityHistogram());
 }
 
-void MyEventReceiver::onLbp()
+FeatureResult MyEventReceiver::onLbp(CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
-    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(img);
 
     // Sobel Image
-    LbpHistogramResult result = this->lbpService->calculateLbpHistogram(&img, 8, 10);
+    LbpHistogramResult result = this->lbpService->calculateLbpHistogram(img, 8, 10);
 
-    // Generate Diagram
-    fileName = this->generateFileName();
-    this->histogram(result.getLbpHistogram(), 5, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    if(!silence)
+    {
+        // Generate Diagram
+        std::string fileName = this->generateFileName();
+        this->histogram(result.getLbpHistogram(), 5, fileName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
     
-    fileName = this->generateFileName();
-    this->histogram(result.getUniformityHistogram(), 3, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+        fileName = this->generateFileName();
+        this->histogram(result.getUniformityHistogram(), 3, fileName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    return this->calculateFeatureVector(result.getUniformityHistogram());
 }
 
-void MyEventReceiver::onSdSf()
+FeatureResult MyEventReceiver::onSdSf(CImg<unsigned char>* img, bool slience)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
     // Sobel Image
     CImg<unsigned char> sobelImage = this->improvedSobelOperatorService->getGradientImage(img);
     
-    std::string sobelName = this->generateFileName();
-    sobelImage.save(sobelName.c_str());
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
-
     // Create SD-SF-Diagram
     std::map<std::string, int> distanceHistogram = this->sdSfService->calculateSdSf(&sobelImage);
 
-    fileName = this->generateFileName();
-    this->histogram(distanceHistogram, 4, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    if(!slience)
+    {
+        std::string sobelName = this->generateFileName();
+        sobelImage.save(sobelName.c_str());
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+        std::string fileName = this->generateFileName();
+        this->histogram(distanceHistogram, 4, fileName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    return this->calculateFeatureVector(distanceHistogram);
 }
 
-void MyEventReceiver::onHuMoment()
+FeatureResult MyEventReceiver::onHuMoment(std::string fileName, CImg<unsigned char>* img, bool silence)
 {
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
     try
     {
         double huMoments[7];
@@ -667,77 +645,76 @@ void MyEventReceiver::onHuMoment()
 
     this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    double hu = this->huMomentsService->calculateHu1(&sobelImage);
-    std::wstring huString = this->stringSerivce->doubleToWString(hu);
+    double hu1 = this->huMomentsService->calculateHu1(&sobelImage);
+    std::wstring huString = this->stringSerivce->doubleToWString(hu1);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_1, huString.c_str());
 
-    hu = this->huMomentsService->calculateHu2(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu);
+    double hu2 = this->huMomentsService->calculateHu2(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu2);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_2, huString.c_str());
 
-    hu = this->huMomentsService->calculateHu3(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu);
+    double hu3 = this->huMomentsService->calculateHu3(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu3);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_3, huString.c_str());
 
-    hu = this->huMomentsService->calculateHu4(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu);
+    double hu4 = this->huMomentsService->calculateHu4(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu4);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_4, huString.c_str());
 
-    hu = this->huMomentsService->calculateHu5(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu);
+    double hu5 = this->huMomentsService->calculateHu5(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu5);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_5, huString.c_str());
 
-    hu = this->huMomentsService->calculateHu6(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu);
+    double hu6 = this->huMomentsService->calculateHu6(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu6);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_6, huString.c_str());
 
-    hu = this->huMomentsService->calculateHu7(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu);
+    double hu7 = this->huMomentsService->calculateHu7(&sobelImage);
+    huString = this->stringSerivce->doubleToWString(hu7);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_7, huString.c_str());
+
+    return FeatureResult(hu1, hu2, hu3, hu4, hu5, hu6, hu7);
 }
 
-void MyEventReceiver::onDiscreteFourierTransformation()
+FeatureResult MyEventReceiver::onDiscreteFourierTransformation(CImg<unsigned char>* img, bool silence)
 {
-    std::string cFile = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(cFile.c_str());
-
     // Output the chart
-    FDResult result = this->discreteFourierTransformationSerivce->calculate(&img, 2000);
+    FDResult result = this->discreteFourierTransformationSerivce->calculate(img, 2000);
     
-    // Add sobel image
-    std::string fileName = this->generateFileName();
-    result.sobelImage.save_png(fileName.c_str());
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+    if(!silence)
+    {
+        // Add sobel image
+        std::string fileName = this->generateFileName();
+        result.sobelImage.save_png(fileName.c_str());
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
 
-    // Generate Diagram
-    fileName = this->generateFileName();
-    this->diagram(result.fequence, fileName);
-    this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+        // Generate Diagram
+        fileName = this->generateFileName();
+        this->diagram(result.fequence, fileName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    return this->calculateFeatureVector(this->toDoubleVector(result.fequence));
 }
 
-void MyEventReceiver::onCalculateSuperPixels()
+void MyEventReceiver::onCalculateSuperPixels(CImg<unsigned char>* img)
 {
-    std::string cFile = this->stringSerivce->toString(this->selectedFile);
-
-    CImg<unsigned char> img(cFile.c_str());
     SubregionResult result = this->superPixelService->calculateSuperPixelsAndSubregions(img, 50);
 
     std::string fileName = this->generateFileName();
 
-    this->superPixelToImage(result.superPixelClusters, img.width(), img.height(), fileName);
+    this->superPixelToImage(result.superPixelClusters, img->width(), img->height(), fileName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     fileName = this->generateFileName();
 
-    this->superPixelToImage(result.subregions, img.width(), img.height(), fileName);
+    this->superPixelToImage(result.subregions, img->width(), img->height(), fileName);
     this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
 }
 
-void MyEventReceiver::onCalculateSobelOperator()
+void MyEventReceiver::onCalculateSobelOperator(CImg<unsigned char>* img)
 {
-    std::string cFile = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(cFile.c_str());
-    CImg<unsigned char> tempImage = this->sobelOperatorSerivce->getGradientImage(&img);
+    CImg<unsigned char> tempImage = this->sobelOperatorSerivce->getGradientImage(img);
 
     std::string tempFileName = this->generateFileName();
     tempImage.save_png(tempFileName.c_str());
@@ -745,10 +722,8 @@ void MyEventReceiver::onCalculateSobelOperator()
     this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(tempFileName).c_str(), GUI_ID_IMAGE_3_TAB);
 }
 
-void MyEventReceiver::onCalculateImprovedSobelOperator()
+void MyEventReceiver::onCalculateImprovedSobelOperator(CImg<unsigned char>* img)
 {
-    std::string cFile = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(cFile.c_str());
     CImg<unsigned char> tempImage = this->improvedSobelOperatorService->getGradientImage(img);
 
     std::string tempFileName = this->generateFileName();
@@ -1165,19 +1140,6 @@ void MyEventReceiver::heatMap(TimeFrequenceResult timeFrequence, std::vector<dou
             dataZ[yIndex * dataX_size + xIndex] = value;
         }
     }
-    /*
-    for (int i = 0; i < dataZ_size; i++)
-    {
-        double orgValue = dataZ[i];
-        double value = this->mathSerivce->roundDigits(orgValue / timeMax, 4);
-
-        if (value <= 0)
-        {
-            value = 0.05;
-        }
-
-        dataZ[i] = value;
-    }*/
 
     // Create a XYChart object of size 600 x 500 pixels
     XYChart* c = new XYChart(500, 500);
@@ -1477,10 +1439,10 @@ void MyEventReceiver::heatMapImg(TimeFrequenceResult timeFrequence, std::string 
     transposeMatrix.save_png(fileName.c_str());
 }
 
-std::map<double, std::vector<double>> MyEventReceiver::toDoubleMap(std::map<double, std::vector<std::complex<double>>> a)
+std::map<double, std::vector<double>> MyEventReceiver::toDoubleMap(std::map<int, std::vector<std::complex<double>>> a)
 {
     std::map<double, std::vector<double>> result;
-    std::map<double, std::vector<std::complex<double>>>::iterator it;
+    std::map<int, std::vector<std::complex<double>>>::iterator it;
     for (it = a.begin(); it != a.end(); it++)
     {  
         std::vector<std::complex<double>> list = it->second;
@@ -1496,4 +1458,128 @@ std::map<double, std::vector<double>> MyEventReceiver::toDoubleMap(std::map<doub
     }
 
     return result;
+}
+
+std::map<double, std::vector<double>> MyEventReceiver::toDoubleMap(std::map<double, std::vector<std::complex<double>>> a)
+{
+    std::map<double, std::vector<double>> result;
+    std::map<double, std::vector<std::complex<double>>>::iterator it;
+    for (it = a.begin(); it != a.end(); it++)
+    {  
+        std::vector<double> convertedList = this->toDoubleVector(it->second);
+        result.insert(std::pair<double, std::vector<double>>(it->first, convertedList));
+    }
+
+    return result;
+}
+
+std::vector<double> MyEventReceiver::toDoubleVector(std::vector<std::complex<double>> list)
+{
+    std::vector<double> convertedList;
+
+    for(int i = 0; i < list.size();i++)
+    {
+        double value = this->mathSerivce->calculateEuler(list[i], 1);
+        convertedList.push_back(value);
+    }
+
+    return convertedList;
+}
+
+FeatureResult MyEventReceiver::calculateFeatureVector(std::map<int, std::vector<double>> heatMap)
+{
+    std::map<double, std::vector<double>> conerted;
+
+    for (std::map<int, std::vector<double>>::iterator it = heatMap.begin(); it != heatMap.end(); ++it)
+    {
+        conerted.insert(std::pair<double, std::vector<double>>(it->first, it->second));
+    }
+
+    return this->calculateFeatureVector(conerted);
+}
+
+FeatureResult MyEventReceiver::calculateFeatureVector(std::map<double, std::vector<double>> heatMap)
+{
+    double maxFrequence = -INT_MAX;
+    double minFrequence = INT_MAX;
+    double maxAmplitude = -INT_MAX;
+    double minAmplitude = INT_MAX;
+    double avgFrequence = 0;
+    double avgAmplitude = 0;
+    long amplitudeCount = 0;
+    long frequenceCount = 0;
+
+    for (std::map<double, std::vector<double>>::iterator it = heatMap.begin(); it != heatMap.end(); ++it)
+    {
+        double frequence = it->first;
+        std::vector<double> timeLine = it->second;
+        
+        if(frequence < minFrequence)
+        {
+            minFrequence = frequence;
+        }
+
+        if(frequence > maxFrequence)
+        {
+            maxFrequence = frequence;
+        }
+
+        avgFrequence += frequence;
+
+        for(int i = 0; i < timeLine.size() ;i++)
+        {
+            avgAmplitude += timeLine[i];
+            amplitudeCount++;
+        }
+
+        frequenceCount++;
+    }
+
+    avgAmplitude /= amplitudeCount;
+    avgFrequence /= frequenceCount;
+
+    return FeatureResult(minFrequence, maxFrequence, avgFrequence, minAmplitude, maxAmplitude, avgAmplitude);
+}
+
+FeatureResult MyEventReceiver::calculateFeatureVector(std::vector<double> vector)
+{
+    double maxFrequence = -INT_MAX;
+    double minFrequence = INT_MAX;
+    double avgFrequence = 0;
+    long frequenceCount = 0;
+
+    for (int i = 0;i<vector.size();i++)
+    {
+        double frequence = vector[i];
+        
+        if(frequence < minFrequence)
+        {
+            minFrequence = frequence;
+        }
+
+        if(frequence > maxFrequence)
+        {
+            maxFrequence = frequence;
+        }
+
+        avgFrequence += frequence;
+        frequenceCount++;
+    }
+
+    avgFrequence /= frequenceCount;
+
+    return FeatureResult(minFrequence, maxFrequence, avgFrequence);
+}
+
+FeatureResult MyEventReceiver::calculateFeatureVector(std::map<std::string, int> map)
+{
+    std::vector<double> vector;
+
+    for (std::map<std::string, int>::iterator it = map.begin(); it != map.end(); ++it)
+    {
+        vector.push_back(it->second);
+
+    }
+
+    return FeatureResult(vector);
 }

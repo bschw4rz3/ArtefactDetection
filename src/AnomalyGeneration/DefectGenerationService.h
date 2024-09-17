@@ -25,7 +25,7 @@ using namespace cimg_library;
 class DefectGenerationService
 {
 public:
-	void generateAnomalieDirectories(std::string dirPath);
+	void generateAnomalieDirectories(std::string dirPath, int iterationCount);
 
 private:
 	bool contains(std::vector<AnomalyType> list, AnomalyType type);

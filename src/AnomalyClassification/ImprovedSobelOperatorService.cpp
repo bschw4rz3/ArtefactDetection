@@ -5,7 +5,7 @@ ImprovedSobelOperatorService::ImprovedSobelOperatorService(ColorService* colorSe
 	this->colorService = colorService;
 }
 
-CImg<unsigned char> ImprovedSobelOperatorService::getGradientImage(const CImg<unsigned char>& image)
+CImg<unsigned char> ImprovedSobelOperatorService::getGradientImage(const CImg<unsigned char>* image)
 {
 	// Initialisiert ein 2-dimensionales Array für den Sobel-Operator S_x
 	double S_x[3][3] = { {-1.0, 0.0, 1.0}, {-2.0, 0.0, 2.0}, {-1.0, 0.0, 1.0} };
@@ -33,13 +33,13 @@ CImg<unsigned char> ImprovedSobelOperatorService::getGradientImage(const CImg<un
 	const unsigned int size_z = 1;
 	const unsigned int size_c = 3;
 
-	CImg<unsigned char> gradientImage(image.width(), image.height(), size_z, size_c, 0);
+	CImg<unsigned char> gradientImage(image->width(), image->height(), size_z, size_c, 0);
 
 	// Durchläuft das Originalbild entlang der x-Achse.
-	for (int x = 1; x < image.width() - 1; x++)
+	for (int x = 1; x < image->width() - 1; x++)
 	{
 		// Durchläuft das Originalbild entlang der y-Achse.
-		for (int y = 1; y < image.height() - 1; y++)
+		for (int y = 1; y < image->height() - 1; y++)
 		{
 			
 			double G_x = (S_x[0][0] * this->getPixel(image, (x-1), (y-1)).r)
@@ -132,20 +132,20 @@ CImg<unsigned char> ImprovedSobelOperatorService::getGradientImage(const CImg<un
                 G = 255;
 
 			// Setzt den Farbwert für das Pixel des Gradienten-Bilds.
-			this->setPixel(gradientImage, x, y, ColorRGB(G, G, G));
+			this->setPixel(&gradientImage, x, y, ColorRGB(G, G, G));
 		}
 	}
 	return gradientImage; // Gibt das Gradienten-Bild als Rückgabewert der Methode zurück.
 }
 
-ColorRGB ImprovedSobelOperatorService::getPixel(const CImg<unsigned char>& image, int x, int y)
+ColorRGB ImprovedSobelOperatorService::getPixel(const CImg<unsigned char>* image, int x, int y)
 {
-	const unsigned char* bytePixel = image.data(x, y);
-	return this->colorService->byte2rgb(bytePixel, image.width(), image.height());
+	const unsigned char* bytePixel = image->data(x, y);
+	return this->colorService->byte2rgb(bytePixel, image->width(), image->height());
 }
 
-void ImprovedSobelOperatorService::setPixel(CImg<unsigned char>& image, int x, int y, ColorRGB colorRGB)
+void ImprovedSobelOperatorService::setPixel(CImg<unsigned char>* image, int x, int y, ColorRGB colorRGB)
 {
 	const unsigned char* color = this->colorService->rgb2byte(colorRGB);
-	image.draw_point(x, y, color);
+	image->draw_point(x, y, color);
 }

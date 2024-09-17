@@ -1,7 +1,7 @@
-#include "kNearestNeighborsService.h"
+#include "KNearestNeighborsService.h"
 
 // Berechnung der euklidischen Distanz zwischen zwei Datenpunkten
-double kNearestNeighborsService::euclideanDistance(const std::vector<double>& p1, const std::vector<double>& p2) 
+double KNearestNeighborsService::euclideanDistance(const std::vector<double>& p1, const std::vector<double>& p2) 
 {
     double sum = 0.0;
     for (size_t i = 0; i < p1.size(); i++) {
@@ -11,7 +11,7 @@ double kNearestNeighborsService::euclideanDistance(const std::vector<double>& p1
 }
 
 // KNN-Klassifikationsalgorithmus
-int kNearestNeighborsService::classifyKNN(const std::vector<DataPoint>& trainingData, const DataPoint& testPoint, int k) 
+int KNearestNeighborsService::classifyKNN(const std::vector<DataPoint>& trainingData, const DataPoint& testPoint, int k) 
 {
     // Vektor zum Speichern der Distanzen und zugehörigen Labels
     std::vector<std::pair<double, int>> distances;
@@ -44,7 +44,7 @@ int kNearestNeighborsService::classifyKNN(const std::vector<DataPoint>& training
     return majorityLabel;
 }
 
-std::vector<DataPoint> kNearestNeighborsService::classify(std::vector<DataPoint> trainingData, std::vector<std::vector<double>> testData, int k)
+std::vector<DataPoint> KNearestNeighborsService::classify(std::vector<DataPoint> trainingData, std::vector<std::vector<double>> testData, int k)
 {
     std::vector<DataPoint> data;
 
