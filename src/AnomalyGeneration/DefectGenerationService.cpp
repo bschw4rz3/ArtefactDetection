@@ -35,15 +35,15 @@ std::string DefectGenerationService::getTestdataImagePath(std::vector<AnomalyTyp
 {
     if (contains(anomalyTypeList, AnomalyType::Defect) || contains(anomalyTypeList, AnomalyType::MinorDefect))
     {
-        path = path + "defect/";
+        path = path + "/defect/";
     }
     else if (contains(anomalyTypeList, AnomalyType::Artefact))
     {
-        path = path + "artefact/";
+        path = path + "/artefact/";
     }
     else
     {
-        path = path + "none/";
+        path = path + "/none/";
     }
 
     return path + std::to_string(index) + ".png";
@@ -51,7 +51,7 @@ std::string DefectGenerationService::getTestdataImagePath(std::vector<AnomalyTyp
 
 void DefectGenerationService::saveImage(CImg<unsigned char>& tmp, int wx, int hy, int size_z, int size_c, std::vector<AnomalyType>& anomalyTypeList, int& index, std::string dirPath)
 {
-    std::string complitePath = getTestdataImagePath(anomalyTypeList, index, dirPath);
+    std::string complitePath = this->getTestdataImagePath(anomalyTypeList, index, dirPath);
     FILE* file = std::fopen(complitePath.c_str(), "r");
 
     while (file != NULL)
@@ -59,7 +59,7 @@ void DefectGenerationService::saveImage(CImg<unsigned char>& tmp, int wx, int hy
         fclose(file);
 
         index++;
-        complitePath = getTestdataImagePath(anomalyTypeList, index, dirPath);
+        complitePath = this->getTestdataImagePath(anomalyTypeList, index, dirPath);
 
         file = fopen(complitePath.c_str(), "r");
     }
@@ -189,7 +189,11 @@ void DefectGenerationService::generateAnomalieDirectories(std::string dirPath, i
 
                 PixelPosition position(positionX, positionY);
                 std::vector<PixelPosition> pixels = c.drawLiddelRandomBumb(&bg, position, size, pixelStreung, pixelDistribution, black);
-                anomalyList.push_back(Anomaly(pixels, AnomalyType::MinorDefect));
+                
+                if(pixels.size() >= 8)
+                {
+                    anomalyList.push_back(Anomaly(pixels, AnomalyType::MinorDefect));
+                }
             }
             else if(anomalyType < 0.5)
             {
@@ -205,7 +209,11 @@ void DefectGenerationService::generateAnomalieDirectories(std::string dirPath, i
                 int pixelCount = randomService.randomFromTo(0,20000);
 
                 std::vector<PixelPosition> pixels = c.drawScratch(&bg, positionFrom, positionTo, brigth, countOfLines, pixelCount, black);
-                anomalyList.push_back(Anomaly(pixels, AnomalyType::Defect));
+                
+                if(pixels.size() >= 8)
+                {
+                    anomalyList.push_back(Anomaly(pixels, AnomalyType::MinorDefect));
+                }
             }
             else if(anomalyType < 0.75)
             {
@@ -221,7 +229,11 @@ void DefectGenerationService::generateAnomalieDirectories(std::string dirPath, i
                 PixelPosition position(positionX, positionY);    
             
                 std::vector<PixelPosition> pixels = c.drawMultipleCicelCloud(&bg, position, radius, rotationInterval, pixelStreuung, pixelCount, pixelDistribution, fadeFromTo, fadeOutY, rotation, black);
-                anomalyList.push_back(Anomaly(pixels, AnomalyType::Artefact));
+                
+                if(pixels.size() >= 8)
+                {
+                    anomalyList.push_back(Anomaly(pixels, AnomalyType::MinorDefect));
+                }
             }
             else if(anomalyType < 1.0)
             {
@@ -250,7 +262,10 @@ void DefectGenerationService::generateAnomalieDirectories(std::string dirPath, i
                 c.drawRect(&bg, rectPosition, w, h, black);
                 c.drawPixelList(&bg, pixels, withe);
 
-                anomalyList.push_back(anomaly);
+                if(pixels.size() >= 8)
+                {
+                    anomalyList.push_back(Anomaly(pixels, AnomalyType::MinorDefect));
+                }
             }
         }
 

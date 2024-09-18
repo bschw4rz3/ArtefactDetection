@@ -9,13 +9,21 @@
 class HogCellResult
 {
 public:
+	bool success;
+
 	std::map<Point2D, std::vector<double>> cellResults;
 	Point2D lastPoint;
 
 	HogCellResult(std::map<Point2D, std::vector<double>> cellResults, Point2D lastPoint)
 	{
+		this->success = true;
 		this->cellResults = cellResults;
 		this->lastPoint = lastPoint;
+	}
+
+	HogCellResult()
+	{
+		this->success = false;
 	}
 };
 

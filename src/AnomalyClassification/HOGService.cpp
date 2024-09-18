@@ -13,6 +13,11 @@ std::vector<double> HOGService::calculate(const CImg<unsigned char>* image, int 
 
 	HogCellResult cellResult = this->calculateCells(image, maxPixelLengthPerCell, bins);
 
+	if(!cellResult.success)
+	{
+		return result;
+	}
+
 	Point2D lastPoint = cellResult.lastPoint;
 	std::map<Point2D, std::vector<double>> cellResults = cellResult.cellResults;
 
@@ -90,6 +95,12 @@ HogCellResult HOGService::calculateCells(const CImg<unsigned char>* image, int m
 
 	double cellWidth = ((double)image->width()) / ((double)widthCellCount); 
 	double cellHeight = ((double)image->height()) / ((double)heightCellCount);
+
+	if(isnan(cellWidth) || isnan(cellHeight)  || isinf(cellWidth) || isinf(cellHeight))
+	{
+		//"HOG: Zellengröße nicht berrechenbar. Bild vermutlich zu klein";
+		return HogCellResult();
+	}
 
 	Point2D lastPoint;
 	std::map<Point2D, std::vector<double>> cellResults;

@@ -46,7 +46,8 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->selectedFile = L"";
     this->tempFileIndex = 0;
 
-    this->trainingsdata = "./trainingsdata/";
+    std::filesystem::path cwd = std::filesystem::current_path();
+    this->trainingsdata = cwd.string() + "/trainingsdata";
 }
 
 MyEventReceiver::~MyEventReceiver()
@@ -230,7 +231,10 @@ FeatureResult MyEventReceiver::onExecuteFeatureExtraction(std::string fileName, 
     }
 
     // Clean up
-    this->removeTempFiles();
+    if(!silence)
+    {
+        this->removeTempFiles();
+    }
 
     return result;
 }
@@ -243,18 +247,38 @@ void MyEventReceiver::onGenerateTrainingsData()
 
 void MyEventReceiver::onClassifyKNearest()
 {
-    std::vector<DataPoint> trainingData = this->loadTraingsdataForKNearest(); 
-    std::vector<std::vector<double>> testData;
-
+    std::vector<DataPoint> trainingData = this->loadTraingsdataForKNearest();
     std::string fileName = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(fileName.c_str());
 
-    this->kNearestNeighborsService->classify(trainingData, testData, 2);
+    std::vector<std::vector<double>> testData;
+    FeatureResult featureResult = this->onExecuteFeatureExtraction(fileName, &img, true);
+    testData.push_back(featureResult.getFeatureVector());
+
+    std::vector<DataPoint> classifiedDatPoints = this->kNearestNeighborsService->classify(trainingData, testData, 2);
+    int classIndex = classifiedDatPoints[0].label;
+
+    std::wstring classifyIndex = this->stringSerivce->intToWString(classIndex);
+
+    if(classIndex == 0)
+    {
+        classifyIndex = L"Defect (" + classifyIndex + L")"; 
+    }
+    else 
+    {
+        classifyIndex = L"Artefact (" + classifyIndex + L")";
+    }
+
+    this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, classifyIndex.c_str());
 }
 
 std::vector<DataPoint> MyEventReceiver::loadTraingsdataForKNearest()
 {
-    std::string filePaths[2] { this->trainingsdata + "/defect", this->trainingsdata + "/artefact" };
+    std::vector<DataPoint> dataPointList;
+
+    std::vector<std::string> filePaths;
+    filePaths.push_back(this->trainingsdata + "/defect");
+    filePaths.push_back(this->trainingsdata + "/artefact");
 
     for(int classIndex = 0; classIndex < 2 ;classIndex++)
     {
@@ -263,16 +287,20 @@ std::vector<DataPoint> MyEventReceiver::loadTraingsdataForKNearest()
         for(int i = 0;i < fileNames.size();i++)
         {
             CImg<unsigned char> img(fileNames[i].c_str());
+            FeatureResult featureResult = this->onExecuteFeatureExtraction(fileNames[i], &img, true);
 
-            this->onExecuteFeatureExtraction(fileNames[i], &img, true);
+            if(featureResult.getSuccess())
+            {
+                DataPoint dataPoint;
+                dataPoint.features = featureResult.getFeatureVector();
+                dataPoint.label = classIndex;
 
+                dataPointList.push_back(dataPoint);
+            }
         }
     }
 
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
-
-    return std::vector<DataPoint>();
+    return dataPointList;
 }
 
 FeatureResult MyEventReceiver::onBiorWavlet(CImg<unsigned char>* img, bool silence)
@@ -504,6 +532,19 @@ FeatureResult MyEventReceiver::onHOG(CImg<unsigned char>* img, bool silence)
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(img);
     std::vector<double> theVector = this->hogService->calculate(img);
 
+    if(!silence)
+    {
+        std::string tempName = this->generateFileName();
+        this->diagram(theVector, tempName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+
+    if(theVector.size() <= 0)
+    {
+        return FeatureResult();
+    }
+
     return this->calculateFeatureVector(theVector);
 }
 
@@ -584,7 +625,14 @@ FeatureResult MyEventReceiver::onLbp(CImg<unsigned char>* img, bool silence)
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
-    return this->calculateFeatureVector(result.getUniformityHistogram());
+    FeatureResult fv = this->calculateFeatureVector(result.getUniformityHistogram());
+
+    if(fv.getFeatureVector().size() < 3)
+    {
+        throw "LBP: Too less values in feature vector";
+    }
+
+    return fv;
 }
 
 FeatureResult MyEventReceiver::onSdSf(CImg<unsigned char>* img, bool slience)
@@ -1538,7 +1586,14 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::map<double, std::vect
     avgAmplitude /= amplitudeCount;
     avgFrequence /= frequenceCount;
 
-    return FeatureResult(minFrequence, maxFrequence, avgFrequence, minAmplitude, maxAmplitude, avgAmplitude);
+    FeatureResult result = FeatureResult(minFrequence, maxFrequence, avgFrequence, minAmplitude, maxAmplitude, avgAmplitude);
+
+    if(result.getFeatureVector().size() != 3)
+    {
+        throw "Calculation not valid!";
+    }
+
+    return result;
 }
 
 FeatureResult MyEventReceiver::calculateFeatureVector(std::vector<double> vector)
@@ -1568,7 +1623,14 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::vector<double> vector
 
     avgFrequence /= frequenceCount;
 
-    return FeatureResult(minFrequence, maxFrequence, avgFrequence);
+    FeatureResult result = FeatureResult(minFrequence, maxFrequence, avgFrequence);
+
+    if(result.getFeatureVector().size() != 3)
+    {
+        throw "Calculation not valid!";
+    }
+
+    return result;
 }
 
 FeatureResult MyEventReceiver::calculateFeatureVector(std::map<std::string, int> map)
