@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <complex>
+#include <vector>
 
 #define M_PI            3.14159265358979323846  /* pi */
 #define M_E				2.71828182845904523536
@@ -20,6 +21,8 @@ public:
 
 	double roundDigits(double value, int digit);
 	double calculateEuler(std::complex<double> time, double w_0);
+
+	long double avg(std::vector<double> v);
 
 };
 

@@ -12,6 +12,14 @@ LbpHistogramResult LbpService::calculateLbpHistogram(CImg<unsigned char>* image,
 	std::map<int, int> lbpHistogram;
 	std::map<std::string, int> uniformityHistogram;
 
+	// Pre init uniformity-map
+	for(int j = 0;j < 4;j++)
+	{
+		std::string uniformityString = this->getUniformityString(j);
+		uniformityHistogram.insert(std::pair<std::string, int>(uniformityString, 0));
+	}
+
+	// Insert values
 	for(int x = 0; x < image->width(); x++)
 	{
 		for(int y = 0; y < image->height(); y++)

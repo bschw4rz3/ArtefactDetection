@@ -44,6 +44,26 @@ void GraphicEngineExtended::resetCheckBoxsByWindowId(int parentId)
     }
 }
 
+int GraphicEngineExtended::getCheckedCheckBoxByWindowId(int parentId)
+{
+    if(this->checkboxIdsByWindow.find(parentId) == this->checkboxIdsByWindow.end())
+    {
+        return -1;
+    }
+
+    for (int i = 0; i < this->checkboxIdsByWindow[parentId].size(); i++)
+    {
+        int id = this->checkboxIdsByWindow[parentId][i];
+        IGUICheckBox* element = (IGUICheckBox*) this->guiElementMap[id];
+        if(element->isChecked())
+        {
+            return id;
+        }
+    }
+
+    return -1;
+}
+
 bool GraphicEngineExtended::exists(int id)
 {
     return this->guiElementMap.find(id) != this->guiElementMap.end();

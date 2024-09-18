@@ -34,11 +34,28 @@ double MathSerivce::roundDigits(double value, int digit)
         return round(value);
     }
 
-    double factor = pow(digit, 2);
+    double factor = pow(10, digit);
     return round(value * factor)/ factor;
 }
 
 double MathSerivce::calculateEuler(std::complex<double> time, double w_0)
 {
     return this->sinDegrees(w_0 * time.real()) + this->cosDegrees(w_0 * time.imag());
+}
+
+long double MathSerivce::avg(std::vector<double> v)
+{
+    long double firstResult = 0;
+    long double secondResult = 0;
+
+    long long size = v.size();
+
+    for(int i = 0 ; i < size ; i++)
+    {
+        firstResult += v[i] / size;
+        secondResult += ((long) v[i]) % size;
+    }
+
+    return firstResult + (secondResult/size);
+    
 }

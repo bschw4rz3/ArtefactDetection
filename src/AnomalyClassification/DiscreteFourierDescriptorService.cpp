@@ -10,7 +10,18 @@ FDResult DiscreteFourierDescriptorService::calculate(CImg<unsigned char>* image)
 {
     CImg<unsigned char> sobelImage = this->classicSobelOperatorService->getGradientImage(image);
     std::vector<std::complex<double>> contour = this->cImgService->getContureAsComplexVector(&sobelImage, ColorRGB(0, 0, 0));
+
+    if(contour.size() <= 0)
+    {
+        return FDResult();
+    }
+
     std::vector<std::complex<double>> frequence = this->computeFourierDescriptors(contour);
+
+    if(frequence.size() <= 0)
+    {
+        return FDResult();
+    }
 
     return FDResult(sobelImage, contour, frequence);
 }

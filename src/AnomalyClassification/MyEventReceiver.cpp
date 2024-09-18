@@ -48,6 +48,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
 
     std::filesystem::path cwd = std::filesystem::current_path();
     this->trainingsdata = cwd.string() + "/trainingsdata";
+    this->trainingsDataSavePath = cwd.string() + "/trainingsDataSave";
 }
 
 MyEventReceiver::~MyEventReceiver()
@@ -245,9 +246,29 @@ void MyEventReceiver::onGenerateTrainingsData()
     this->defectGenerationService->generateAnomalieDirectories(this->trainingsdata, 10);
 }
 
+std::string MyEventReceiver::generateTrainingsDataFilePath()
+{
+    int id = this->graphicEngine->getCheckedCheckBoxByWindowId(GUI_ID_OPERATION_PANNEL);
+    return this->trainingsDataSavePath + "/" + this->stringSerivce->intToString(id) + ".xml";
+}
+
+void MyEventReceiver::saveTrainingsData(std::vector<DataPoint> trainingData, std::string fileName)
+{
+
+}
+
 void MyEventReceiver::onClassifyKNearest()
 {
+    std::string traningsDataFile = this->generateTrainingsDataFilePath();
+
+    if(this->selectedFile == L"")
+    {
+        throw "No file selected!";
+    }
+
     std::vector<DataPoint> trainingData = this->loadTraingsdataForKNearest();
+    this->saveTrainingsData(trainingData, traningsDataFile);
+
     std::string fileName = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(fileName.c_str());
 
@@ -483,6 +504,11 @@ FeatureResult MyEventReceiver::onFourierDiscriptor(CImg<unsigned char>* img, boo
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
+    if(!result.getSuccess())
+    {
+        return FeatureResult();
+    }
+
     return this->calculateFeatureVector(this->toDoubleVector(result.fequence));
 }
 
@@ -581,7 +607,14 @@ FeatureResult MyEventReceiver::onGLCM(CImg<unsigned char>* img, bool silence)
     valueString = this->stringSerivce->doubleToWString(result.getMean());
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_MEAN, valueString.c_str());
 
-    return FeatureResult(result.getEnergy(), result.getContrast(), result.getHomogenity(), result.getIDM(), result.getEntropy(), result.getMean());
+    FeatureResult featureVector = FeatureResult(result.getEnergy(), result.getContrast(), result.getHomogenity(), result.getIDM(), result.getEntropy(), result.getMean());
+
+    if(featureVector.getFeatureVector().size() < 6)
+    {
+        return FeatureResult();
+    }
+
+    return featureVector;
 }
 
 FeatureResult MyEventReceiver::onCompletedLbp(CImg<unsigned char>* img, bool silence)
@@ -728,7 +761,7 @@ FeatureResult MyEventReceiver::onDiscreteFourierTransformation(CImg<unsigned cha
 {
     // Output the chart
     FDResult result = this->discreteFourierTransformationSerivce->calculate(img, 2000);
-    
+
     if(!silence)
     {
         // Add sobel image
@@ -740,6 +773,11 @@ FeatureResult MyEventReceiver::onDiscreteFourierTransformation(CImg<unsigned cha
         fileName = this->generateFileName();
         this->diagram(result.fequence, fileName);
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    if(!result.getSuccess())
+    {
+        return FeatureResult();
     }
 
     return this->calculateFeatureVector(this->toDoubleVector(result.fequence));
@@ -1598,32 +1636,11 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::map<double, std::vect
 
 FeatureResult MyEventReceiver::calculateFeatureVector(std::vector<double> vector)
 {
-    double maxFrequence = -INT_MAX;
-    double minFrequence = INT_MAX;
-    double avgFrequence = 0;
-    long frequenceCount = 0;
+    auto maxFrequence = max_element(vector.begin(), vector.end());
+    auto minFrequence = min_element(vector.begin(), vector.end());
+    double avgFrequence = this->mathSerivce->avg(vector);
 
-    for (int i = 0;i<vector.size();i++)
-    {
-        double frequence = vector[i];
-        
-        if(frequence < minFrequence)
-        {
-            minFrequence = frequence;
-        }
-
-        if(frequence > maxFrequence)
-        {
-            maxFrequence = frequence;
-        }
-
-        avgFrequence += frequence;
-        frequenceCount++;
-    }
-
-    avgFrequence /= frequenceCount;
-
-    FeatureResult result = FeatureResult(minFrequence, maxFrequence, avgFrequence);
+    FeatureResult result = FeatureResult(*minFrequence, *maxFrequence, avgFrequence);
 
     if(result.getFeatureVector().size() != 3)
     {

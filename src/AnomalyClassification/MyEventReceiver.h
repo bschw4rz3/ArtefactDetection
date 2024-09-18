@@ -7,6 +7,7 @@
 #include <sstream> 
 #include <thread>
 #include <future>
+#include <algorithm>
 
 #include "memblock.h"
 #include "chartdir.h"
@@ -219,6 +220,8 @@ private:
 
     std::wstring selectedFile;
     std::string trainingsdata;
+    std::string trainingsDataSavePath;
+
     int tempFileIndex;
 
     bool imageVectorCentered = true; 
@@ -266,6 +269,7 @@ private:
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateFileName();
+    std::string generateTrainingsDataFilePath();
     void removeTempFiles();
 
     void histogram(std::map<int, int> histogramData, int labelCount, std::string fileName);
@@ -289,6 +293,8 @@ private:
     FeatureResult calculateFeatureVector(std::map<int, std::vector<double>> heatMap);
     FeatureResult calculateFeatureVector(std::vector<double> vector);
     FeatureResult calculateFeatureVector(std::map<std::string, int> map);
+
+    void saveTrainingsData(std::vector<DataPoint> trainingData, std::string fileName);
 };
 
 #endif

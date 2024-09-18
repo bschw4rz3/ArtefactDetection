@@ -32,16 +32,30 @@ std::map<std::string, int> SdSfService::calculateSdSf(CImg<unsigned char>* sobel
 
 	std::map<std::string, int> distanceHistogram;
 	
+	// pre init list
+	for(double j = 0 ; j <= 1.0 ; j+=0.1)
+	{
+		double roundedDistance = this->mathSerivce->roundDigits(j, 1);
+		std::string stringDistance = std::format("{0:.2f}", roundedDistance);
+		distanceHistogram.insert(std::pair<std::string, int>(stringDistance, 0));
+	
+		if (stringDistance.size() < 2)
+		{
+			stringDistance = stringDistance + ".0";
+		}
+	}
+
+	// fill list with values
 	for (int i = 0; i < distanceList.size(); i++)
 	{
 		double distance = distanceList[i];
 
-		double roundedDistance = this->mathSerivce->roundDigits(distance, 4);
-		std::string stringDistance = std::format("{:4f}", roundedDistance);
+		double roundedDistance = this->mathSerivce->roundDigits(distance, 1);
+		std::string stringDistance = std::format("{0:.2f}", roundedDistance);
 
-		if (stringDistance.size() < 5)
+		if (stringDistance.size() < 2)
 		{
-			stringDistance = stringDistance + ".0000";
+			stringDistance = stringDistance + ".0";
 		}
 
 		if (distanceHistogram.find(stringDistance) != distanceHistogram.end())

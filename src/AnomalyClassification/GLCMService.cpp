@@ -37,9 +37,12 @@ GLCMResult GLCMService::calculate(CImg<unsigned char>* image)
                 whiteCounter++;
             }
 
-            currentColorGL.r += 1;
-            currentColorGL.g += 1;
-            currentColorGL.b += 1;
+            if(currentColorGL.r < 255)
+            {
+                currentColorGL.r += 1;
+                currentColorGL.g += 1;
+                currentColorGL.b += 1;            
+            }
 
             this->imgService->setPixel(&gl, colorX.r, colorY.r, currentColorGL);
         }
@@ -47,7 +50,7 @@ GLCMResult GLCMService::calculate(CImg<unsigned char>* image)
 
     // normalizing glcm matrix for parameter determination
     this->imgService->normalizeGrayMatrix(&gl, whiteCounter, blackCounter, 1.0);
-    //gl = gl + this->imgService->transpose(&gl);
+    gl = gl + this->imgService->transpose(&gl);
  
     for(int i=0;i<256;i++)
     {

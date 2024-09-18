@@ -10,6 +10,7 @@ class FDResult
 public:
 	std::vector<std::complex<double>> fequence;
 	std::vector<std::complex<double>> contourVector;
+	bool success;
 
 	CImg<unsigned char> sobelImage;
 
@@ -18,6 +19,18 @@ public:
 		this->fequence = fequence;
 		this->contourVector = contourVector;
 		this->sobelImage = sobelImage;
+
+		this->success = true;
+	}
+
+	FDResult()
+	{
+		this->success = false;
+	}
+
+	bool getSuccess()
+	{
+		return this->success;
 	}
 };
 
