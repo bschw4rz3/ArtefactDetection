@@ -143,6 +143,7 @@
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />
     <ClCompile Include="CompletedLbpService.cpp" />
+    <ClCompile Include="DataPoint.cpp" />
     <ClCompile Include="DaubechiesFourWaveletService.cpp" />
     <ClCompile Include="DaubechiesSecondWaveletService.cpp" />
     <ClCompile Include="DependencyInjectionService.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="CImgService.h" />
     <ClInclude Include="ColorService.h" />
     <ClInclude Include="CompletedLbpService.h" />
+    <ClInclude Include="DataPoint.h" />
     <ClInclude Include="DaubechiesFourWaveletService.h" />
     <ClInclude Include="DaubechiesSecondWaveletService.h" />
     <ClInclude Include="DependencyInjectionService.h" />
@@ -237,6 +239,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.vcxproj">
       <Project>{f77671a4-6742-4209-bf98-cd53ffd43778}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\TinyXML2\TinyXML2.vcxproj">
+      <Project>{eb0973e6-b0a1-44b9-b301-16d00800da45}</Project>
     </ProjectReference>
     <ProjectReference Include="..\WaveletLib\WaveletLib.vcxproj">
       <Project>{45b12e44-12ca-4f4b-b36d-29ebe86584e4}</Project>

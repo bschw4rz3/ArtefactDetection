@@ -73,6 +73,9 @@
     <Filter Include="Quelldateien\classifications">
       <UniqueIdentifier>{01f4aacc-347b-4d51-a06e-2464888cb495}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\models">
+      <UniqueIdentifier>{f4675a41-ec4a-465d-a7b4-004921ea6aa4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -185,6 +188,9 @@
     </ClCompile>
     <ClCompile Include="KNearestNeighborsService.cpp">
       <Filter>Quelldateien\classifications</Filter>
+    </ClCompile>
+    <ClCompile Include="DataPoint.cpp">
+      <Filter>Quelldateien\models</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -318,6 +324,9 @@
       <Filter>Headerdateien\classifications</Filter>
     </ClInclude>
     <ClInclude Include="FeatureResult.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="DataPoint.h">
       <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>

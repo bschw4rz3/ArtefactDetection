@@ -38,6 +38,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include "../TinyXml2/XMLSerialization.h"
+
 #define stringify( name ) #name
 
 enum {

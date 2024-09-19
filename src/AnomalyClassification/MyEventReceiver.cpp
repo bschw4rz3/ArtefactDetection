@@ -254,7 +254,8 @@ std::string MyEventReceiver::generateTrainingsDataFilePath()
 
 void MyEventReceiver::saveTrainingsData(std::vector<DataPoint> trainingData, std::string fileName)
 {
-
+    DataFile dataFile;
+    dataFile.addDataPoint(trainingData);
 }
 
 void MyEventReceiver::onClassifyKNearest()
@@ -277,7 +278,7 @@ void MyEventReceiver::onClassifyKNearest()
     testData.push_back(featureResult.getFeatureVector());
 
     std::vector<DataPoint> classifiedDatPoints = this->kNearestNeighborsService->classify(trainingData, testData, 2);
-    int classIndex = classifiedDatPoints[0].label;
+    int classIndex = classifiedDatPoints[0].label.value();
 
     std::wstring classifyIndex = this->stringSerivce->intToWString(classIndex);
 
@@ -313,7 +314,7 @@ std::vector<DataPoint> MyEventReceiver::loadTraingsdataForKNearest()
             if(featureResult.getSuccess())
             {
                 DataPoint dataPoint;
-                dataPoint.features = featureResult.getFeatureVector();
+                dataPoint.addFeature(featureResult.getFeatureVector());
                 dataPoint.label = classIndex;
 
                 dataPointList.push_back(dataPoint);

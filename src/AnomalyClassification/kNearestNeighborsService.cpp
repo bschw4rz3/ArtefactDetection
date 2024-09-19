@@ -11,15 +11,16 @@ double KNearestNeighborsService::euclideanDistance(const std::vector<double>& p1
 }
 
 // KNN-Klassifikationsalgorithmus
-int KNearestNeighborsService::classifyKNN(const std::vector<DataPoint>& trainingData, const DataPoint& testPoint, int k) 
+int KNearestNeighborsService::classifyKNN(std::vector<DataPoint>& trainingData, DataPoint& testPoint, int k) 
 {
     // Vektor zum Speichern der Distanzen und zugehörigen Labels
     std::vector<std::pair<double, int>> distances;
 
     // Berechne die euklidische Distanz zu jedem Trainingspunkt
-    for (const auto& dataPoint : trainingData) {
-        double dist = this->euclideanDistance(testPoint.features, dataPoint.features);
-        distances.push_back(std::make_pair(dist, dataPoint.label));
+    for (auto& dataPoint : trainingData) 
+    {
+        double dist = this->euclideanDistance(testPoint.getFeatures(), dataPoint.getFeatures());
+        distances.push_back(std::make_pair(dist, dataPoint.getLabel()));
     }
 
     // Sortiere die Distanzen in aufsteigender Reihenfolge
@@ -50,17 +51,20 @@ std::vector<DataPoint> KNearestNeighborsService::classify(std::vector<DataPoint>
 
     for(int i = 0;i < testData.size();i++)
     {
-        DataPoint testPoint;
-        testPoint.features = testData[i];
+        for(int j = 0;j < testData[i].size();j++)
+        {
+            DataPoint testPoint;
+            //testPoint.addFeature(testData[i][j]);
 
-        // Klassifikation des Testpunkts
-        int predictedLabel = this->classifyKNN(trainingData, testPoint, k);
+            // Klassifikation des Testpunkts
+            int predictedLabel = this->classifyKNN(trainingData, testPoint, k);
 
-        DataPoint currentPoint;
-        currentPoint.features = testPoint.features;
-        currentPoint.label = predictedLabel;
+            DataPoint currentPoint;
+            currentPoint.features = testPoint.features;
+            currentPoint.label = predictedLabel;
 
-        data.push_back(currentPoint);
+            data.push_back(currentPoint);
+        }
     }
 
     return data;

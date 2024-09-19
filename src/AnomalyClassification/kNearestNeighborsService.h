@@ -3,14 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include <cmath>
-#include <algorithm>
-#include <map>
-
-struct DataPoint {
-    std::vector<double> features;  // Merkmale
-    int label;                // Klassenlabel
-};
+#include "DataPoint.h"
 
 class KNearestNeighborsService
 {
@@ -19,7 +12,7 @@ public:
 
 private:
     double euclideanDistance(const std::vector<double>& p1, const std::vector<double>& p2);
-    int classifyKNN(const std::vector<DataPoint>& trainingData, const DataPoint& testPoint, int k);
+    int classifyKNN(std::vector<DataPoint>& trainingData, DataPoint& testPoint, int k);
 };
 
 #endif
