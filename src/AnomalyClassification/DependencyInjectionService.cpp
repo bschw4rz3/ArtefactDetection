@@ -7,6 +7,7 @@ DependencyInjectionService::DependencyInjectionService()
     this->mathSerivce = new MathSerivce();
     this->geometricService = new GeometricService(this->colorService);
     this->imgService = new CImgService(this->geometricService, this->colorService);
+    this->fileService = new FileService();
 
     this->defectGenerationService = new DefectGenerationService();
 
@@ -46,6 +47,7 @@ DependencyInjectionService::~DependencyInjectionService()
     delete this->classicSobelOperatorService;
     delete this->improvedSobelOperatorService;
     delete this->geometricService;
+    delete this->fileService;
 
     delete this->defectGenerationService;
 

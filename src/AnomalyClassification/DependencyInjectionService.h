@@ -28,6 +28,7 @@
 #include "HaarWavletService.h"
 #include "DaubechiesSecondWaveletService.h"
 #include "BiorWavletService.h"
+#include "FileService.h"
 
 #include "KNearestNeighborsService.h"
 
@@ -41,6 +42,7 @@ public:
     MathSerivce* mathSerivce;
     CImgService* imgService;
     SuperPixelService* superPixelService;
+    FileService* fileService;
 
     DefectGenerationService* defectGenerationService;
 

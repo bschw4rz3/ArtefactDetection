@@ -283,3 +283,37 @@ IGUIElement* GraphicEngine::getParentElement(int parentId)
 
     return element;
 }
+
+void GraphicEngine::bringToFront(int id)
+{
+    IGUIElement* element = NULL;
+
+    if (id != -1)
+    {
+        element = this->guiElementMap[id];
+        element->bringToFront(element);
+    }
+}
+
+void GraphicEngine::sendToBack(int id)
+{
+    IGUIElement* element = NULL;
+
+    if (id != -1)
+    {
+        element = this->guiElementMap[id];
+        element->sendToBack(element);
+    }
+}
+
+void GraphicEngine::setFocus(int id)
+{
+    IGUIElement* element = NULL;
+
+    if (id != -1)
+    {
+        element = this->guiElementMap[id];
+
+        this->env->setFocus(element);
+    }
+}

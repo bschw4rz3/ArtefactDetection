@@ -143,7 +143,7 @@
     <ClCompile Include="ColorRGB.h" />
     <ClCompile Include="ColorService.cpp" />
     <ClCompile Include="CompletedLbpService.cpp" />
-    <ClCompile Include="DataPoint.cpp" />
+    <ClCompile Include="DataPointSav.cpp" />
     <ClCompile Include="DaubechiesFourWaveletService.cpp" />
     <ClCompile Include="DaubechiesSecondWaveletService.cpp" />
     <ClCompile Include="DependencyInjectionService.cpp" />
@@ -151,6 +151,7 @@
     <ClCompile Include="DiscreteFourierDescriptorService.cpp" />
     <ClCompile Include="DiscreteFourierTransformationSerivce.cpp" />
     <ClCompile Include="DiscreteFourierTransformationSerivceCV.cpp" />
+    <ClCompile Include="FileService.cpp" />
     <ClCompile Include="GaborServiceCV.cpp" />
     <ClCompile Include="GeometricService.cpp" />
     <ClCompile Include="GLCMService.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="ColorService.h" />
     <ClInclude Include="CompletedLbpService.h" />
     <ClInclude Include="DataPoint.h" />
+    <ClInclude Include="DataPointSav.h" />
     <ClInclude Include="DaubechiesFourWaveletService.h" />
     <ClInclude Include="DaubechiesSecondWaveletService.h" />
     <ClInclude Include="DependencyInjectionService.h" />
@@ -192,6 +194,7 @@
     <ClInclude Include="DiscreteFourierTransformationSerivceCV.h" />
     <ClInclude Include="FDResult.h" />
     <ClInclude Include="FeatureResult.h" />
+    <ClInclude Include="FileService.h" />
     <ClInclude Include="GaborServiceCV.h" />
     <ClInclude Include="GeometricService.h" />
     <ClInclude Include="GLCMResult.h" />

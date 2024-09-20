@@ -189,8 +189,11 @@
     <ClCompile Include="KNearestNeighborsService.cpp">
       <Filter>Quelldateien\classifications</Filter>
     </ClCompile>
-    <ClCompile Include="DataPoint.cpp">
+    <ClCompile Include="DataPointSav.cpp">
       <Filter>Quelldateien\models</Filter>
+    </ClCompile>
+    <ClCompile Include="FileService.cpp">
+      <Filter>Quelldateien\helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -325,6 +328,12 @@
     </ClInclude>
     <ClInclude Include="FeatureResult.h">
       <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="DataPointSav.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="FileService.h">
+      <Filter>Headerdateien\helpers</Filter>
     </ClInclude>
     <ClInclude Include="DataPoint.h">
       <Filter>Headerdateien\models</Filter>

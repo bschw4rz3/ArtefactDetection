@@ -17,10 +17,10 @@ int KNearestNeighborsService::classifyKNN(std::vector<DataPoint>& trainingData, 
     std::vector<std::pair<double, int>> distances;
 
     // Berechne die euklidische Distanz zu jedem Trainingspunkt
-    for (auto& dataPoint : trainingData) 
+    for (DataPoint dataPoint : trainingData) 
     {
-        double dist = this->euclideanDistance(testPoint.getFeatures(), dataPoint.getFeatures());
-        distances.push_back(std::make_pair(dist, dataPoint.getLabel()));
+        double dist = this->euclideanDistance(testPoint.features, dataPoint.features);
+        distances.push_back(std::make_pair(dist, dataPoint.label));
     }
 
     // Sortiere die Distanzen in aufsteigender Reihenfolge

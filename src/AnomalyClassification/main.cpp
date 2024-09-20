@@ -148,5 +148,10 @@ int main()
     graphicEngine.addButton(GUI_ID_BUTTON_GENERATE_TRAININGS_DATA, Point2D(pannelX + 180, pannelY + 30), 200, L"Generate trainings data", L"Generiere neu Trainingsdaten", GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_CLASSIFY, Point2D(pannelX + 180, pannelY + 60), 200, L"Classify", L"Klassifizieren des aktuellen Bildes", GUI_ID_CLASSIFY_PANNEL);
 
+    graphicEngine.addSubwindow(GUI_ID_MESSAGE_PANNEL, Point2D((windowSize.x/2)-100, (windowSize.y/2)-50), Point2D((windowSize.x/2)+100, (windowSize.y/2)+50), L"Message");
+    graphicEngine.addLabel(GUI_ID_LABEL_MESSAGE, Point2D(10, 30), 180, L"", GUI_ID_MESSAGE_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_MESSAGE_OK, Point2D(75, 70), 60, L"OK", L"", GUI_ID_MESSAGE_PANNEL);
+    graphicEngine.setVisibility(GUI_ID_MESSAGE_PANNEL, false);
+
     graphicEngine.run((EventReceiver*)&receiver);
 }

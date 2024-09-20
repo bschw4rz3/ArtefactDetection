@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
+#include <algorithm>
 #include "DataPoint.h"
 
 class KNearestNeighborsService

@@ -76,6 +76,10 @@ public:
     virtual void addSubwindow(int id, Point2D from, Point2D to, const wchar_t* titel);
     virtual void addTabControl(int id, Point2D from, Point2D to, int parentId = -1);
     virtual void addTab(int id, const wchar_t* title, int parentId = -1);
+    
+    virtual void bringToFront(int id);
+    virtual void sendToBack(int id);
+    virtual void setFocus(int id);
 
     virtual void removeElement(int id);
 

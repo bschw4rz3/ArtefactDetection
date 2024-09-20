@@ -18,8 +18,8 @@
 #include "../IrrlichtWrapper/SAppContext.h"
 #include "../IrrlichtWrapper/EventReceiver.h"
 
+#include "DataPointSav.h"
 #include "FeatureResult.h"
-
 #include "DependencyInjectionService.h"
 
 #include <opencv2/core.hpp>
@@ -50,6 +50,7 @@ enum {
     GUI_ID_HU_MOMENT_PANNEL,
     GUI_ID_HU_GLCM_PANNEL,
     GUI_ID_CLASSIFY_PANNEL,
+    GUI_ID_MESSAGE_PANNEL,
 
     GUI_ID_TABCONTROL,
     GUI_ID_IMAGE_1_TAB,
@@ -167,8 +168,10 @@ enum {
     GUI_ID_BUTTON_CLASSIFY,
     GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR,
     GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE,
-    GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE
-    
+    GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE,
+
+    GUI_ID_LABEL_MESSAGE,
+    GUI_ID_BUTTON_MESSAGE_OK
 };
 
 class MyEventReceiver : public EventReceiver
@@ -181,6 +184,7 @@ private:
     MathSerivce* mathSerivce;
     ColorService* colorService;
     CImgService* cImgService;
+    FileService* fileService;
 
     DefectGenerationService* defectGenerationService;
 
@@ -297,6 +301,7 @@ private:
     FeatureResult calculateFeatureVector(std::map<std::string, int> map);
 
     void saveTrainingsData(std::vector<DataPoint> trainingData, std::string fileName);
+    void showMessage(std::wstring message);
 };
 
 #endif
