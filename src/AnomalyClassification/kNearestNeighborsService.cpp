@@ -29,7 +29,8 @@ int KNearestNeighborsService::classifyKNN(std::vector<DataPoint>& trainingData, 
     // Zähle die Labels der k-nächsten Nachbarn
     std::map<int, int> labelCounts;
     for (int i = 0; i < k; i++) {
-        labelCounts[distances[i].second]++;
+        auto second = distances[i].second;
+        labelCounts[second]++;
     }
 
     // Finde das häufigste Label unter den k-nächsten Nachbarn

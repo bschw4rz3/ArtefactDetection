@@ -70,13 +70,13 @@ std::map<double, std::vector<double>> MorletWaveletServiceFFT::calculate(std::ve
     double dt = 0.01;
 
     // Frequenzen für das Scalogram
-    std::vector<double> frequencies = { 1, 5, 10, 15, 20, 25, 30, 35, 40 };
-    /*std::vector<double> frequencies;
+    //std::vector<double> frequencies = { 1, 5, 10, 15, 20, 25, 30, 35, 40 };
+    std::vector<double> frequencies;
 
     for (int i = 0;i <= 40; i++)
     {
         frequencies.push_back(i);
-    }*/
+    }
 
     // Berechnung des Scalograms
     return this->computeScalogram(signal, frequencies, dt);

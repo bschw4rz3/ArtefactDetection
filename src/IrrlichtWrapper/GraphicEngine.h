@@ -30,6 +30,14 @@ using namespace std;
 #include "IPrimitiveGraphic.h"
 #include "EventReceiver.h"
 #include "IEventReceiver.h"
+#include "CGUIBar.h"
+
+#ifdef _WIN32
+#include <windows.h>    //GetModuleFileNameW
+#else
+#include <limits.h>
+#include <unistd.h>     //readlink
+#endif
 
 // Define some values that we'll use to identify individual GUI controls.
 enum
@@ -76,7 +84,8 @@ public:
     virtual void addSubwindow(int id, Point2D from, Point2D to, const wchar_t* titel);
     virtual void addTabControl(int id, Point2D from, Point2D to, int parentId = -1);
     virtual void addTab(int id, const wchar_t* title, int parentId = -1);
-    
+    virtual void addProcessBar(int id, Point2D from, Point2D to, std::wstring imageFile, int parentId = -1);
+
     virtual void bringToFront(int id);
     virtual void sendToBack(int id);
     virtual void setFocus(int id);

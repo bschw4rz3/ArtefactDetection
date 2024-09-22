@@ -48,12 +48,6 @@ public:
 			this->featureVector.push_back(v4);
 			this->success = true;
 		}
-
-		if(!isnan(v4))
-		{
-			this->featureVector.push_back(v4);
-			this->success = true;
-		}
 		
 		if(!isnan(v5))
 		{

@@ -63,6 +63,9 @@
     <ClInclude Include="IrrPoint.h">
       <Filter>Headerdateien\Models</Filter>
     </ClInclude>
+    <ClInclude Include="CGUIBar.h">
+      <Filter>Headerdateien\Models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicEngine.cpp">
@@ -75,6 +78,9 @@
       <Filter>Quelldateien\Models</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
+      <Filter>Quelldateien\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="CGUIBar.cpp">
       <Filter>Quelldateien\Models</Filter>
     </ClCompile>
   </ItemGroup>

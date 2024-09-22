@@ -1,0 +1,3 @@
+<SerializableClass Type="DataFile" Version="1.0">
+    <Collection Name="DataPoints"/>
+</SerializableClass>

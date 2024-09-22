@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CGUIBar.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="GraphicEngine.h" />
     <ClInclude Include="EventReceiver.h" />
@@ -31,6 +32,7 @@
     <ClInclude Include="Skin.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CGUIBar.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="GraphicEngine.cpp" />
     <ClCompile Include="Point2D.cpp" />

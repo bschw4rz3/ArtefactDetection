@@ -272,6 +272,12 @@
     </CopyFileToFolders>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\lib\processbar.bmp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </CopyFileToFolders>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\libpng_native.redist.1.6.30\build\native\libpng_native.redist.targets" Condition="Exists('..\packages\libpng_native.redist.1.6.30\build\native\libpng_native.redist.targets')" />

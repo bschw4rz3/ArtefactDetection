@@ -595,6 +595,11 @@ FeatureResult MyEventReceiver::onDiscreteFourierTransformationCV(std::string fil
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
+    if(result.frequencies.size() <= 0)
+    {
+        return FeatureResult();
+    }
+
     return this->calculateFeatureVector(result.frequencies);
 }
 
@@ -730,7 +735,8 @@ FeatureResult MyEventReceiver::onLbp(CImg<unsigned char>* img, bool silence)
 
     if(fv.getFeatureVector().size() < 3)
     {
-        throw "LBP: Too less values in feature vector";
+        this->showMessage(L"LBP: Too less values in feature vector");
+        fv = FeatureResult();
     }
 
     return fv;
@@ -773,11 +779,14 @@ FeatureResult MyEventReceiver::onHuMoment(std::string fileName, CImg<unsigned ch
         // Calculate Hu Moments 
         cv::HuMoments(moments, huMoments);
 
-        int length = sizeof(huMoments) / sizeof(double);
-        for (int i = 0; i < length; i++)
+        if(!silence)
         {
-            std::wstring huString = this->stringSerivce->doubleToWString(huMoments[i]);
-            this->graphicEngine->setGUIElementText(huMomentOpenCVMoments[i], huString.c_str());
+            int length = sizeof(huMoments) / sizeof(double);
+            for (int i = 0; i < length; i++)
+            {
+                std::wstring huString = this->stringSerivce->doubleToWString(huMoments[i]);
+                this->graphicEngine->setGUIElementText(huMomentOpenCVMoments[i], huString.c_str());
+            }
         }
     }
     catch (cv::Exception e)
@@ -795,32 +804,53 @@ FeatureResult MyEventReceiver::onHuMoment(std::string fileName, CImg<unsigned ch
     this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
 
     double hu1 = this->huMomentsService->calculateHu1(&sobelImage);
-    std::wstring huString = this->stringSerivce->doubleToWString(hu1);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_1, huString.c_str());
+    if(!silence)
+    {
+        std::wstring huString = this->stringSerivce->doubleToWString(hu1);
+        this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_1, huString.c_str());
+    }
 
     double hu2 = this->huMomentsService->calculateHu2(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu2);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_2, huString.c_str());
+    if(!silence)
+    {
+        std::wstring huString = this->stringSerivce->doubleToWString(hu2);
+        this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_2, huString.c_str());
+    }
 
     double hu3 = this->huMomentsService->calculateHu3(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu3);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_3, huString.c_str());
+    if(!silence)
+    {
+        std::wstring huString = this->stringSerivce->doubleToWString(hu3);
+        this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_3, huString.c_str());
+    }
 
     double hu4 = this->huMomentsService->calculateHu4(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu4);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_4, huString.c_str());
+    if(!silence)
+    {
+        std::wstring huString = this->stringSerivce->doubleToWString(hu4);
+        this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_4, huString.c_str());
+    }
 
     double hu5 = this->huMomentsService->calculateHu5(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu5);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_5, huString.c_str());
+    if(!silence)
+    {
+        std::wstring huString = this->stringSerivce->doubleToWString(hu5);
+        this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_5, huString.c_str());
+    }
 
     double hu6 = this->huMomentsService->calculateHu6(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu6);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_6, huString.c_str());
+    if(!silence)
+    {
+        std::wstring huString = this->stringSerivce->doubleToWString(hu6);
+        this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_6, huString.c_str());
+    }
 
     double hu7 = this->huMomentsService->calculateHu7(&sobelImage);
-    huString = this->stringSerivce->doubleToWString(hu7);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_7, huString.c_str());
+    if(!silence)
+    {
+        std::wstring huString = this->stringSerivce->doubleToWString(hu7);
+        this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_7, huString.c_str());
+    }
 
     return FeatureResult(hu1, hu2, hu3, hu4, hu5, hu6, hu7);
 }
@@ -1694,9 +1724,10 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::map<double, std::vect
 
     FeatureResult result = FeatureResult(minFrequence, maxFrequence, avgFrequence, minAmplitude, maxAmplitude, avgAmplitude);
 
-    if(result.getFeatureVector().size() != 3)
+    if(result.getFeatureVector().size() != 6)
     {
-        throw "Calculation not valid!";
+        this->showMessage(L"Calculation not valid!");
+        return FeatureResult();
     }
 
     return result;
@@ -1712,7 +1743,8 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::vector<double> vector
 
     if(result.getFeatureVector().size() != 3)
     {
-        throw "Calculation not valid!";
+        this->showMessage(L"Calculation not valid!");
+        result = FeatureResult();
     }
 
     return result;

@@ -358,6 +358,9 @@
     <CopyFileToFolders Include="..\lib\opencv_world4100d.dll">
       <Filter>Binaries</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\lib\processbar.bmp">
+      <Filter>Ressourcendateien</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

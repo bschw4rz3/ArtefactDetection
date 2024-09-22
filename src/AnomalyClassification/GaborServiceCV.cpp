@@ -20,7 +20,9 @@ std::vector<double> GaborServiceCV::calculate(std::string imagePath)
 		for (int y = 0; y < gaborMat.rows; y++)
 		{
 			const double* My = gaborMat.ptr<double>(y);
-			for (int z = 0; z < gaborMat.cols; z++)
+			int mySize = sizeof(My) / sizeof(My[0]);
+
+			for (int z = 0; z < mySize /*gaborMat.cols*/; z++)
 			{
 				feature.push_back(My[z]);
 			} // end of z-loop

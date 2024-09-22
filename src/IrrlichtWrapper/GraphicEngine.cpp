@@ -317,3 +317,25 @@ void GraphicEngine::setFocus(int id)
         this->env->setFocus(element);
     }
 }
+
+
+std::wstring getexepath()
+{
+    wchar_t appPath[MAX_PATH] = { 0 };
+    GetModuleFileNameW(NULL, appPath, MAX_PATH);
+
+    std::wstring::size_type pos = std::wstring(appPath).find_last_of(L"\\/");
+    return std::wstring(appPath).substr(0, pos);
+}
+
+void GraphicEngine::addProcessBar(int id, Point2D from, Point2D to, std::wstring imageFile, int parentId)
+{
+    IGUIElement* parentElement = this->getParentElement(parentId);
+
+    std::wstring filePath = getexepath();
+
+    ITexture* texture = driver->getTexture((filePath + L"\\" + imageFile).c_str());
+	IGUIElement* bar = new CGUIBar(id, from.x, from.y, to.x, to.y, 100, texture, L"Health", this->env, this->driver, parentElement);
+
+    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, bar));
+}
