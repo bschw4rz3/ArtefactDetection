@@ -112,6 +112,12 @@ void GraphicEngine::setGUIElementText(int id, const wchar_t* text)
     element->setText(text);
 }
 
+const wchar_t* GraphicEngine::getGUIElementText(int id)
+{
+    IGUIElement* element = this->guiElementMap[id];
+    return element->getText();
+}
+
 void GraphicEngine::setGUIElementChecked(int id, bool checked)
 {
     IGUICheckBox* element = (IGUICheckBox*) this->guiElementMap[id];

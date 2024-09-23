@@ -55,7 +55,7 @@ std::vector<DataPoint> KNearestNeighborsService::classify(std::vector<DataPoint>
         for(int j = 0;j < testData[i].size();j++)
         {
             DataPoint testPoint;
-            //testPoint.addFeature(testData[i][j]);
+            testPoint.features = testData[i];
 
             // Klassifikation des Testpunkts
             int predictedLabel = this->classifyKNN(trainingData, testPoint, k);

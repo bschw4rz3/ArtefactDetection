@@ -121,10 +121,14 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 this->graphicEngine->enableGUIElement(GUI_ID_OPERATION_PANNEL, true);
                 this->graphicEngine->enableGUIElement(GUI_ID_GRAYINFO_PANNEL, true);
                 this->graphicEngine->enableGUIElement(GUI_ID_GEOMETRICINFO_PANNEL, true);
-                this->graphicEngine->enableGUIElement(GUI_ID_IMAGE_PANNEL, true);
                 this->graphicEngine->enableGUIElement(GUI_ID_HU_MOMENT_PANNEL, true);
                 this->graphicEngine->enableGUIElement(GUI_ID_HU_GLCM_PANNEL, true);
                 this->graphicEngine->enableGUIElement(GUI_ID_CLASSIFY_PANNEL, true);
+
+                if (this->graphicEngine->exists(GUI_ID_IMAGE_PANNEL))
+                {
+                    this->graphicEngine->enableGUIElement(GUI_ID_IMAGE_PANNEL, true);
+                }
             }
 
              return true;
@@ -141,6 +145,18 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
             if(id == GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE || id == GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR  || id == GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE)
             {
                 this->graphicEngine->resetCheckBoxsByWindowId(GUI_ID_CLASSIFY_PANNEL);
+
+                this->graphicEngine->setVisibility(GUI_ID_LABEL_PARAMETER, false);
+                this->graphicEngine->setVisibility(GUI_ID_INPUTBOX_PARAMETER, false);
+
+                if(id == GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR)
+                {
+                    this->graphicEngine->setGUIElementText(GUI_ID_LABEL_PARAMETER, L"Parameter K:");
+                    this->graphicEngine->setGUIElementText(GUI_ID_INPUTBOX_PARAMETER, L"4");
+
+                    this->graphicEngine->setVisibility(GUI_ID_LABEL_PARAMETER, true);
+                    this->graphicEngine->setVisibility(GUI_ID_INPUTBOX_PARAMETER, true);
+                }
             }
             else
             {
@@ -279,12 +295,15 @@ void MyEventReceiver::saveTrainingsData(std::vector<DataPoint> trainingData, std
 
 void MyEventReceiver::onClassifyKNearest()
 {
+    this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Initiate...");
+
     mkdir(this->trainingsDataSavePath.c_str());
     std::string traningsDataFile = this->generateTrainingsDataFilePath();
 
     if(this->selectedFile == L"")
     {
-        this->showMessage(L"No file selected!");   
+        this->showMessage(L"No file selected!");
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
         return;
     }
 
@@ -292,6 +311,8 @@ void MyEventReceiver::onClassifyKNearest()
 
     if(this->fileService->exists(traningsDataFile))
     {
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Load Traingsdata...");
+
         std::string xmlContent = this->fileService->readFile(traningsDataFile);
 
         DataFile dataFile;
@@ -301,9 +322,13 @@ void MyEventReceiver::onClassifyKNearest()
     }
     else
     {
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Generate Traingsdata...");
+
         trainingData = this->loadTraingsdataForKNearest();
         this->saveTrainingsData(trainingData, traningsDataFile);
     }
+
+    this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Execute test...");
     
     std::string fileName = this->stringSerivce->toString(this->selectedFile);
     CImg<unsigned char> img(fileName.c_str());
@@ -313,13 +338,17 @@ void MyEventReceiver::onClassifyKNearest()
 
     if(!featureResult.getSuccess())
     {
-        this->showMessage(L"Methode kann nicht angewendet werden.");   
+        this->showMessage(L"Methode kann nicht angewendet werden.");
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
         return;
     }
 
     testData.push_back(featureResult.getFeatureVector());
 
-    std::vector<DataPoint> classifiedDatPoints = this->kNearestNeighborsService->classify(trainingData, testData, 2);
+    std::wstring parameterK = this->graphicEngine->getGUIElementText(GUI_ID_INPUTBOX_PARAMETER);
+    int numberK = this->stringSerivce->toInt(parameterK);
+
+    std::vector<DataPoint> classifiedDatPoints = this->kNearestNeighborsService->classify(trainingData, testData, numberK);
     int classIndex = classifiedDatPoints[0].label;
 
     std::wstring classifyIndex = this->stringSerivce->intToWString(classIndex);
@@ -344,7 +373,6 @@ void MyEventReceiver::showMessage(std::wstring message)
     this->graphicEngine->bringToFront(GUI_ID_OPERATION_PANNEL);
     this->graphicEngine->bringToFront(GUI_ID_GRAYINFO_PANNEL);
     this->graphicEngine->bringToFront(GUI_ID_GEOMETRICINFO_PANNEL);
-    this->graphicEngine->bringToFront(GUI_ID_IMAGE_PANNEL);
     this->graphicEngine->bringToFront(GUI_ID_HU_MOMENT_PANNEL);
     this->graphicEngine->bringToFront(GUI_ID_HU_GLCM_PANNEL);
     this->graphicEngine->bringToFront(GUI_ID_CLASSIFY_PANNEL);
@@ -352,10 +380,15 @@ void MyEventReceiver::showMessage(std::wstring message)
     this->graphicEngine->enableGUIElement(GUI_ID_OPERATION_PANNEL, false);
     this->graphicEngine->enableGUIElement(GUI_ID_GRAYINFO_PANNEL, false);
     this->graphicEngine->enableGUIElement(GUI_ID_GEOMETRICINFO_PANNEL, false);
-    this->graphicEngine->enableGUIElement(GUI_ID_IMAGE_PANNEL, false);
     this->graphicEngine->enableGUIElement(GUI_ID_HU_MOMENT_PANNEL, false);
     this->graphicEngine->enableGUIElement(GUI_ID_HU_GLCM_PANNEL, false);
     this->graphicEngine->enableGUIElement(GUI_ID_CLASSIFY_PANNEL, false);
+
+    if (this->graphicEngine->exists(GUI_ID_IMAGE_PANNEL))
+    {
+        this->graphicEngine->bringToFront(GUI_ID_IMAGE_PANNEL);
+        this->graphicEngine->enableGUIElement(GUI_ID_IMAGE_PANNEL, true);
+    }
 
     this->graphicEngine->bringToFront(GUI_ID_MESSAGE_PANNEL);
     this->graphicEngine->setFocus(GUI_ID_MESSAGE_PANNEL);

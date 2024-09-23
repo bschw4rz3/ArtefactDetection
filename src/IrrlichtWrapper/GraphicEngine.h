@@ -73,6 +73,7 @@ public:
     virtual bool isCheckboxChecked(int id);
     virtual void enableGUIElement(int id, bool enable);
     virtual void setGUIElementText(int id, const wchar_t* text);
+    virtual const wchar_t* getGUIElementText(int id);
     virtual void setGUIElementChecked(int id, bool checked);
 
     virtual void add2DLine(Point2D one, Point2D two, Color color);

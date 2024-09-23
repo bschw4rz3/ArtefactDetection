@@ -402,4 +402,3 @@ FodyWeavers.xsd
 *.sln.iml
 
 src/lib/opencv_world4100d.dll
-src/AnomalyClassification/trainingsdata/**

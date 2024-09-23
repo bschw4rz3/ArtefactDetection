@@ -147,6 +147,11 @@ int main()
     graphicEngine.addLabel(GUI_ID_LABEL_CLASSIFY_INDEX, Point2D(pannelX + 180, pannelY + 10), 60, L"", GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_GENERATE_TRAININGS_DATA, Point2D(pannelX + 180, pannelY + 30), 200, L"Generate trainings data", L"Generiere neu Trainingsdaten", GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_CLASSIFY, Point2D(pannelX + 180, pannelY + 60), 200, L"Classify", L"Klassifizieren des aktuellen Bildes", GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_PARAMETER, Point2D(pannelX + 10, pannelY + 110), 100, L"Parameter:", GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addInputBox(GUI_ID_INPUTBOX_PARAMETER, Point2D(pannelX + 180, pannelY + 100), 200, L"", GUI_ID_CLASSIFY_PANNEL);
+
+    graphicEngine.setVisibility(GUI_ID_LABEL_PARAMETER, false);
+    graphicEngine.setVisibility(GUI_ID_INPUTBOX_PARAMETER, false);
     //graphicEngine.addProcessBar(GUI_ID_PROCESSBAR_CLASSIFY, Point2D(10, pannelY + 80), Point2D(pannelX + 200, pannelY + 100), L"processbar.bmp", GUI_ID_CLASSIFY_PANNEL);
 
     graphicEngine.addSubwindow(GUI_ID_MESSAGE_PANNEL, Point2D((windowSize.x/2)-100, (windowSize.y/2)-50), Point2D((windowSize.x/2)+100, (windowSize.y/2)+50), L"Message");

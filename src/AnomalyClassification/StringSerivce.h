@@ -21,6 +21,8 @@ public:
 
 	bool contains(std::string string, std::string term);
 	std::vector<std::string> split(std::string inputString, char delimiter);
+
+	int toInt(std::wstring text);
 };
 
 #endif

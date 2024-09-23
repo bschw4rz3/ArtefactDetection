@@ -71,6 +71,12 @@ std::string StringSerivce::intToString(int value)
     return concatenatedStr;
 }
 
+int StringSerivce::toInt(std::wstring text)
+{
+    std::string strValue = this->toString(text);
+    return std::atoi(strValue.c_str());
+}
+
 std::string StringSerivce::doubleToString(double value)
 {
     std::ostringstream strs;
