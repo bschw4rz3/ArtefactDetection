@@ -110,7 +110,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_USE_PYTHON_SCRIPTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -170,10 +170,12 @@
     <ClCompile Include="MorletWaveletServiceFFT.cpp" />
     <ClCompile Include="MyEventReceiver.cpp" />
     <ClCompile Include="ClassicSobelOperatorService.cpp" />
+    <ClCompile Include="PythonExecuter.cpp" />
     <ClCompile Include="SdSfService.cpp" />
     <ClCompile Include="StringService.cpp" />
     <ClCompile Include="SubregionResult.h" />
     <ClCompile Include="SuperPixelService.cpp" />
+    <ClCompile Include="TempFileNameService.cpp" />
     <ClCompile Include="TimeFrequenceResult.h" />
     <ClCompile Include="WaveletTransformCV.cpp" />
   </ItemGroup>
@@ -218,11 +220,13 @@
     <ClInclude Include="MultiplyResult.h" />
     <ClInclude Include="MyEventReceiver.h" />
     <ClInclude Include="ClassicSobelOperatorService.h" />
+    <ClInclude Include="PythonExecuter.h" />
     <ClInclude Include="SdSfService.h" />
     <ClInclude Include="StringSerivce.h" />
     <ClInclude Include="SuperPixelEntry.h" />
     <ClInclude Include="SuperPixelResult.h" />
     <ClInclude Include="SuperPixelService.h" />
+    <ClInclude Include="TempFileNameService.h" />
     <ClInclude Include="WaveletResult.h" />
     <ClInclude Include="WaveletTransformCV.h" />
   </ItemGroup>

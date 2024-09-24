@@ -8,6 +8,7 @@ DependencyInjectionService::DependencyInjectionService()
     this->geometricService = new GeometricService(this->colorService);
     this->imgService = new CImgService(this->geometricService, this->colorService);
     this->fileService = new FileService();
+    this->tempFileNameService = new TempFileNameService(this->directoryService, this->stringSerivce);
 
     this->defectGenerationService = new DefectGenerationService();
 
@@ -29,7 +30,11 @@ DependencyInjectionService::DependencyInjectionService()
     this->discreteFourierDescriptorService = new DiscreteFourierDescriptorService(this->classicSobelOperatorService, this->imgService);
     this->daubechiesFourWaveletService = new DaubechiesFourWaveletService();
     this->morletWaveletService = new MorletWaveletService(this->mathSerivce);
+#ifdef _USE_PYTHON_SCRIPTS
+    this->morletWaveletServiceFFT = new MorletWaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
+#else
     this->morletWaveletServiceFFT = new MorletWaveletServiceFFT();
+#endif
     this->haarWavletService = new HaarWavletService();
     this->daubechiesSecondWaveletService = new DaubechiesSecondWaveletService();
     this->biorWavletService = new BiorWavletService();
@@ -48,6 +53,7 @@ DependencyInjectionService::~DependencyInjectionService()
     delete this->improvedSobelOperatorService;
     delete this->geometricService;
     delete this->fileService;
+    delete this->tempFileNameService;
 
     delete this->defectGenerationService;
 

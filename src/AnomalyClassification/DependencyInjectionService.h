@@ -29,6 +29,8 @@
 #include "DaubechiesSecondWaveletService.h"
 #include "BiorWavletService.h"
 #include "FileService.h"
+#include "PythonExecuter.h"
+#include "TempFileNameService.h"
 
 #include "KNearestNeighborsService.h"
 
@@ -43,6 +45,7 @@ public:
     CImgService* imgService;
     SuperPixelService* superPixelService;
     FileService* fileService;
+    TempFileNameService* tempFileNameService;
 
     DefectGenerationService* defectGenerationService;
 
@@ -64,7 +67,12 @@ public:
     DiscreteFourierDescriptorService* discreteFourierDescriptorService;
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
     MorletWaveletService* morletWaveletService;
+
+#ifdef _USE_PYTHON_SCRIPTS
+    MorletWaveletPythonService* morletWaveletServiceFFT;
+#else
     MorletWaveletServiceFFT* morletWaveletServiceFFT;
+#endif
     HaarWavletService* haarWavletService;
     DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
     BiorWavletService* biorWavletService;

@@ -76,6 +76,12 @@
     <Filter Include="Quelldateien\models">
       <UniqueIdentifier>{f4675a41-ec4a-465d-a7b4-004921ea6aa4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\detectors\python">
+      <UniqueIdentifier>{49c23974-cdcd-4da3-9ba7-ee3363a15191}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\detectors\python">
+      <UniqueIdentifier>{78400f1c-4e77-473f-a441-7e193373e9dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -194,6 +200,12 @@
     </ClCompile>
     <ClCompile Include="FileService.cpp">
       <Filter>Quelldateien\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonExecuter.cpp">
+      <Filter>Quelldateien\detectors\python</Filter>
+    </ClCompile>
+    <ClCompile Include="TempFileNameService.cpp">
+      <Filter>Quelldateien\detectors\transformation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -337,6 +349,12 @@
     </ClInclude>
     <ClInclude Include="DataPoint.h">
       <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonExecuter.h">
+      <Filter>Headerdateien\detectors\python</Filter>
+    </ClInclude>
+    <ClInclude Include="TempFileNameService.h">
+      <Filter>Headerdateien\helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

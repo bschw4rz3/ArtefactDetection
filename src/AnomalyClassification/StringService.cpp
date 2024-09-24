@@ -77,6 +77,11 @@ int StringSerivce::toInt(std::wstring text)
     return std::atoi(strValue.c_str());
 }
 
+double StringSerivce::toDouble(std::string strValue)
+{
+    return std::stod(strValue.c_str());
+}
+
 std::string StringSerivce::doubleToString(double value)
 {
     std::ostringstream strs;
@@ -103,4 +108,26 @@ std::vector<std::string> StringSerivce::split(std::string inputString, char deli
     }
 
     return tokens;
+}
+
+std::string StringSerivce::complexToPythonValue(std::complex<double> value)
+{
+    return this->doubleToString(value.real()) + "+" + this->doubleToString(value.imag()) + "j";
+}
+
+void StringSerivce::trim(std::string& s) {
+    rtrim(s);
+    ltrim(s);
+}
+
+void StringSerivce::ltrim(std::string& s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch) && ch != '[' && ch != ']' && ch != ',';
+        }));
+}
+
+void StringSerivce::rtrim(std::string& s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch) && ch != '[' && ch != ']' && ch != ',';
+        }).base(), s.end());
 }

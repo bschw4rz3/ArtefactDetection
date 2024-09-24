@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <complex>
 
 class StringSerivce
 {
@@ -23,6 +24,12 @@ public:
 	std::vector<std::string> split(std::string inputString, char delimiter);
 
 	int toInt(std::wstring text);
+	double toDouble(std::string strValue);
+	std::string complexToPythonValue(std::complex<double> value);
+
+	void trim(std::string& s);
+	void ltrim(std::string& s);
+	void rtrim(std::string& s);
 };
 
 #endif

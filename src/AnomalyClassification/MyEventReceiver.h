@@ -8,6 +8,7 @@
 #include <thread>
 #include <future>
 #include <algorithm>
+#include <syncstream>
 
 #include "memblock.h"
 #include "chartdir.h"
@@ -188,6 +189,7 @@ private:
     ColorService* colorService;
     CImgService* cImgService;
     FileService* fileService;
+    TempFileNameService* tempFileNameService;
 
     DefectGenerationService* defectGenerationService;
 
@@ -209,7 +211,12 @@ private:
     DiscreteFourierDescriptorService* discreteFourierDescriptorService;
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
     MorletWaveletService* morletWaveletService;
+
+#ifdef _USE_PYTHON_SCRIPTS
+    MorletWaveletPythonService* morletWaveletServiceFFT;
+#else
     MorletWaveletServiceFFT* morletWaveletServiceFFT;
+#endif
     HaarWavletService* haarWaeletService;
     DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
     BiorWavletService* biorWavlet;
@@ -277,9 +284,7 @@ private:
     std::vector<DataPoint> loadTraingsdataForKNearest();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
-    std::string generateFileName();
     std::string generateTrainingsDataFilePath();
-    void removeTempFiles();
 
     void histogram(std::map<int, int> histogramData, int labelCount, std::string fileName);
     void histogram(std::map<std::string, int> histogramData, int labelCount, std::string fileName);
