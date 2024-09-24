@@ -209,17 +209,21 @@ private:
     WaveletTransformCV* waveletTransformCV;
     DiscreteFourierTransformationSerivceCV* discreteFourierTransformationSerivceCV;
     DiscreteFourierDescriptorService* discreteFourierDescriptorService;
-    DaubechiesFourWaveletService* daubechiesFourWaveletService;
     MorletWaveletService* morletWaveletService;
 
 #ifdef _USE_PYTHON_SCRIPTS
     MorletWaveletPythonService* morletWaveletServiceFFT;
+    HaarWaveletPythonService* haarWaeletService;
+    Db2WaveletPythonService* daubechiesSecondWaveletService;
+    Db4WaveletPythonService* daubechiesFourWaveletService;
+    BiorWaveletPythonService* biorWavlet;
 #else
     MorletWaveletServiceFFT* morletWaveletServiceFFT;
-#endif
     HaarWavletService* haarWaeletService;
     DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
+    DaubechiesFourWaveletService* daubechiesFourWaveletService;
     BiorWavletService* biorWavlet;
+#endif
 
     KNearestNeighborsService* kNearestNeighborsService;
 

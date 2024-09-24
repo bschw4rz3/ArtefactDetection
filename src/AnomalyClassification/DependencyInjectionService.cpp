@@ -28,16 +28,21 @@ DependencyInjectionService::DependencyInjectionService()
     this->waveletTransformCV = new WaveletTransformCV(this->stringSerivce);
     this->discreteFourierTransformationSerivceCV = new DiscreteFourierTransformationSerivceCV();
     this->discreteFourierDescriptorService = new DiscreteFourierDescriptorService(this->classicSobelOperatorService, this->imgService);
-    this->daubechiesFourWaveletService = new DaubechiesFourWaveletService();
     this->morletWaveletService = new MorletWaveletService(this->mathSerivce);
 #ifdef _USE_PYTHON_SCRIPTS
     this->morletWaveletServiceFFT = new MorletWaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
+    this->haarWavletService = new HaarWaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
+    this->daubechiesSecondWaveletService = new Db2WaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
+    this->daubechiesFourWaveletService = new Db4WaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
+    this->biorWavletService = new BiorWaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
 #else
     this->morletWaveletServiceFFT = new MorletWaveletServiceFFT();
-#endif
-    this->haarWavletService = new HaarWavletService();
+    this->haarWavletService = new HaarWavletService(); 
     this->daubechiesSecondWaveletService = new DaubechiesSecondWaveletService();
+    this->daubechiesFourWaveletService = new DaubechiesFourWaveletService();
     this->biorWavletService = new BiorWavletService();
+#endif
+    
 
     this->kNearestNeighborsService = new KNearestNeighborsService();
 }

@@ -458,9 +458,13 @@ FeatureResult MyEventReceiver::onBiorWavlet(CImg<unsigned char>* img, bool silen
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&sobel);
 
     std::vector<std::complex<double>> complexTime = this->cImgService->getContureAsComplexVector(&sobel, backgroundColor, this->imageVectorCentered, this->imageVectorByConture);
-    std::map<double, std::vector<std::complex<double>>> result = this->biorWavlet->calculate(complexTime, 10);
 
+#ifdef _USE_PYTHON_SCRIPTS
+    std::map<double, std::vector<double>> doubleResult = this->biorWavlet->calculate(complexTime);
+#else
+    std::map<double, std::vector<std::complex<double>>> result = this->biorWavlet->calculate(complexTime, 10);
     std::map<double, std::vector<double>> doubleResult = this->toDoubleMap(result);
+#endif
 
     if(!silence)
     {
@@ -484,7 +488,12 @@ FeatureResult MyEventReceiver::onDaubechiesFourWavelet(CImg<unsigned char>* img,
     Point2D center = this->geometricService->calculateCentroid(&sobel, backgroundColor);
 
     std::vector<std::complex<double>> complexTime = this->cImgService->getContureAsComplexVector(&sobel, backgroundColor, this->imageVectorCentered, this->imageVectorByConture);
+    
+#ifdef _USE_PYTHON_SCRIPTS
+    std::map<double, std::vector<double>> result = this->daubechiesFourWaveletService->calculate(complexTime);
+#else    
     std::map<int, std::vector<std::complex<double>>> result = this->daubechiesFourWaveletService->calculate(complexTime);
+#endif
 
     if(!silence)
     {
@@ -494,11 +503,19 @@ FeatureResult MyEventReceiver::onDaubechiesFourWavelet(CImg<unsigned char>* img,
         this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
         tempName = this->tempFileNameService->generateFileNamePng();
+#ifdef _USE_PYTHON_SCRIPTS
+        this->heatMap(TimeFrequenceResult(result, result.size()), std::vector<double>(), tempName);
+#else
         this->heatMap(result, 10, std::vector<double>(), tempName);
+#endif
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     }   
 
+#ifdef _USE_PYTHON_SCRIPTS
+    return this->calculateFeatureVector(result);
+#else
     return this->calculateFeatureVector(this->toDoubleMap(result));
+#endif
 }
 
 FeatureResult MyEventReceiver::onDaubechiesSecond(CImg<unsigned char>* img, bool silence)
@@ -508,8 +525,13 @@ FeatureResult MyEventReceiver::onDaubechiesSecond(CImg<unsigned char>* img, bool
     Point2D center = this->geometricService->calculateCentroid(&sobel, backgroundColor);
 
     std::vector<std::complex<double>> complexTime = this->cImgService->getContureAsComplexVector(&sobel, backgroundColor, this->imageVectorCentered, this->imageVectorByConture);
+
+#ifdef _USE_PYTHON_SCRIPTS
+    std::map<double, std::vector<double>> resultDouble = this->daubechiesSecondWaveletService->calculate(complexTime);
+#else
     std::map<int, std::vector<std::complex<double>>> result = this->daubechiesSecondWaveletService->calculate(complexTime);
     std::map<double, std::vector<double>> resultDouble = this->toDoubleMap(result);
+#endif
 
     if(!silence)
     {
@@ -519,7 +541,11 @@ FeatureResult MyEventReceiver::onDaubechiesSecond(CImg<unsigned char>* img, bool
         this->graphicEngine->addImage(GUI_ID_IMAGE_2_1, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_2_TAB);
 
         tempName = this->tempFileNameService->generateFileNamePng();
+#ifdef _USE_PYTHON_SCRIPTS
+        this->heatMap(TimeFrequenceResult(resultDouble, resultDouble.size()), std::vector<double>(), tempName);
+#else
         this->heatMap(result, 10, std::vector<double>(), tempName);
+#endif
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 

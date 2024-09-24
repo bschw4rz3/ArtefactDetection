@@ -46,7 +46,55 @@ public:
 
 	virtual std::string getScriptName()
 	{
-		return "morletWavlet.py";
+		return "morletWavelet.py";
+	}
+};
+
+class HaarWaveletPythonService : public PythonExecuter
+{
+public:
+	HaarWaveletPythonService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
+		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+
+	virtual std::string getScriptName()
+	{
+		return "haarWavelet.py";
+	}
+};
+
+class Db2WaveletPythonService : public PythonExecuter
+{
+public:
+	Db2WaveletPythonService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
+		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+
+	virtual std::string getScriptName()
+	{
+		return "db2Wavelet.py";
+	}
+};
+
+class Db4WaveletPythonService : public PythonExecuter
+{
+public:
+	Db4WaveletPythonService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
+		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+
+	virtual std::string getScriptName()
+	{
+		return "db4Wavelet.py";
+	}
+};
+
+class BiorWaveletPythonService : public PythonExecuter
+{
+public:
+	BiorWaveletPythonService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
+		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+
+	virtual std::string getScriptName()
+	{
+		return "biorWavelet.py";
 	}
 };
 
