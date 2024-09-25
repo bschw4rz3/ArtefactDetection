@@ -72,9 +72,61 @@ void GraphicEngine::addScrollbar(int id, Point2D position, int length, double mi
     this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, scrollBar));
 }
 
-void GraphicEngine::addButton(int id, Point2D position, int length, const wchar_t* text, const wchar_t* tooltip, int parentId)
+void GraphicEngine::addTable(int id, Point2D position, int width, int height, std::vector<std::wstring> columns, int parentId)
 {
     IGUIElement* parentElement = this->getParentElement(parentId);
+    IGUITable* table = this->env->addTable(irr::core::recti(position.x, position.y, position.x + width, position.y + height), parentElement, id);
+
+    for (int i = 0; i < columns.size(); i++)
+    {
+        table->addColumn(columns[i].c_str(), i);
+    }
+}
+
+void GraphicEngine::addRow(int id, std::vector<std::wstring> values)
+{
+    IGUIElement* element = this->getParentElement(id);
+
+    if (element == NULL)
+    {
+        return;
+    }
+
+    if (IGUITable* tableElement = dynamic_cast<IGUITable*>(element))
+    {
+        if (tableElement->getColumnCount() != values.size())
+        {
+            return;
+        }
+
+        int rowIndex = tableElement->getRowCount();
+        tableElement->addRow(rowIndex);
+
+        for (int i = 0; i < values.size(); i++)
+        {
+            tableElement->setCellText(rowIndex, i, values[i].c_str());
+        }
+    }
+}
+
+void GraphicEngine::clearTable(int id)
+{
+    IGUIElement* element = this->getParentElement(id);
+
+    if (element == NULL)
+    {
+        return;
+    }
+
+    if (IGUITable* tableElement = dynamic_cast<IGUITable*>(element))
+    {
+        tableElement->clear();
+    }
+}
+
+void GraphicEngine::addButton(int id, Point2D position, int length, const wchar_t* text, const wchar_t* tooltip, int parentId)
+{
+    IGUIElement* parentElement = this->getParentElement(parentId);    
     IGUIButton* button = this->env->addButton(rect<s32>(position.x, position.y, position.x + length, position.y + 32), parentElement, id, text, tooltip);
     this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, button));
 }

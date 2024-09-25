@@ -6,8 +6,8 @@ import numbers
 from decimal import Decimal
 from var_dump import var_dump
 
-def calculateWavelet(inputFileName, outputFileName, wavelet):
-    #read input
+def readInput(inputFileName):
+        #read input
     realSignal = []
     imagSignal = []
 
@@ -27,9 +27,31 @@ def calculateWavelet(inputFileName, outputFileName, wavelet):
 
     realSignal = np.array(realSignal, dtype=float)
     imagSignal = np.array(imagSignal, dtype=float)
-    complexInput = np.vectorize(complex)(realSignal, imagSignal)
+    return np.vectorize(complex)(realSignal, imagSignal)
 
-    time = np.linspace(0, 1, len(realSignal))
+def writeOutput(outputFileName, cwtmatr):
+    import json
+    
+    class NumpyEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, np.ndarray):
+                return obj.tolist()
+            return super().default(obj)
+
+    cwtmatr = np.round(cwtmatr, 2)
+
+    #jsonString = json.dumps(cwtmatr, cls=NumpyEncoder)
+    #f = open(sys.argv[2], 'wb')
+    #f.write(jsonString)
+
+    import io, json
+    with io.open(outputFileName, 'w', encoding='utf-8') as f:
+      f.write(json.dumps(cwtmatr, ensure_ascii=False, cls=NumpyEncoder))
+
+def calculateWavelet(inputFileName, outputFileName, wavelet):
+    complexInput = readInput(inputFileName)
+
+    time = np.linspace(0, 1, len(complexInput))
 
     # logarithmic scale for scales, as suggested by Torrence & Compo:
     widths = np.geomspace(1, 1024, num=100)
@@ -59,20 +81,6 @@ def calculateWavelet(inputFileName, outputFileName, wavelet):
     #plt.tight_layout()
     #plt.show()
     
-    import json
+    writeOutput(outputFileName, cwtmatr)
     
-    class NumpyEncoder(json.JSONEncoder):
-        def default(self, obj):
-            if isinstance(obj, np.ndarray):
-                return obj.tolist()
-            return super().default(obj)
-
-    cwtmatr = np.round(cwtmatr, 2)
-
-    #jsonString = json.dumps(cwtmatr, cls=NumpyEncoder)
-    #f = open(sys.argv[2], 'wb')
-    #f.write(jsonString)
-
-    import io, json
-    with io.open(outputFileName, 'w', encoding='utf-8') as f:
-      f.write(json.dumps(cwtmatr, ensure_ascii=False, cls=NumpyEncoder))
+    

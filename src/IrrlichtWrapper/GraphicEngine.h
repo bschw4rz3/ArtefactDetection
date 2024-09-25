@@ -87,6 +87,10 @@ public:
     virtual void addTab(int id, const wchar_t* title, int parentId = -1);
     virtual void addProcessBar(int id, Point2D from, Point2D to, std::wstring imageFile, int parentId = -1);
 
+    virtual void addTable(int id, Point2D position, int width, int heigth, std::vector<std::wstring> columns, int parentId);
+    virtual void addRow(int id, std::vector<std::wstring> values);
+    virtual void clearTable(int id);
+
     virtual void bringToFront(int id);
     virtual void sendToBack(int id);
     virtual void setFocus(int id);

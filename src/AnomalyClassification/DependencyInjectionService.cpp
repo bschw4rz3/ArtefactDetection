@@ -34,16 +34,13 @@ DependencyInjectionService::DependencyInjectionService()
     this->haarWavletService = new HaarWaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
     this->daubechiesSecondWaveletService = new Db2WaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
     this->daubechiesFourWaveletService = new Db4WaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
-    this->biorWavletService = new BiorWaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
 #else
     this->morletWaveletServiceFFT = new MorletWaveletServiceFFT();
     this->haarWavletService = new HaarWavletService(); 
     this->daubechiesSecondWaveletService = new DaubechiesSecondWaveletService();
     this->daubechiesFourWaveletService = new DaubechiesFourWaveletService();
-    this->biorWavletService = new BiorWavletService();
 #endif
-    
-
+    this->biorWavletService = new BiorWavletService();
     this->kNearestNeighborsService = new KNearestNeighborsService();
 }
 

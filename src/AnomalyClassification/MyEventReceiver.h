@@ -173,6 +173,9 @@ enum {
     GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE,
     GUI_ID_INPUTBOX_PARAMETER,
     GUI_ID_LABEL_PARAMETER,
+    GUI_ID_BUTTON_CLASSIFY_MULTIPLE,
+    GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA,
+    GUI_ID_BUTTON_CLASSIFY_TABLE,
 
     GUI_ID_LABEL_MESSAGE,
     GUI_ID_BUTTON_MESSAGE_OK
@@ -216,14 +219,13 @@ private:
     HaarWaveletPythonService* haarWaeletService;
     Db2WaveletPythonService* daubechiesSecondWaveletService;
     Db4WaveletPythonService* daubechiesFourWaveletService;
-    BiorWaveletPythonService* biorWavlet;
 #else
     MorletWaveletServiceFFT* morletWaveletServiceFFT;
     HaarWavletService* haarWaeletService;
     DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
-    BiorWavletService* biorWavlet;
 #endif
+    BiorWavletService* biorWavlet;
 
     KNearestNeighborsService* kNearestNeighborsService;
 
@@ -241,6 +243,7 @@ private:
     std::wstring selectedFile;
     std::string trainingsdata;
     std::string trainingsDataSavePath;
+    std::string testdataPath;
 
     int tempFileIndex;
 
@@ -284,7 +287,8 @@ private:
     void onCreateImagePannel();
     void onGenerateTrainingsData();
 
-    void onClassifyKNearest();
+    std::string onClassifyKNearest(std::string selectedImage);
+    void onClassifyKNearestMultiple();
     std::vector<DataPoint> loadTraingsdataForKNearest();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);

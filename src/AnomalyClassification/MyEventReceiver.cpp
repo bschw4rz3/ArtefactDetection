@@ -51,6 +51,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     std::filesystem::path cwd = std::filesystem::current_path();
     this->trainingsdata = cwd.string() + "/trainingsdata";
     this->trainingsDataSavePath = cwd.string() + "/trainingsDataSave";
+    this->testdataPath = cwd.string() + "/testdata";
 }
 
 MyEventReceiver::~MyEventReceiver()
@@ -113,7 +114,21 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
             }
             else if(id == GUI_ID_BUTTON_CLASSIFY)
             {
-                this->onClassifyKNearest();
+                int classifyId = this->graphicEngine->getCheckedCheckBoxByWindowId(GUI_ID_CLASSIFY_PANNEL);
+                int methodeId = this->graphicEngine->getCheckedCheckBoxByWindowId(GUI_ID_OPERATION_PANNEL);
+
+                if (classifyId != -1 && methodeId != -1)
+                {
+                    this->onClassifyKNearest(this->stringSerivce->toString(this->selectedFile));
+                }
+                else
+                {
+                    this->showMessage(L"No classifier or feature method selected!");
+                }
+            }
+            else if (id == GUI_ID_BUTTON_CLASSIFY_MULTIPLE)
+            {
+                this->onClassifyKNearestMultiple();
             }
             else if(id == GUI_ID_BUTTON_MESSAGE_OK)
             {
@@ -294,7 +309,36 @@ void MyEventReceiver::saveTrainingsData(std::vector<DataPoint> trainingData, std
     this->fileService->saveFile(xml, fileName);
 }
 
-void MyEventReceiver::onClassifyKNearest()
+void MyEventReceiver::onClassifyKNearestMultiple()
+{
+    this->graphicEngine->setGUIElementChecked(GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA, false);
+
+    std::vector<std::string> classNames;
+    classNames.push_back("defect");
+    classNames.push_back("artefact");
+
+    std::vector<std::string> filePaths;
+
+    for(int i = 0;i< classNames.size();i++)
+        filePaths.push_back(this->testdataPath + "/" + classNames[i]);
+
+    for (int classIndex = 0; classIndex < 2; classIndex++)
+    {
+        std::vector<std::string> fileNames = this->directoryService->getFileNames(filePaths[classIndex]);
+
+        for (int i = 0; i < fileNames.size(); i++)
+        {
+            std::string classString = this->onClassifyKNearest(fileNames[i]);
+
+            if (this->stringSerivce->contains(classString, classNames[classIndex]))
+            {
+                this->graphicEngine->addRow(GUI_ID_BUTTON_CLASSIFY_TABLE, std::vector<std::wstring> {  });
+            }
+        }
+    }
+}
+
+std::string MyEventReceiver::onClassifyKNearest(std::string selectedImage)
 {
     this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Initiate...");
 
@@ -305,12 +349,12 @@ void MyEventReceiver::onClassifyKNearest()
     {
         this->showMessage(L"No file selected!");
         this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
-        return;
+        return "Error";
     }
 
     std::vector<DataPoint> trainingData;
 
-    if(this->fileService->exists(traningsDataFile))
+    if(this->fileService->exists(traningsDataFile) && !this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA))
     {
         this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Load Traingsdata...");
 
@@ -331,17 +375,16 @@ void MyEventReceiver::onClassifyKNearest()
 
     this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Execute test...");
     
-    std::string fileName = this->stringSerivce->toString(this->selectedFile);
-    CImg<unsigned char> img(fileName.c_str());
+    CImg<unsigned char> img(selectedImage.c_str());
 
     std::vector<std::vector<double>> testData;
-    FeatureResult featureResult = this->onExecuteFeatureExtraction(fileName, &img, true);
+    FeatureResult featureResult = this->onExecuteFeatureExtraction(selectedImage, &img, true);
 
     if(!featureResult.getSuccess())
     {
         this->showMessage(L"Methode kann nicht angewendet werden.");
         this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
-        return;
+        return "Error";
     }
 
     testData.push_back(featureResult.getFeatureVector());
@@ -352,18 +395,20 @@ void MyEventReceiver::onClassifyKNearest()
     std::vector<DataPoint> classifiedDatPoints = this->kNearestNeighborsService->classify(trainingData, testData, numberK);
     int classIndex = classifiedDatPoints[0].label;
 
-    std::wstring classifyIndex = this->stringSerivce->intToWString(classIndex);
+    std::string classifyIndex = this->stringSerivce->intToString(classIndex);
 
     if(classIndex == 0)
     {
-        classifyIndex = L"Defect (" + classifyIndex + L")"; 
+        classifyIndex = "Defect (" + classifyIndex + ")"; 
     }
     else 
     {
-        classifyIndex = L"Artefact (" + classifyIndex + L")";
+        classifyIndex = "Artefact (" + classifyIndex + ")";
     }
 
-    this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, classifyIndex.c_str());
+    this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, this->stringSerivce->toWString(classifyIndex).c_str());
+
+    return classifyIndex;
 }
 
 void MyEventReceiver::showMessage(std::wstring message)
@@ -459,12 +504,8 @@ FeatureResult MyEventReceiver::onBiorWavlet(CImg<unsigned char>* img, bool silen
 
     std::vector<std::complex<double>> complexTime = this->cImgService->getContureAsComplexVector(&sobel, backgroundColor, this->imageVectorCentered, this->imageVectorByConture);
 
-#ifdef _USE_PYTHON_SCRIPTS
-    std::map<double, std::vector<double>> doubleResult = this->biorWavlet->calculate(complexTime);
-#else
     std::map<double, std::vector<std::complex<double>>> result = this->biorWavlet->calculate(complexTime, 10);
     std::map<double, std::vector<double>> doubleResult = this->toDoubleMap(result);
-#endif
 
     if(!silence)
     {

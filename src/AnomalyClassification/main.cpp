@@ -144,11 +144,14 @@ int main()
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE, Point2D(pannelX, pannelY + 50), L"support vector machine", false, GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE, Point2D(pannelX, pannelY + 70), L"decision trees", false, GUI_ID_CLASSIFY_PANNEL);
 
-    graphicEngine.addLabel(GUI_ID_LABEL_CLASSIFY_INDEX, Point2D(pannelX + 180, pannelY + 10), 60, L"", GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_CLASSIFY_INDEX, Point2D(pannelX + 100, pannelY + 10), 60, L"", GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_GENERATE_TRAININGS_DATA, Point2D(pannelX + 180, pannelY + 30), 200, L"Generate trainings data", L"Generiere neu Trainingsdaten", GUI_ID_CLASSIFY_PANNEL);
-    graphicEngine.addButton(GUI_ID_BUTTON_CLASSIFY, Point2D(pannelX + 180, pannelY + 60), 200, L"Classify", L"Klassifizieren des aktuellen Bildes", GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CLASSIFY, Point2D(pannelX + 180, pannelY + 60), 200, L"Classify selected image", L"Klassifizieren des aktuellen Bildes", GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_PARAMETER, Point2D(pannelX + 10, pannelY + 110), 100, L"Parameter:", GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addInputBox(GUI_ID_INPUTBOX_PARAMETER, Point2D(pannelX + 180, pannelY + 100), 200, L"", GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA, Point2D(pannelX + 180, pannelY + 10), L"Generate new Traingsdata", false, GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CLASSIFY_MULTIPLE, Point2D(pannelX + 180, pannelY + 150), 200, L"Classify multiple", L"Klassifiziere mit der aktuellen Methode mehere zufällige Bilder", GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addTable(GUI_ID_BUTTON_CLASSIFY_TABLE, Point2D(pannelX + 10, pannelY + 200), 380, 500, std::vector<std::wstring>{ L"Image", L"Expected", L"Result", L"%" }, GUI_ID_CLASSIFY_PANNEL);
 
     graphicEngine.setVisibility(GUI_ID_LABEL_PARAMETER, false);
     graphicEngine.setVisibility(GUI_ID_INPUTBOX_PARAMETER, false);

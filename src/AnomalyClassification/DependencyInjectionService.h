@@ -72,14 +72,13 @@ public:
     HaarWaveletPythonService* haarWavletService;
     Db2WaveletPythonService* daubechiesSecondWaveletService;
     Db4WaveletPythonService* daubechiesFourWaveletService;
-    BiorWaveletPythonService* biorWavletService;
 #else
     MorletWaveletServiceFFT* morletWaveletServiceFFT;
     HaarWavletService* haarWavletService;
     DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
-    BiorWavletService* biorWavletService;
 #endif
+    BiorWavletService* biorWavletService;
 
     KNearestNeighborsService* kNearestNeighborsService;
 

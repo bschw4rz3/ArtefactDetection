@@ -86,16 +86,4 @@ public:
 	}
 };
 
-class BiorWaveletPythonService : public PythonExecuter
-{
-public:
-	BiorWaveletPythonService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
-		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
-
-	virtual std::string getScriptName()
-	{
-		return "biorWavelet.py";
-	}
-};
-
 #endif
