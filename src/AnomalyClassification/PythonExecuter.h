@@ -16,6 +16,7 @@
 #include "StringSerivce.h"
 #include "TempFileNameService.h"
 #include "FileService.h"
+#include "FDResult.h"
 
 class PythonExecuter
 {
@@ -28,62 +29,94 @@ protected:
 
 public:
 	PythonExecuter(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce);
-	std::map<double, std::vector<double>> calculate(std::vector<std::complex<double>> input);
 
 protected:
 	virtual std::string getScriptName() = 0;
+
 	virtual std::string getParameter(std::vector<std::complex<double>> input);
 	virtual std::string exec(std::string cmd);
+};
 
+class PythonWaveletExecuter : public PythonExecuter
+{
+public:
+	PythonWaveletExecuter(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
+		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+
+	std::map<double, std::vector<double>> calculate(std::vector<std::complex<double>> input);
+
+protected:
 	std::map<double, std::vector<double>> toMap(std::string resultJson);
 };
 
-class MorletWaveletPythonService : public PythonExecuter
+class MorletWaveletPythonService : public PythonWaveletExecuter
 {
 public:
 	MorletWaveletPythonService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) : 
-		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+		PythonWaveletExecuter(stringService, tempFileNameService, fileSerivce) {};
 
+protected:
 	virtual std::string getScriptName()
 	{
 		return "morletWavelet.py";
 	}
 };
 
-class HaarWaveletPythonService : public PythonExecuter
+class HaarWaveletPythonService : public PythonWaveletExecuter
 {
 public:
 	HaarWaveletPythonService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
-		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+		PythonWaveletExecuter(stringService, tempFileNameService, fileSerivce) {};
 
+protected:
 	virtual std::string getScriptName()
 	{
 		return "haarWavelet.py";
 	}
 };
 
-class Db2WaveletPythonService : public PythonExecuter
+class Db2WaveletPythonService : public PythonWaveletExecuter
 {
 public:
 	Db2WaveletPythonService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
-		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+		PythonWaveletExecuter(stringService, tempFileNameService, fileSerivce) {};
 
+protected:
 	virtual std::string getScriptName()
 	{
 		return "db2Wavelet.py";
 	}
 };
 
-class Db4WaveletPythonService : public PythonExecuter
+class Db4WaveletPythonService : public PythonWaveletExecuter
 {
 public:
 	Db4WaveletPythonService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
-		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+		PythonWaveletExecuter(stringService, tempFileNameService, fileSerivce) {};
 
+protected:
 	virtual std::string getScriptName()
 	{
 		return "db4Wavelet.py";
 	}
+};
+
+class FastFourierDescriptorService : public PythonExecuter
+{
+public:
+	FastFourierDescriptorService(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
+		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+
+	std::vector<std::complex<double>> calculate(std::vector<std::complex<double>> contour);
+
+protected:
+	virtual std::string getScriptName()
+	{
+		return "fft.py";
+	}
+
+	std::vector<std::complex<double>> toList(std::string json);
+
 };
 
 #endif

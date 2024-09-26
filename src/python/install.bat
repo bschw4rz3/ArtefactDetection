@@ -1,1 +1,1 @@
-python3 -m pip install --upgrade pip PyWavelets matplotlib numpy var_dump
+python3 -m pip install --upgrade pip PyWavelets matplotlib numpy var_dump scipy

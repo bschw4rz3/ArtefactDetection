@@ -201,7 +201,6 @@ private:
     ImprovedSobelOperatorService* improvedSobelOperatorService;
     GeometricService* geometricService;
     HistogramValueService* histogramValueService;
-    DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce;
     HuMomentsService* huMomentsService;
     SdSfService* sdSfService;
     LbpService* lbpService;
@@ -215,11 +214,13 @@ private:
     MorletWaveletService* morletWaveletService;
 
 #ifdef _USE_PYTHON_SCRIPTS
+    FastFourierDescriptorService* discreteFourierTransformationSerivce;
     MorletWaveletPythonService* morletWaveletServiceFFT;
     HaarWaveletPythonService* haarWaeletService;
     Db2WaveletPythonService* daubechiesSecondWaveletService;
     Db4WaveletPythonService* daubechiesFourWaveletService;
 #else
+    DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce;
     MorletWaveletServiceFFT* morletWaveletServiceFFT;
     HaarWavletService* haarWaeletService;
     DaubechiesSecondWaveletService* daubechiesSecondWaveletService;
@@ -318,6 +319,9 @@ private:
 
     void saveTrainingsData(std::vector<DataPoint> trainingData, std::string fileName);
     void showMessage(std::wstring message);
+
+    void startFeatureThreads(std::vector<std::future<FeatureResult>>& threadVector, std::vector<std::string> fileNames, std::vector<CImg<unsigned char>*>& images, int& currentIndex, int threadCount);
+    void endFeatureThreads(std::vector<std::future<FeatureResult>>& threadVector, std::vector<CImg<unsigned char>*>& images, int& currentIndex, int threadCount, int currentClassIndex, std::vector<DataPoint>& dataPointList);
 };
 
 #endif

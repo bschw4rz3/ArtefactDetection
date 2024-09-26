@@ -5,9 +5,8 @@ import pywt
 import numbers
 from decimal import Decimal
 from var_dump import var_dump
-
-def readInput(inputFileName):
-        #read input
+    
+def readInputNp(inputFileName):
     realSignal = []
     imagSignal = []
 
@@ -36,6 +35,8 @@ def writeOutput(outputFileName, cwtmatr):
         def default(self, obj):
             if isinstance(obj, np.ndarray):
                 return obj.tolist()
+            if np.iscomplexobj(obj):
+                return "(" + str(obj.real) + "|" + str(obj.imag) + ")";
             return super().default(obj)
 
     cwtmatr = np.round(cwtmatr, 2)
@@ -49,7 +50,7 @@ def writeOutput(outputFileName, cwtmatr):
       f.write(json.dumps(cwtmatr, ensure_ascii=False, cls=NumpyEncoder))
 
 def calculateWavelet(inputFileName, outputFileName, wavelet):
-    complexInput = readInput(inputFileName)
+    complexInput = readInputNp(inputFileName)
 
     time = np.linspace(0, 1, len(complexInput))
 

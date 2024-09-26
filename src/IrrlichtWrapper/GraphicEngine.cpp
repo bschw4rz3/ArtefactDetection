@@ -81,11 +81,13 @@ void GraphicEngine::addTable(int id, Point2D position, int width, int height, st
     {
         table->addColumn(columns[i].c_str(), i);
     }
+
+    this->guiElementMap.insert(std::pair<int, IGUIElement*>(id, table));
 }
 
 void GraphicEngine::addRow(int id, std::vector<std::wstring> values)
 {
-    IGUIElement* element = this->getParentElement(id);
+    IGUIElement* element = this->guiElementMap[id];
 
     if (element == NULL)
     {
@@ -94,7 +96,8 @@ void GraphicEngine::addRow(int id, std::vector<std::wstring> values)
 
     if (IGUITable* tableElement = dynamic_cast<IGUITable*>(element))
     {
-        if (tableElement->getColumnCount() != values.size())
+        int columnCount = tableElement->getColumnCount();
+        if (columnCount != values.size())
         {
             return;
         }
@@ -111,7 +114,7 @@ void GraphicEngine::addRow(int id, std::vector<std::wstring> values)
 
 void GraphicEngine::clearTable(int id)
 {
-    IGUIElement* element = this->getParentElement(id);
+    IGUIElement* element = this->guiElementMap[id];
 
     if (element == NULL)
     {
@@ -120,7 +123,7 @@ void GraphicEngine::clearTable(int id)
 
     if (IGUITable* tableElement = dynamic_cast<IGUITable*>(element))
     {
-        tableElement->clear();
+        tableElement->clearRows();
     }
 }
 

@@ -51,7 +51,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     std::filesystem::path cwd = std::filesystem::current_path();
     this->trainingsdata = cwd.string() + "/trainingsdata";
     this->trainingsDataSavePath = cwd.string() + "/trainingsDataSave";
-    this->testdataPath = cwd.string() + "/testdata";
+    this->testdataPath = cwd.string() + "/../AnomalyGeneration/testdata";
 }
 
 MyEventReceiver::~MyEventReceiver()
@@ -98,10 +98,17 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
 
             if (id == GUI_ID_BUTTON_CACLULATE)
             {
-                std::string fileName = this->stringSerivce->toString(this->selectedFile);
-                CImg<unsigned char> img(fileName.c_str());
+                if (this->selectedFile != L"")
+                {
+                    std::string fileName = this->stringSerivce->toString(this->selectedFile);
+                    CImg<unsigned char> img(fileName.c_str());
 
-                this->onExecuteFeatureExtraction(fileName, &img, false);
+                    this->onExecuteFeatureExtraction(fileName, &img, false);
+                }
+                else
+                {
+                    this->showMessage(L"No file selected!");
+                }
             }
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
@@ -117,9 +124,19 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 int classifyId = this->graphicEngine->getCheckedCheckBoxByWindowId(GUI_ID_CLASSIFY_PANNEL);
                 int methodeId = this->graphicEngine->getCheckedCheckBoxByWindowId(GUI_ID_OPERATION_PANNEL);
 
-                if (classifyId != -1 && methodeId != -1)
+                if (this->selectedFile == L"")
                 {
-                    this->onClassifyKNearest(this->stringSerivce->toString(this->selectedFile));
+                    this->showMessage(L"No file selected!");
+                }
+                else if (classifyId != -1 && methodeId != -1)
+                {
+                    std::string result = this->onClassifyKNearest(this->stringSerivce->toString(this->selectedFile));
+
+                    if (result == "error")
+                    {
+                        this->showMessage(L"Methode kann nicht angewendet werden.");
+                        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
+                    }
                 }
                 else
                 {
@@ -239,10 +256,12 @@ FeatureResult MyEventReceiver::onExecuteFeatureExtraction(std::string fileName, 
     {
         result = this->onGaborFilter(fileName, silence);
     }
+#ifndef _USE_PYTHON_SCRIPTS
     else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_WAVELET))
     {
         result = this->onWavelet(fileName, silence);
     }
+#endif
     else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV))
     {
         result = this->onDiscreteFourierTransformationCV(fileName, silence);
@@ -311,7 +330,12 @@ void MyEventReceiver::saveTrainingsData(std::vector<DataPoint> trainingData, std
 
 void MyEventReceiver::onClassifyKNearestMultiple()
 {
+    int maximalThreadCount = 4;
+    double totalCounter = 0;
+    double successCounter = 0;
+
     this->graphicEngine->setGUIElementChecked(GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA, false);
+    this->graphicEngine->clearTable(GUI_ID_BUTTON_CLASSIFY_TABLE);
 
     std::vector<std::string> classNames;
     classNames.push_back("defect");
@@ -322,20 +346,54 @@ void MyEventReceiver::onClassifyKNearestMultiple()
     for(int i = 0;i< classNames.size();i++)
         filePaths.push_back(this->testdataPath + "/" + classNames[i]);
 
+    std::vector<std::vector<std::wstring>> resultTable;
+
     for (int classIndex = 0; classIndex < 2; classIndex++)
     {
         std::vector<std::string> fileNames = this->directoryService->getFileNames(filePaths[classIndex]);
+        int fileSize = fileNames.size();
 
-        for (int i = 0; i < fileNames.size(); i++)
+        for (int i = 0; i < fileSize; )
         {
-            std::string classString = this->onClassifyKNearest(fileNames[i]);
+            std::vector<std::future<std::string>> threadVector;
 
-            if (this->stringSerivce->contains(classString, classNames[classIndex]))
+            int threadCount = min(maximalThreadCount, fileSize - i);
+            for (int t = 0 ; t < threadCount; t++)
             {
-                this->graphicEngine->addRow(GUI_ID_BUTTON_CLASSIFY_TABLE, std::vector<std::wstring> {  });
+                threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[i]]() { return t->onClassifyKNearest(fileName); }));
+                i++;
+            }
+
+            for (int t = 0; t < threadCount; t++)
+            {
+                std::string classString = threadVector[t].get();
+                std::vector<std::string> fileNameParts = this->stringSerivce->split(fileNames[i-(threadCount - t)], '\\');
+                bool hasCorrectClass = this->stringSerivce->contains(classString, classNames[classIndex]);
+
+                std::wstring fileName = this->stringSerivce->toWString(fileNameParts[fileNameParts.size() - 1]);
+                std::wstring expected = this->stringSerivce->toWString(classNames[classIndex]);
+                std::wstring wrongClass = this->stringSerivce->toWString(classNames[abs(classIndex - 1)]);
+                std::wstring classified = this->stringSerivce->toWString(classString);
+                std::wstring percentStr = hasCorrectClass ? L"100%" : L"  0%";
+
+                if (hasCorrectClass)
+                {
+                    successCounter++;
+                }
+
+                resultTable.push_back(std::vector<std::wstring> { fileName, expected, classified, percentStr});
+                totalCounter++;
             }
         }
     }
+
+    for (int i = 0; i < resultTable.size(); i++)
+    {
+        this->graphicEngine->addRow(GUI_ID_BUTTON_CLASSIFY_TABLE, resultTable[i]);
+    }
+
+    std::wstring percentStr = this->stringSerivce->doubleToWString(this->mathSerivce->roundDigits(100 / totalCounter * successCounter, 2));
+    this->graphicEngine->addRow(GUI_ID_BUTTON_CLASSIFY_TABLE, std::vector<std::wstring> { L"Sum", L"", L"", percentStr+L"%"});
 }
 
 std::string MyEventReceiver::onClassifyKNearest(std::string selectedImage)
@@ -344,13 +402,6 @@ std::string MyEventReceiver::onClassifyKNearest(std::string selectedImage)
 
     mkdir(this->trainingsDataSavePath.c_str());
     std::string traningsDataFile = this->generateTrainingsDataFilePath();
-
-    if(this->selectedFile == L"")
-    {
-        this->showMessage(L"No file selected!");
-        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
-        return "Error";
-    }
 
     std::vector<DataPoint> trainingData;
 
@@ -382,9 +433,7 @@ std::string MyEventReceiver::onClassifyKNearest(std::string selectedImage)
 
     if(!featureResult.getSuccess())
     {
-        this->showMessage(L"Methode kann nicht angewendet werden.");
-        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
-        return "Error";
+        return "error";
     }
 
     testData.push_back(featureResult.getFeatureVector());
@@ -399,11 +448,11 @@ std::string MyEventReceiver::onClassifyKNearest(std::string selectedImage)
 
     if(classIndex == 0)
     {
-        classifyIndex = "Defect (" + classifyIndex + ")"; 
+        classifyIndex = "defect"; 
     }
     else 
     {
-        classifyIndex = "Artefact (" + classifyIndex + ")";
+        classifyIndex = "artefact";
     }
 
     this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, this->stringSerivce->toWString(classifyIndex).c_str());
@@ -453,48 +502,58 @@ std::vector<DataPoint> MyEventReceiver::loadTraingsdataForKNearest()
     for(int classIndex = 0; classIndex < 2 ;classIndex++)
     {
         std::vector<std::string> fileNames = this->directoryService->getFileNames(filePaths[classIndex]);
-        
         int fileSize = fileNames.size();
 
-        for(int i = 0; i < fileSize;i++)
+        for(int i = 0; i < fileSize;)
         {
             int restFileSize = fileSize - i;
             int threadCount = min(maxThreads, restFileSize);
             std::vector<std::future<FeatureResult>> threadVector;
             std::vector<CImg<unsigned char>*> images;
 
-            for (int t = 0; t < threadCount; t++)
-            {
-                CImg<unsigned char>* img = new CImg<unsigned char>(fileNames[i].c_str());
-                images.push_back(img);
-
-                threadVector.push_back(std::async(std::launch::async, [t= this, fileName=fileNames[i], i=img]() { return t->onExecuteFeatureExtraction(fileName, i, true); }));
-
-                i++;
-            }
-            
-            for (int t = 0; t < threadCount; t++)
-            {
-                FeatureResult featureResult = threadVector[t].get();
-                //FeatureResult featureResult = this->onExecuteFeatureExtraction(fileNames[i], &img, true);
-
-                if (featureResult.getSuccess())
-                {
-                    DataPoint dataPoint;
-                    dataPoint.features = featureResult.getFeatureVector();
-                    dataPoint.label = classIndex;
-
-                    dataPointList.push_back(dataPoint);
-                }
-
-                delete images[t];
-            }
-
-            images.clear();
+            this->startFeatureThreads(threadVector, fileNames, images, i, threadCount);
+            this->endFeatureThreads(threadVector, images, i, threadCount, classIndex, dataPointList);
         }
     }
 
     return dataPointList;
+}
+
+void MyEventReceiver::startFeatureThreads(std::vector<std::future<FeatureResult>>& threadVector, std::vector<std::string> fileNames, std::vector<CImg<unsigned char>*>& images, int& currentIndex, int threadCount)
+{
+    for (int t = 0; t < threadCount; t++)
+    {
+        CImg<unsigned char>* img = new CImg<unsigned char>(fileNames[currentIndex].c_str());
+        images.push_back(img);
+
+        threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[currentIndex], i = img]() { return t->onExecuteFeatureExtraction(fileName, i, true); }));
+
+        currentIndex++;
+    }
+}
+
+void MyEventReceiver::endFeatureThreads(std::vector<std::future<FeatureResult>>& threadVector, std::vector<CImg<unsigned char>*>& images, int& currentIndex, int threadCount, int currentClassIndex, std::vector<DataPoint>& dataPointList)
+{
+    for (int t = 0; t < threadCount; t++)
+    {
+        FeatureResult featureResult = threadVector[t].get();
+
+        if (featureResult.getSuccess())
+        {
+            DataPoint dataPoint;
+            dataPoint.features = featureResult.getFeatureVector();
+            dataPoint.label = currentClassIndex;
+
+            dataPointList.push_back(dataPoint);
+        }
+    }
+
+    for (int t = 0; t < threadCount; t++)
+    {
+        delete images[t];
+    }
+
+    images.clear();
 }
 
 FeatureResult MyEventReceiver::onBiorWavlet(CImg<unsigned char>* img, bool silence)
@@ -888,7 +947,14 @@ FeatureResult MyEventReceiver::onSdSf(CImg<unsigned char>* img, bool slience)
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
-    return this->calculateFeatureVector(distanceHistogram);
+    FeatureResult result = this->calculateFeatureVector(distanceHistogram);
+
+    if (result.getFeatureVector().size() != 11)
+    {
+        throw "Misscalculate feature!";
+    }
+
+    return result;
 }
 
 FeatureResult MyEventReceiver::onHuMoment(std::string fileName, CImg<unsigned char>* img, bool silence)
@@ -984,10 +1050,37 @@ FeatureResult MyEventReceiver::onHuMoment(std::string fileName, CImg<unsigned ch
 
 FeatureResult MyEventReceiver::onDiscreteFourierTransformation(CImg<unsigned char>* img, bool silence)
 {
-    // Output the chart
+#ifdef _USE_PYTHON_SCRIPTS
+    CImg<unsigned char> sobelImage = this->sobelOperatorSerivce->getGradientImage(img);
+    std::vector<std::complex<double>> complexConture = this->cImgService->getContureAsComplexVector(&sobelImage, ColorRGB(0, 0, 0));
+
+    if (complexConture.size() <= 0)
+    {
+        if (!silence)
+            this->showMessage(L"Found no conture!");
+
+        return FeatureResult();
+    }
+
+    std::vector<std::complex<double>> fequence = this->discreteFourierTransformationSerivce->calculate(complexConture);
+
+    if (!silence)
+    {
+        std::string fileName = this->tempFileNameService->generateFileNamePng();
+        sobelImage.save_png(fileName.c_str());
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_2_TAB);
+
+        // Generate Diagram
+        fileName = this->tempFileNameService->generateFileNamePng();
+        this->diagram(fequence, fileName);
+        this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
+    }
+
+    return this->calculateFeatureVector(this->toDoubleVector(fequence));
+#else
     FDResult result = this->discreteFourierTransformationSerivce->calculate(img, 2000);
 
-    if(!silence)
+    if (!silence)
     {
         // Add sobel image
         std::string fileName = this->tempFileNameService->generateFileNamePng();
@@ -1000,12 +1093,13 @@ FeatureResult MyEventReceiver::onDiscreteFourierTransformation(CImg<unsigned cha
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
-    if(!result.getSuccess())
+    if (!result.getSuccess())
     {
         return FeatureResult();
     }
 
     return this->calculateFeatureVector(this->toDoubleVector(result.fequence));
+#endif // !_USE_PYTHON_SCRIPTS
 }
 
 void MyEventReceiver::onCalculateSuperPixels(CImg<unsigned char>* img)

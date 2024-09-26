@@ -115,19 +115,32 @@ std::string StringSerivce::complexToPythonValue(std::complex<double> value)
     return this->doubleToString(value.real()) + "+" + this->doubleToString(value.imag()) + "j";
 }
 
-void StringSerivce::trim(std::string& s) {
-    rtrim(s);
-    ltrim(s);
+void StringSerivce::trim(std::string& s, const std::vector<char>& symbols) {
+    rtrim(s, symbols);
+    ltrim(s, symbols);
 }
 
-void StringSerivce::ltrim(std::string& s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-        return !std::isspace(ch) && ch != '[' && ch != ']' && ch != ',';
+bool containsChar(char ch, const std::vector<char>& symbols)
+{
+    for (int i = 0; i < symbols.size(); i++)
+    {
+        if (symbols[i] == ch)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void StringSerivce::ltrim(std::string& s, const std::vector<char>& symbols) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [s = symbols](unsigned char ch) {
+        return !std::isspace(ch) && !containsChar(ch, s);
         }));
 }
 
-void StringSerivce::rtrim(std::string& s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-        return !std::isspace(ch) && ch != '[' && ch != ']' && ch != ',';
+void StringSerivce::rtrim(std::string& s, const std::vector<char>& symbols) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [s=symbols](unsigned char ch) {
+        return !std::isspace(ch) && !containsChar(ch, s);
         }).base(), s.end());
 }

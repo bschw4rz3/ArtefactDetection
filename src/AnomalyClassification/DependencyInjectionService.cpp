@@ -16,7 +16,6 @@ DependencyInjectionService::DependencyInjectionService()
     this->classicSobelOperatorService = new ClassicSobelOperatorService(this->colorService);
     this->improvedSobelOperatorService = new ImprovedSobelOperatorService(this->colorService);
     this->histogramValueService = new HistogramValueService(this->colorService);
-    this->discreteFourierTransformationSerivce = new DiscreteFourierTransformationSerivce(this->classicSobelOperatorService, this->imgService, this->colorService);
     this->directoryService = new DirectoryService(this->stringSerivce);
     this->huMomentsService = new HuMomentsService(this->colorService);
     this->sdSfService = new SdSfService(this->classicSobelOperatorService, this->geometricService, this->mathSerivce, this->stringSerivce, this->colorService);
@@ -30,11 +29,13 @@ DependencyInjectionService::DependencyInjectionService()
     this->discreteFourierDescriptorService = new DiscreteFourierDescriptorService(this->classicSobelOperatorService, this->imgService);
     this->morletWaveletService = new MorletWaveletService(this->mathSerivce);
 #ifdef _USE_PYTHON_SCRIPTS
+    this->discreteFourierTransformationSerivce = new FastFourierDescriptorService(this->stringSerivce, this->tempFileNameService, this->fileService);
     this->morletWaveletServiceFFT = new MorletWaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
     this->haarWavletService = new HaarWaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
     this->daubechiesSecondWaveletService = new Db2WaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
     this->daubechiesFourWaveletService = new Db4WaveletPythonService(this->stringSerivce, this->tempFileNameService, this->fileService);
 #else
+    this->discreteFourierTransformationSerivce = new DiscreteFourierTransformationSerivce(this->classicSobelOperatorService, this->imgService, this->colorService);
     this->morletWaveletServiceFFT = new MorletWaveletServiceFFT();
     this->haarWavletService = new HaarWavletService(); 
     this->daubechiesSecondWaveletService = new DaubechiesSecondWaveletService();

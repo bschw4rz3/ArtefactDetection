@@ -31,7 +31,9 @@ int main()
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GLCM, Point2D(10, 210), L"GLCM", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HOG, Point2D(10, 230), L"HOG", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GABOR, Point2D(10, 250), L"GaborFilter", false, GUI_ID_OPERATION_PANNEL);
+#ifndef _USE_PYTHON_SCRIPTS
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_WAVELET, Point2D(10, 270), L"Wavelet", false, GUI_ID_OPERATION_PANNEL);
+#endif // !_USE_PYTHON_SCRIPTS
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV, Point2D(10, 290), L"Discrete Fourier Transformation (CV)", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR, Point2D(10, 310), L"Fourier Discriptor", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET, Point2D(10, 330), L"Daubechies four wavelet", false, GUI_ID_OPERATION_PANNEL);
@@ -151,7 +153,7 @@ int main()
     graphicEngine.addInputBox(GUI_ID_INPUTBOX_PARAMETER, Point2D(pannelX + 180, pannelY + 100), 200, L"", GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA, Point2D(pannelX + 180, pannelY + 10), L"Generate new Traingsdata", false, GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_CLASSIFY_MULTIPLE, Point2D(pannelX + 180, pannelY + 150), 200, L"Classify multiple", L"Klassifiziere mit der aktuellen Methode mehere zufällige Bilder", GUI_ID_CLASSIFY_PANNEL);
-    graphicEngine.addTable(GUI_ID_BUTTON_CLASSIFY_TABLE, Point2D(pannelX + 10, pannelY + 200), 380, 500, std::vector<std::wstring>{ L"Image", L"Expected", L"Result", L"%" }, GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addTable(GUI_ID_BUTTON_CLASSIFY_TABLE, Point2D(pannelX + 10, pannelY + 200), 380, 700, std::vector<std::wstring>{ L"      Image      ", L"Expected", L"Result", L"Percent" }, GUI_ID_CLASSIFY_PANNEL);
 
     graphicEngine.setVisibility(GUI_ID_LABEL_PARAMETER, false);
     graphicEngine.setVisibility(GUI_ID_INPUTBOX_PARAMETER, false);

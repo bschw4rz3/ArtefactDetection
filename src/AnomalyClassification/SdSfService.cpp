@@ -51,6 +51,12 @@ std::map<std::string, int> SdSfService::calculateSdSf(CImg<unsigned char>* sobel
 		double distance = distanceList[i];
 
 		double roundedDistance = this->mathSerivce->roundDigits(distance, 1);
+
+		if (isnan(roundedDistance))
+		{
+			continue;
+		}
+
 		std::string stringDistance = std::format("{0:.2f}", roundedDistance);
 
 		if (stringDistance.size() < 2)

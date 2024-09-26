@@ -53,7 +53,6 @@ public:
     ImprovedSobelOperatorService* improvedSobelOperatorService;
     GeometricService* geometricService;
     HistogramValueService* histogramValueService;
-    DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce;
     DirectoryService* directoryService;
     HuMomentsService* huMomentsService;
     SdSfService* sdSfService;
@@ -68,11 +67,13 @@ public:
     MorletWaveletService* morletWaveletService;
 
 #ifdef _USE_PYTHON_SCRIPTS
+    FastFourierDescriptorService* discreteFourierTransformationSerivce;
     MorletWaveletPythonService* morletWaveletServiceFFT;
     HaarWaveletPythonService* haarWavletService;
     Db2WaveletPythonService* daubechiesSecondWaveletService;
     Db4WaveletPythonService* daubechiesFourWaveletService;
 #else
+    DiscreteFourierTransformationSerivce* discreteFourierTransformationSerivce;
     MorletWaveletServiceFFT* morletWaveletServiceFFT;
     HaarWavletService* haarWavletService;
     DaubechiesSecondWaveletService* daubechiesSecondWaveletService;

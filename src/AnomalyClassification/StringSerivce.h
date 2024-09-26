@@ -27,9 +27,9 @@ public:
 	double toDouble(std::string strValue);
 	std::string complexToPythonValue(std::complex<double> value);
 
-	void trim(std::string& s);
-	void ltrim(std::string& s);
-	void rtrim(std::string& s);
+	void trim(std::string& s, const std::vector<char>& symbols);
+	void ltrim(std::string& s, const std::vector<char>& symbols);
+	void rtrim(std::string& s, const std::vector<char>& symbols);
 };
 
 #endif
