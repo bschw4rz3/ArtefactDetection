@@ -1,1 +1,2 @@
-python3 -m pip install --upgrade pip PyWavelets matplotlib numpy var_dump scipy
+python3 -m pip uninstall torch idna opencv-python numpy PyWavelets matplotlib var_dump scipy ultralytics 
+#python3 -m pip install --ignore-installed pip idna==3.7 opencv-python==4.8.0.74 numpy==1.26.0 PyWavelets matplotlib var_dump scipy ultralytics 

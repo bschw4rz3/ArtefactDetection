@@ -4,7 +4,6 @@ import sys
 import scipy.fft
 import numbers
 from decimal import Decimal
-from var_dump import var_dump
 from waveletMethods import *
 
 inputArray = readInputNp(sys.argv[1])
