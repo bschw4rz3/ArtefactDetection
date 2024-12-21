@@ -207,6 +207,12 @@
     <ClCompile Include="TempFileNameService.cpp">
       <Filter>Quelldateien\detectors\transformation</Filter>
     </ClCompile>
+    <ClCompile Include="DecisionTreeService.cpp">
+      <Filter>Quelldateien\classifications</Filter>
+    </ClCompile>
+    <ClCompile Include="SvmService.cpp">
+      <Filter>Quelldateien\classifications</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -355,6 +361,12 @@
     </ClInclude>
     <ClInclude Include="TempFileNameService.h">
       <Filter>Headerdateien\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="DecisionTreeService.h">
+      <Filter>Headerdateien\classifications</Filter>
+    </ClInclude>
+    <ClInclude Include="SvmService.h">
+      <Filter>Headerdateien\classifications</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

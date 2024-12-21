@@ -1,0 +1,42 @@
+<SerializableClass Type="DataFile" Version="1.0">
+    <Collection Name="DataPoints">
+        <Class Type="DataPoint" Version="1.0">
+            <Member Name="Label">-1</Member>
+            <Collection Name="Features">
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">2.0600000000000000e+02</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">1.0950000000000000e+03</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">1.7460000000000000e+03</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">1.6830000000000000e+03</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">1.4960000000000000e+03</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">1.0730000000000000e+03</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">6.9200000000000000e+02</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">6.3400000000000000e+02</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">3.8600000000000000e+02</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">2.1100000000000000e+02</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">6.6000000000000000e+01</Member>
+                </Class>
+            </Collection>
+        </Class>
+    </Collection>
+</SerializableClass>

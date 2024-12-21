@@ -1,0 +1,27 @@
+<SerializableClass Type="DataFile" Version="1.0">
+    <Collection Name="DataPoints">
+        <Class Type="DataPoint" Version="1.0">
+            <Member Name="Label">-1</Member>
+            <Collection Name="Features">
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">1.9099926804274631e+02</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">1.1056262007584415e+02</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">-1.1486570777571452e+00</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">2.3194130822815846e+00</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">6.2401867103312703e-01</Member>
+                </Class>
+                <Class Type="DataPointFeature" Version="1.0">
+                    <Member Name="Feature">5.6341279307011427e-01</Member>
+                </Class>
+            </Collection>
+        </Class>
+    </Collection>
+</SerializableClass>

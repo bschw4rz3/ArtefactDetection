@@ -156,9 +156,9 @@ std::map<ColorRGB, double> HistogramValueService::getHistogram(CImg<unsigned cha
 	
 	const unsigned char* c = this->colorService->rgb2byte(ColorRGB(255, 0, 0));
 
-	for (int x = 0; x < image->width() - 1; x++)
+	for (int x = 0; x < image->width(); x++)
 	{
-		for (int y = 0; y < image->height() - 1; y++)
+		for (int y = 0; y < image->height(); y++)
 		{
 			const unsigned char* bytePixel = image->data(x, y);
 			ColorRGB color = this->colorService->byte2rgb(bytePixel, image->width(), image->height());

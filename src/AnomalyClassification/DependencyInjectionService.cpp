@@ -42,7 +42,11 @@ DependencyInjectionService::DependencyInjectionService()
     this->daubechiesFourWaveletService = new DaubechiesFourWaveletService();
 #endif
     this->biorWavletService = new BiorWavletService();
+    this->yolov10Service = new Yolov10Service(this->stringSerivce, this->tempFileNameService, this->fileService);
+
     this->kNearestNeighborsService = new KNearestNeighborsService();
+    this->decisionTreeService = new DecisionTreeService(this->stringSerivce, this->tempFileNameService, this->fileService);
+    this->svmService = new SvmService(this->stringSerivce, this->tempFileNameService, this->fileService);
 }
 
 DependencyInjectionService::~DependencyInjectionService()
@@ -79,6 +83,9 @@ DependencyInjectionService::~DependencyInjectionService()
     delete this->haarWavletService;
     delete this->daubechiesSecondWaveletService;
     delete this->biorWavletService;
+    delete this->yolov10Service;
 
     delete this->kNearestNeighborsService;
+    delete this->decisionTreeService;
+    delete this->svmService;
 }

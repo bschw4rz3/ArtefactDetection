@@ -77,6 +77,11 @@ int StringSerivce::toInt(std::wstring text)
     return std::atoi(strValue.c_str());
 }
 
+int StringSerivce::toInt(std::string text)
+{
+    return std::atoi(text.c_str());
+}
+
 double StringSerivce::toDouble(std::string strValue)
 {
     return std::stod(strValue.c_str());
@@ -85,6 +90,7 @@ double StringSerivce::toDouble(std::string strValue)
 std::string StringSerivce::doubleToString(double value)
 {
     std::ostringstream strs;
+    strs.precision(10);
     strs << value;
     return strs.str();
 }
@@ -105,6 +111,11 @@ std::vector<std::string> StringSerivce::split(std::string inputString, char deli
 
     while (getline(ss, token, delimiter)) {
         tokens.push_back(token);
+    }
+
+    if (tokens.size() == 0)
+    {
+        tokens.push_back(inputString);
     }
 
     return tokens;

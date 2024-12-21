@@ -34,6 +34,7 @@ protected:
 	virtual std::string getScriptName() = 0;
 
 	virtual std::string getParameter(std::vector<std::complex<double>> input);
+	virtual std::string getParameter(std::vector<std::vector<std::complex<double>>> input);
 	virtual std::string exec(std::string cmd);
 };
 
@@ -116,6 +117,50 @@ protected:
 	}
 
 	std::vector<std::complex<double>> toList(std::string json);
+
+};
+
+class Yolov10Service : public PythonExecuter
+{
+public:
+	Yolov10Service(StringSerivce* stringService, TempFileNameService* tempFileNameService, FileService* fileSerivce) :
+		PythonExecuter(stringService, tempFileNameService, fileSerivce) {};
+
+	std::vector<double> calculate(std::string imagePath)
+	{
+		std::vector<char> symbols;
+		symbols.push_back('[');
+		symbols.push_back(']');
+
+		std::string scriptName = this->getScriptName();
+		std::string comand = "python " + this->directoryPath + scriptName + " " + imagePath.c_str();
+
+		std::string consoleResult = this->exec(comand.c_str());
+		std::vector<std::string> parts = this->stringService->split(consoleResult, '\n');
+		std::string lastPart = parts[1];
+
+		std::vector<double> values;
+		std::vector<std::string> strValues = this->stringService->split(lastPart, ',');
+
+		for (std::string strValue : strValues)
+		{
+			this->stringService->trim(strValue, symbols);
+
+			if (strValue.length() > 0)
+			{
+				double value = this->stringService->toDouble(strValue);
+				values.push_back(value);
+			}
+		}
+
+		return values;
+	}
+
+protected:
+	virtual std::string getScriptName()
+	{
+		return "runYolo.py";
+	}
 
 };
 

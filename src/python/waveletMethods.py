@@ -6,12 +6,9 @@ import numbers
 from decimal import Decimal
 from var_dump import var_dump
     
-def readInputNp(inputFileName):
+def interpretInputNp(inputArray, complexNumbers = True, isString = False):
     realSignal = []
     imagSignal = []
-
-    datei = open(inputFileName,'r')
-    inputArray = datei.read().split('\n')
 
     for a in inputArray:
         valueStrings = a.split('+')
@@ -21,12 +18,49 @@ def readInputNp(inputFileName):
             imagValue = valueStrings[1].strip("j ")
             
             #inputSignal.append(complex(Decimal(realValue), Decimal(imagValue)))
-            realSignal.append(Decimal(realValue))
-            imagSignal.append(Decimal(imagValue))
+            
+            if isString:
+                realSignal.append(str(realValue))
+                imagSignal.append(str(imagValue))
+            else:
+                realSignal.append(Decimal(realValue))
+                imagSignal.append(Decimal(imagValue))
+    
+    if complexNumbers:
+        realSignal = np.array(realSignal, dtype=float)
+        imagSignal = np.array(imagSignal, dtype=float)
+        return np.vectorize(complex)(realSignal, imagSignal)
+    else:
+        return realSignal
+    
+def readInputNpMultiple(inputFileName, complexNumbers = True, isString = False):
+    realSignal = []
+    imagSignal = []
 
-    realSignal = np.array(realSignal, dtype=float)
-    imagSignal = np.array(imagSignal, dtype=float)
-    return np.vectorize(complex)(realSignal, imagSignal)
+    datei = open(inputFileName,'r')
+    dataLines = datei.read().split('\n')
+    
+    lineValues = []
+    
+    for dataLine in dataLines:
+        values = dataLine.split('#')
+        lineValues.append(values)
+    
+    resultArray = []
+    
+    for lineValue in lineValues:
+        resultArray.append(interpretInputNp(lineValue, complexNumbers, isString))
+        
+    return resultArray
+    
+def readInputNp(inputFileName, complexNumbers = True, isString = False):
+    realSignal = []
+    imagSignal = []
+
+    datei = open(inputFileName,'r')
+    inputArray = datei.read().split('#')
+
+    return interpretInputNp(inputArray, complexNumbers, isString)
 
 def writeOutput(outputFileName, cwtmatr):
     import json

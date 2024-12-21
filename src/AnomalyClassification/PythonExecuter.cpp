@@ -86,7 +86,22 @@ std::string PythonExecuter::getParameter(std::vector<std::complex<double>> input
     for (std::complex<double> value : input)
     {
         std::string pythonValue = this->stringService->complexToPythonValue(value);
-        parameter += pythonValue + "\n";
+        parameter += pythonValue + "#";
+    }
+
+    std::vector<char> symbol = { '#' };
+    this->stringService->rtrim(parameter, symbol);
+
+    return parameter;
+}
+
+std::string PythonExecuter::getParameter(std::vector<std::vector<std::complex<double>>> input)
+{
+    std::string parameter = "";
+
+    for (std::vector<std::complex<double>> feature : input)
+    {
+        parameter += this->getParameter(feature) + "\n";
     }
 
     std::vector<char> symbol = { '\n' };
@@ -148,6 +163,17 @@ std::vector<std::complex<double>> FastFourierDescriptorService::toList(std::stri
         std::vector<double> vector;
         std::vector<std::string> unsureValues = this->stringService->split(line, ',');
 
+        if (unsureValues.size() >= 1)
+        {
+            this->stringService->ltrim(unsureValues[0], std::vector<char> { '[' });
+            this->stringService->rtrim(unsureValues[unsureValues.size()-1], std::vector<char> { ']' });
+
+            if (unsureValues.size() >= 2)
+            {
+                this->stringService->ltrim(unsureValues[1], std::vector<char> { '[' });
+            }
+        }
+
         for (std::string unsureValue : unsureValues)
         {
             std::vector<std::string> valueParts = this->stringService->split(unsureValue, '|');
@@ -160,10 +186,17 @@ std::vector<std::complex<double>> FastFourierDescriptorService::toList(std::stri
             this->stringService->trim(valueParts[0], symbols);
             this->stringService->trim(valueParts[1], symbols);
 
-            double realPart = this->stringService->toDouble(valueParts[0]);
-            double imagPart = this->stringService->toDouble(valueParts[1]);
+            try
+            {
+                double realPart = this->stringService->toDouble(valueParts[0]);
+                double imagPart = this->stringService->toDouble(valueParts[1]);
 
-            list.push_back(std::complex<double>(realPart, imagPart));
+                list.push_back(std::complex<double>(realPart, imagPart));
+            }
+            catch (std::exception e)
+            {
+                int bla = 0;
+            }
         }
     }
 

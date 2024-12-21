@@ -9,6 +9,7 @@
 #include <future>
 #include <algorithm>
 #include <syncstream>
+#include <semaphore>
 
 #include "memblock.h"
 #include "chartdir.h"
@@ -22,6 +23,7 @@
 #include "DataPointSav.h"
 #include "FeatureResult.h"
 #include "DependencyInjectionService.h"
+#include "FeatureToClassifyResult.h"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -38,7 +40,9 @@
 #include "opencv2/imgproc.hpp"
 #include <iostream>
 #include <iomanip>
+#include <chrono>
 
+#include "DecisionTreeService.h"
 #include "../TinyXml2/XMLSerialization.h"
 
 #define stringify( name ) #name
@@ -85,6 +89,13 @@ enum {
     GUI_ID_CHECKBOX_HAAR_WAVLET,
     GUI_ID_CHECKBOX_DAUBECHIES_SECOND,
     GUI_ID_CHECKBOX_BIOR_WAVLET,
+    GUI_ID_CHECKBOX_GEOMETRIC_MEASURES,
+    GUI_ID_CHECKBOX_GRAYSCALE_BASED_METHODS,
+    GUI_ID_CHECKBOX_YOLO_10,
+    GUI_ID_BUTTON_GENERATE_YOLO_TRAININGSDATA,
+    GUI_ID_UNKNOWN_3,
+    GUI_ID_UNKNOWN_4,
+    GUI_ID_UNKNOWN_5,
 
     GUI_ID_BUTTON_CACLULATE,
     GUI_ID_BUTTON_CHOOSE_FILE,
@@ -168,6 +179,7 @@ enum {
     GUI_ID_BUTTON_GENERATE_TRAININGS_DATA,
     GUI_ID_BUTTON_CLASSIFY,
     GUI_ID_PROCESSBAR_CLASSIFY,
+    GUI_ID_CHECKBOX_CLASSIFY_DEFAULT,
     GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR,
     GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE,
     GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE,
@@ -178,7 +190,9 @@ enum {
     GUI_ID_BUTTON_CLASSIFY_TABLE,
 
     GUI_ID_LABEL_MESSAGE,
-    GUI_ID_BUTTON_MESSAGE_OK
+    GUI_ID_BUTTON_MESSAGE_OK,
+
+    GUI_ID_LABEL_TIME_NEEDED,
 };
 
 class MyEventReceiver : public EventReceiver
@@ -227,11 +241,17 @@ private:
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
 #endif
     BiorWavletService* biorWavlet;
+    Yolov10Service* yolov10Service;
 
     KNearestNeighborsService* kNearestNeighborsService;
+    DecisionTreeService* decisionTreeService;
+    SvmService* svmService;
 
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
+
+    std::binary_semaphore criticalLoadTraingsData{ 1 };
+    std::binary_semaphore criticalLoadTestData{ 1 };
 
     bool isRunning;
     bool isAbbord;
@@ -244,6 +264,7 @@ private:
     std::wstring selectedFile;
     std::string trainingsdata;
     std::string trainingsDataSavePath;
+    std::string testdataSavePath;
     std::string testdataPath;
 
     int tempFileIndex;
@@ -264,6 +285,8 @@ private:
     void onCalculateSuperPixels(CImg<unsigned char>* img);
     void onCalculateSobelOperator(CImg<unsigned char>* img);
     void onCalculateImprovedSobelOperator(CImg<unsigned char>* img);
+    FeatureResult onGeometricValues(CImg<unsigned char>* img);
+    FeatureResult onGrayscaleBasedValues(CImg<unsigned char>* img);
     FeatureResult onDiscreteFourierTransformation(CImg<unsigned char>* img, bool silence);
     FeatureResult onHuMoment(std::string fileName, CImg<unsigned char>* img, bool silence);
     FeatureResult onSdSf(CImg<unsigned char>* img, bool silence);
@@ -281,6 +304,7 @@ private:
     FeatureResult onHaarWavelet(CImg<unsigned char>* img, bool silence);
     FeatureResult onDaubechiesSecond(CImg<unsigned char>* img, bool silence);
     FeatureResult onBiorWavlet(CImg<unsigned char>* img, bool silence);
+    FeatureResult onYolo10(CImg<unsigned char>* img, bool silence);
 
     FeatureResult onExecuteFeatureExtraction(std::string fileName, CImg<unsigned char>* img, bool silence);
     void onSelectFile(core::stringc fileName);
@@ -288,12 +312,15 @@ private:
     void onCreateImagePannel();
     void onGenerateTrainingsData();
 
-    std::string onClassifyKNearest(std::string selectedImage);
-    void onClassifyKNearestMultiple();
+    std::string onClassifyKNearest(std::string selectedImage, bool batchMod);
+    std::string onClassifyDecisionTree(std::string selectedImage, bool batchMod);
+    std::string onClassifySVM(std::string selectedImage, bool batchMod);
+    void onClassifyMultiple();
     std::vector<DataPoint> loadTraingsdataForKNearest();
 
     void superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath);
     std::string generateTrainingsDataFilePath();
+    std::string generateTestDataPath(std::string imagePath);
 
     void histogram(std::map<int, int> histogramData, int labelCount, std::string fileName);
     void histogram(std::map<std::string, int> histogramData, int labelCount, std::string fileName);
@@ -322,6 +349,12 @@ private:
 
     void startFeatureThreads(std::vector<std::future<FeatureResult>>& threadVector, std::vector<std::string> fileNames, std::vector<CImg<unsigned char>*>& images, int& currentIndex, int threadCount);
     void endFeatureThreads(std::vector<std::future<FeatureResult>>& threadVector, std::vector<CImg<unsigned char>*>& images, int& currentIndex, int threadCount, int currentClassIndex, std::vector<DataPoint>& dataPointList);
+
+    DataPoint toDataPoint(FeatureResult featureResult);
+    std::string onClassifyDefault(std::string selectedImage, bool batchMod);
+
+    std::vector<DataPoint> loadTrainingsData(bool batchMod);
+    std::vector<std::vector<double>> calculateFeatureVector(std::string selectedImage, bool batchMod);
 };
 
 #endif

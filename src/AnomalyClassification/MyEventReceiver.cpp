@@ -25,6 +25,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->haarWaeletService = di->haarWavletService;
     this->daubechiesSecondWaveletService = di->daubechiesSecondWaveletService;
     this->biorWavlet = di->biorWavletService;
+    this->yolov10Service = di->yolov10Service;
 
     this->defectGenerationService = di->defectGenerationService;
 
@@ -37,6 +38,8 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->tempFileNameService = di->tempFileNameService;
 
     this->kNearestNeighborsService = di->kNearestNeighborsService;
+    this->decisionTreeService = di->decisionTreeService;
+    this->svmService = di->svmService;
 
     this->facet = NULL;
     this->context = NULL;
@@ -49,9 +52,10 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->tempFileIndex = 0;
 
     std::filesystem::path cwd = std::filesystem::current_path();
-    this->trainingsdata = cwd.string() + "/trainingsdata";
-    this->trainingsDataSavePath = cwd.string() + "/trainingsDataSave";
-    this->testdataPath = cwd.string() + "/../AnomalyGeneration/testdata";
+    this->trainingsdata = cwd.string() + "/../../data/classicTrainingsdata/trainingsdata";
+    this->trainingsDataSavePath = cwd.string() + "/../../data/classicTrainingsdata/trainingsDataSave";
+    this->testdataPath = cwd.string() + "/../../data/classicTrainingsdata/testdata";
+    this->testdataSavePath = cwd.string() + "/../../data/classicTrainingsdata/testdataSave";
 }
 
 MyEventReceiver::~MyEventReceiver()
@@ -113,7 +117,7 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
             else if (id == GUI_ID_BUTTON_CHOOSE_FILE)
             {
                 this->onResetImages();
-                this->graphicEngine->addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, L"..\\AnomalyGeneration\\testdata");
+                this->graphicEngine->addFileOpenDialog(GUI_ID_DIALOG_CHOOSE_FILE, this->stringSerivce->toWString(this->testdataPath));
             }
             else if(id == GUI_ID_BUTTON_GENERATE_TRAININGS_DATA)
             {
@@ -130,12 +134,49 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 }
                 else if (classifyId != -1 && methodeId != -1)
                 {
-                    std::string result = this->onClassifyKNearest(this->stringSerivce->toString(this->selectedFile));
-
-                    if (result == "error")
+                    if (classifyId == GUI_ID_CHECKBOX_CLASSIFY_DEFAULT)
                     {
-                        this->showMessage(L"Methode kann nicht angewendet werden.");
-                        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
+                        std::vector<std::vector<double>> result = this->calculateFeatureVector(this->stringSerivce->toString(this->selectedFile), false);
+
+                        if (result.size() == 0)
+                        {
+                            this->showMessage(L"Methode kann nicht angewendet werden.");
+                            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
+                        }
+                    }
+                    else if (classifyId == GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR)
+                    {
+                        std::string result = this->onClassifyKNearest(this->stringSerivce->toString(this->selectedFile), false);
+
+                        if (result == "error")
+                        {
+                            this->showMessage(L"Methode kann nicht angewendet werden.");
+                            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
+                        }
+                    }
+                    else if (classifyId == GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE)
+                    {
+                        std::string result = this->onClassifyDecisionTree(this->stringSerivce->toString(this->selectedFile), false);
+
+                        if (result == "error")
+                        {
+                            this->showMessage(L"Methode kann nicht angewendet werden.");
+                            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
+                        }
+                    }
+                    else if (classifyId == GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE)
+                    {
+                        std::string result = this->onClassifySVM(this->stringSerivce->toString(this->selectedFile), false);
+
+                        if (result == "error")
+                        {
+                            this->showMessage(L"Methode kann nicht angewendet werden.");
+                            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
+                        }
+                    }
+                    else
+                    {
+                        this->showMessage(L"No implemented!");
                     }
                 }
                 else
@@ -145,7 +186,16 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
             }
             else if (id == GUI_ID_BUTTON_CLASSIFY_MULTIPLE)
             {
-                this->onClassifyKNearestMultiple();
+                auto start_time = std::chrono::high_resolution_clock::now();
+
+                this->onClassifyMultiple();
+
+                auto end_time = std::chrono::high_resolution_clock::now();
+                auto time = end_time - start_time;
+                long measuredTime = time / std::chrono::milliseconds(1);
+
+                std::wstring measuredTimeAsString = this->stringSerivce->intToWString(measuredTime) + L" ms";
+                this->graphicEngine->setGUIElementText(GUI_ID_LABEL_TIME_NEEDED, measuredTimeAsString.c_str());
             }
             else if(id == GUI_ID_BUTTON_MESSAGE_OK)
             {
@@ -163,8 +213,15 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                     this->graphicEngine->enableGUIElement(GUI_ID_IMAGE_PANNEL, true);
                 }
             }
+            else if (id == GUI_ID_BUTTON_GENERATE_YOLO_TRAININGSDATA)
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    this->defectGenerationService->generateAnomalieDirectories(this->trainingsdata+"/yoloTestdaten", 1, 1, 600);
+                }
+            }
 
-             return true;
+            return true;
         case EGET_FILE_SELECTED:
         {
             IGUIFileOpenDialog* dialog =
@@ -175,7 +232,7 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
         }
         case EGET_CHECKBOX_CHANGED:
 
-            if(id == GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE || id == GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR  || id == GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE)
+            if(id == GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE || id == GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR || id == GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE || id == GUI_ID_CHECKBOX_CLASSIFY_DEFAULT)
             {
                 this->graphicEngine->resetCheckBoxsByWindowId(GUI_ID_CLASSIFY_PANNEL);
 
@@ -261,6 +318,10 @@ FeatureResult MyEventReceiver::onExecuteFeatureExtraction(std::string fileName, 
     {
         result = this->onWavelet(fileName, silence);
     }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_MORLET_WAVELET))
+    {
+        result = this->onMorletFourWavelet(img, silence);
+    }
 #endif
     else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV))
     {
@@ -273,10 +334,6 @@ FeatureResult MyEventReceiver::onExecuteFeatureExtraction(std::string fileName, 
     else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET))
     {
         result = this->onDaubechiesFourWavelet(img, silence);
-    }
-    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_MORLET_WAVELET))
-    {
-        result = this->onMorletFourWavelet(img, silence);
     }
     else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_MORLET_WAVELET_FFT))
     {
@@ -294,6 +351,18 @@ FeatureResult MyEventReceiver::onExecuteFeatureExtraction(std::string fileName, 
     {
         result = this->onBiorWavlet(img, silence);
     }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GEOMETRIC_MEASURES))
+    {
+        result = this->onGeometricValues(img);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GRAYSCALE_BASED_METHODS))
+    {
+        result = this->onGrayscaleBasedValues(img);
+    }
+    else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_YOLO_10))
+    {
+        result = this->onYolo10(img, silence);
+    }    
 
     // Clean up
     if(!silence)
@@ -308,6 +377,23 @@ void MyEventReceiver::onGenerateTrainingsData()
 {
     rmdir(this->trainingsdata.c_str());
     this->defectGenerationService->generateAnomalieDirectories(this->trainingsdata, 10);
+}
+
+std::string MyEventReceiver::generateTestDataPath(std::string imagePath)
+{
+    std::vector<std::string> imagePathParts = this->stringSerivce->split(imagePath, '/');
+    imagePathParts = this->stringSerivce->split(imagePathParts[imagePathParts.size()-1], '\\');
+    imagePathParts = this->stringSerivce->split(imagePathParts[imagePathParts.size() - 1], '.');
+
+    if (imagePathParts.size() <= 1)
+    {
+        return "";
+    }
+    
+    std::string imageName = imagePathParts[imagePathParts.size() - 2];
+    int methodeId = this->graphicEngine->getCheckedCheckBoxByWindowId(GUI_ID_OPERATION_PANNEL);
+
+    return this->testdataSavePath + "/" + this->stringSerivce->intToString(methodeId) + "_" + imageName + ".xml";
 }
 
 std::string MyEventReceiver::generateTrainingsDataFilePath()
@@ -328,24 +414,30 @@ void MyEventReceiver::saveTrainingsData(std::vector<DataPoint> trainingData, std
     this->fileService->saveFile(xml, fileName);
 }
 
-void MyEventReceiver::onClassifyKNearestMultiple()
+void MyEventReceiver::onClassifyMultiple()
 {
     int maximalThreadCount = 4;
     double totalCounter = 0;
     double successCounter = 0;
 
+    bool isClassMethodDefault = this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_CLASSIFY_DEFAULT);
+    int isClassMethodKNN = this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR);
+    int isClassMethodDT = this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE);
+    int isClassMethodSVM = this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE);
+
     this->graphicEngine->setGUIElementChecked(GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA, false);
     this->graphicEngine->clearTable(GUI_ID_BUTTON_CLASSIFY_TABLE);
 
     std::vector<std::string> classNames;
-    classNames.push_back("defect");
     classNames.push_back("artefact");
+    classNames.push_back("defect");
 
     std::vector<std::string> filePaths;
 
     for(int i = 0;i< classNames.size();i++)
         filePaths.push_back(this->testdataPath + "/" + classNames[i]);
 
+    std::string csvResultTable = "Image;Expected;Result;Score\n";
     std::vector<std::vector<std::wstring>> resultTable;
 
     for (int classIndex = 0; classIndex < 2; classIndex++)
@@ -360,13 +452,39 @@ void MyEventReceiver::onClassifyKNearestMultiple()
             int threadCount = min(maximalThreadCount, fileSize - i);
             for (int t = 0 ; t < threadCount; t++)
             {
-                threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[i]]() { return t->onClassifyKNearest(fileName); }));
+                if (isClassMethodDefault)
+                {
+                    threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[i]]() { return t->onClassifyDefault(fileName, true); }));
+                }
+                else if (isClassMethodDT)
+                {
+                    threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[i]]() { return t->onClassifyDecisionTree(fileName, true); }));
+                }
+                else if(isClassMethodKNN)
+                {
+                    threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[i]]() { return t->onClassifyKNearest(fileName, true); }));
+                }
+                else if (isClassMethodSVM)
+                {
+                    threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[i]]() { return t->onClassifySVM(fileName, true); }));
+                }
+                
                 i++;
             }
 
             for (int t = 0; t < threadCount; t++)
             {
-                std::string classString = threadVector[t].get();
+                std::string classString = "error";
+
+                try
+                {
+                    classString = threadVector[t].get();
+                }
+                catch (exception e)
+                {
+                    int bla = 0;
+                }
+
                 std::vector<std::string> fileNameParts = this->stringSerivce->split(fileNames[i-(threadCount - t)], '\\');
                 bool hasCorrectClass = this->stringSerivce->contains(classString, classNames[classIndex]);
 
@@ -382,10 +500,18 @@ void MyEventReceiver::onClassifyKNearestMultiple()
                 }
 
                 resultTable.push_back(std::vector<std::wstring> { fileName, expected, classified, percentStr});
+
+                csvResultTable += this->stringSerivce->toString(fileName) + ";" + 
+                                  this->stringSerivce->toString(expected) + ";" + 
+                                  this->stringSerivce->toString(classified) + ";" + 
+                                  this->stringSerivce->toString(percentStr) + "\n";
+
                 totalCounter++;
             }
         }
     }
+
+    this->fileService->saveFile(csvResultTable, "results.csv");
 
     for (int i = 0; i < resultTable.size(); i++)
     {
@@ -396,18 +522,26 @@ void MyEventReceiver::onClassifyKNearestMultiple()
     this->graphicEngine->addRow(GUI_ID_BUTTON_CLASSIFY_TABLE, std::vector<std::wstring> { L"Sum", L"", L"", percentStr+L"%"});
 }
 
-std::string MyEventReceiver::onClassifyKNearest(std::string selectedImage)
+std::vector<DataPoint> MyEventReceiver::loadTrainingsData(bool batchMod)
 {
-    this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Initiate...");
+    if (!batchMod)
+    {
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Initiate...");
+    }
 
     mkdir(this->trainingsDataSavePath.c_str());
     std::string traningsDataFile = this->generateTrainingsDataFilePath();
 
     std::vector<DataPoint> trainingData;
 
-    if(this->fileService->exists(traningsDataFile) && !this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA))
+    this->criticalLoadTraingsData.acquire();
+
+    if (this->fileService->exists(traningsDataFile) && !this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA))
     {
-        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Load Traingsdata...");
+        if (!batchMod)
+        {
+            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Load Traingsdata...");
+        }
 
         std::string xmlContent = this->fileService->readFile(traningsDataFile);
 
@@ -418,25 +552,198 @@ std::string MyEventReceiver::onClassifyKNearest(std::string selectedImage)
     }
     else
     {
-        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Generate Traingsdata...");
+        if (!batchMod)
+        {
+            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Generate Traingsdata...");
+        }
 
         trainingData = this->loadTraingsdataForKNearest();
         this->saveTrainingsData(trainingData, traningsDataFile);
     }
 
-    this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Execute test...");
-    
-    CImg<unsigned char> img(selectedImage.c_str());
+    this->criticalLoadTraingsData.release();
+
+    return trainingData;
+}
+
+std::vector<std::vector<double>> MyEventReceiver::calculateFeatureVector(std::string selectedImage, bool batchMod)
+{
+    if (!batchMod)
+    {
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Execute test...");
+    }
 
     std::vector<std::vector<double>> testData;
-    FeatureResult featureResult = this->onExecuteFeatureExtraction(selectedImage, &img, true);
+    mkdir(this->testdataSavePath.c_str());
 
-    if(!featureResult.getSuccess())
+    std::string testDataPath = this->generateTestDataPath(selectedImage);
+
+    this->criticalLoadTestData.acquire();
+
+    if (this->fileService->exists(testDataPath.c_str()) && !this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GENERATE_NEW_TRAININGSDATA))
+    {
+        std::string xmlContent = this->fileService->readFile(testDataPath);
+
+        DataFile dataFile;
+        dataFile.fromXML(xmlContent.c_str(), &dataFile);
+
+        std::vector<DataPoint> dataPoints = dataFile.toDataPoints();
+        testData.push_back(dataPoints[0].features);
+    }
+    else
+    {
+        CImg<unsigned char> img(selectedImage.c_str());
+        FeatureResult featureResult = this->onExecuteFeatureExtraction(selectedImage, &img, true);
+
+        if (!featureResult.getSuccess())
+        {
+            this->criticalLoadTestData.release();
+            return std::vector<std::vector<double>>();
+        }
+
+        testData.push_back(featureResult.getFeatureVector());
+
+        DataPoint dataPoint = this->toDataPoint(featureResult);
+        this->saveTrainingsData(std::vector<DataPoint> { dataPoint }, testDataPath);
+    }
+
+    this->criticalLoadTestData.release();
+
+    return testData;
+}
+
+std::string MyEventReceiver::onClassifyDefault(std::string selectedImage, bool batchMod)
+{
+    std::vector<std::vector<double>> testData = this->calculateFeatureVector(selectedImage, batchMod);
+
+    if (testData.size() == 0)
     {
         return "error";
     }
 
-    testData.push_back(featureResult.getFeatureVector());
+    double avgSum = 0;
+
+    for (int i = 0; i < testData.size(); i++)
+    {
+        double avg = 0;
+
+        for (int j = 0; j < testData[i].size(); j++)
+        {
+            avg += testData[i][j];
+        }
+
+        avg /= (double)testData[i].size();
+        avgSum += avg;
+    }
+
+    avgSum /= (double)testData.size();
+
+    std::string classifyIndex = this->stringSerivce->intToString(avgSum);
+
+    if (avgSum == 0)
+    {
+        classifyIndex = "defect";
+    }
+    else if(avgSum == 1)
+    {
+        classifyIndex = "artefact";
+    }
+    else
+    {
+        classifyIndex = "error";
+    }
+
+    return classifyIndex;
+}
+
+std::string MyEventReceiver::onClassifyDecisionTree(std::string selectedImage, bool batchMod)
+{
+    std::vector<DataPoint> trainingData = this->loadTrainingsData(batchMod);
+    std::vector<std::vector<double>> testData = this->calculateFeatureVector(selectedImage, batchMod);
+
+    if (testData.size() == 0)
+    {
+        if (!batchMod)
+        {
+            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"error");
+        }
+
+        return "error";
+    }
+
+    std::vector<DataPoint> classifiedDatPoints = this->decisionTreeService->classify(trainingData, testData);
+    int classIndex = classifiedDatPoints[0].label;
+
+    std::string classifyIndex = this->stringSerivce->intToString(classIndex);
+
+    if (classIndex == 0)
+    {
+        classifyIndex = "defect";
+    }
+    else
+    {
+        classifyIndex = "artefact";
+    }
+
+    if (!batchMod)
+    {
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, this->stringSerivce->toWString(classifyIndex).c_str());
+    }
+
+    return classifyIndex;
+}
+
+std::string MyEventReceiver::onClassifySVM(std::string selectedImage, bool batchMod)
+{
+    std::vector<DataPoint> trainingData = this->loadTrainingsData(batchMod);
+    std::vector<std::vector<double>> testData = this->calculateFeatureVector(selectedImage, batchMod);
+
+    if (testData.size() == 0)
+    {
+        if (!batchMod)
+        {
+            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"error");
+        }
+
+        return "error";
+    }
+
+    std::vector<DataPoint> classifiedDatPoints = this->svmService->classify(trainingData, testData);
+    int classIndex = classifiedDatPoints[0].label;
+
+    std::string classifyIndex = this->stringSerivce->intToString(classIndex);
+
+    if (classIndex == 0)
+    {
+        classifyIndex = "defect";
+    }
+    else
+    {
+        classifyIndex = "artefact";
+    }
+
+    if (!batchMod)
+    {
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, this->stringSerivce->toWString(classifyIndex).c_str());
+    }
+
+    return classifyIndex;
+}
+
+std::string MyEventReceiver::onClassifyKNearest(std::string selectedImage, bool batchMod)
+{
+    std::vector<DataPoint> trainingData = this->loadTrainingsData(batchMod);
+    std::vector<std::vector<double>> testData = this->calculateFeatureVector(selectedImage, batchMod);
+
+    if (testData.size() == 0)
+    {
+        if (!batchMod)
+        {
+            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"error");
+        }
+
+        return "error";
+    }
 
     std::wstring parameterK = this->graphicEngine->getGUIElementText(GUI_ID_INPUTBOX_PARAMETER);
     int numberK = this->stringSerivce->toInt(parameterK);
@@ -455,9 +762,26 @@ std::string MyEventReceiver::onClassifyKNearest(std::string selectedImage)
         classifyIndex = "artefact";
     }
 
-    this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, this->stringSerivce->toWString(classifyIndex).c_str());
+    if (!batchMod)
+    {
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, this->stringSerivce->toWString(classifyIndex).c_str());
+    }
 
     return classifyIndex;
+}
+
+DataPoint MyEventReceiver::toDataPoint(FeatureResult featureResult)
+{
+    if (featureResult.getSuccess())
+    {
+        DataPoint dataPoint;
+        dataPoint.features = featureResult.getFeatureVector();
+        dataPoint.label = -1;
+
+        return dataPoint;
+    }
+
+    throw "ERROR";
 }
 
 void MyEventReceiver::showMessage(std::wstring message)
@@ -536,15 +860,22 @@ void MyEventReceiver::endFeatureThreads(std::vector<std::future<FeatureResult>>&
 {
     for (int t = 0; t < threadCount; t++)
     {
-        FeatureResult featureResult = threadVector[t].get();
-
-        if (featureResult.getSuccess())
+        try
         {
-            DataPoint dataPoint;
-            dataPoint.features = featureResult.getFeatureVector();
-            dataPoint.label = currentClassIndex;
+            FeatureResult featureResult = threadVector[t].get();
 
-            dataPointList.push_back(dataPoint);
+            if (featureResult.getSuccess())
+            {
+                DataPoint dataPoint;
+                dataPoint.features = featureResult.getFeatureVector();
+                dataPoint.label = currentClassIndex;
+
+                dataPointList.push_back(dataPoint);
+            }
+        }
+        catch (exception e)
+        {
+            int bla = 0;
         }
     }
 
@@ -991,11 +1322,14 @@ FeatureResult MyEventReceiver::onHuMoment(std::string fileName, CImg<unsigned ch
     CImg<unsigned char> sobelImage = this->improvedSobelOperatorService->getGradientImage(img);
 
     // Output the chart
-    std::string sobelName = this->tempFileNameService->generateFileNamePng();
-    sobelImage.save(sobelName.c_str());
+    if (!silence)
+    {
+        std::string sobelName = this->tempFileNameService->generateFileNamePng();
+        sobelImage.save(sobelName.c_str());
 
-    this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
-
+        this->graphicEngine->addImage(GUI_ID_IMAGE_2_0, Point2D(10, 10), this->stringSerivce->toWString(sobelName).c_str(), GUI_ID_IMAGE_2_TAB);
+    }
+    
     double hu1 = this->huMomentsService->calculateHu1(&sobelImage);
     if(!silence)
     {
@@ -1045,7 +1379,14 @@ FeatureResult MyEventReceiver::onHuMoment(std::string fileName, CImg<unsigned ch
         this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HU_OWN_7, huString.c_str());
     }
 
-    return FeatureResult(hu1, hu2, hu3, hu4, hu5, hu6, hu7);
+    FeatureResult result = FeatureResult(hu1, hu2, hu3, hu4, hu5, hu6, hu7);
+
+    if (result.getFeatureVector().size() != 7)
+    {
+        return FeatureResult();
+    }
+
+    return result;
 }
 
 FeatureResult MyEventReceiver::onDiscreteFourierTransformation(CImg<unsigned char>* img, bool silence)
@@ -1062,7 +1403,17 @@ FeatureResult MyEventReceiver::onDiscreteFourierTransformation(CImg<unsigned cha
         return FeatureResult();
     }
 
-    std::vector<std::complex<double>> fequence = this->discreteFourierTransformationSerivce->calculate(complexConture);
+    std::vector<std::complex<double>> fequence;
+
+    try
+    {
+        fequence = this->discreteFourierTransformationSerivce->calculate(complexConture);
+
+    }
+    catch (exception e)
+    {
+        int bla = 0;
+    }
 
     if (!silence)
     {
@@ -1135,6 +1486,87 @@ void MyEventReceiver::onCalculateImprovedSobelOperator(CImg<unsigned char>* img)
     tempImage.save_png(tempFileName.c_str());
     
     this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(tempFileName).c_str(), GUI_ID_IMAGE_3_TAB);
+}
+
+FeatureResult MyEventReceiver::onYolo10(CImg<unsigned char>* img, bool silence)
+{
+    const unsigned int size_z = 1;
+    const unsigned int size_c = 3;
+    const unsigned char wihte[] = { 255,255,255 };
+
+    CImg<unsigned char> sizeImg(*img);
+    sizeImg.resize(sizeImg.width() + 1, sizeImg.height() + 1);
+    sizeImg.draw_line(sizeImg.width() - 1, 0, sizeImg.width() - 1, sizeImg.height() - 1, wihte);
+    sizeImg.draw_line(0, sizeImg.height() - 1, sizeImg.width() - 1, sizeImg.height() - 1, wihte);
+    sizeImg.resize(600, 600, -100, -100, 0, 1, 0, 0, 0, 0);
+
+    std::string tempFileName = this->tempFileNameService->generateFileNamePng();
+    sizeImg.save_png(tempFileName.c_str());
+
+    std::vector<double> result = this->yolov10Service->calculate(tempFileName);
+
+    if (result.size() != 0)
+    {
+        double doubleClass = this->mathSerivce->avg(result);
+        double roundedClass = this->mathSerivce->roundDigits(doubleClass, 0);
+
+        return FeatureResult(roundedClass);
+    }
+
+    return FeatureResult(NAN);
+}
+
+FeatureResult MyEventReceiver::onGrayscaleBasedValues(CImg<unsigned char>* img)
+{
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(img);
+
+    double mean = this->histogramValueService->getMean(img);
+    double variance = this->histogramValueService->getVariance(img);
+    double skewness = this->histogramValueService->getSkewness(img);
+    double kurtosis = this->histogramValueService->getKurtosis(img);
+    double power = this->histogramValueService->getPower(img);
+    double entropy = this->histogramValueService->getEntropy(img);
+
+    if (isnan(skewness))
+    {
+        skewness = 0;
+    }
+
+    if (isnan(kurtosis))
+    {
+        kurtosis = 0;
+    }
+
+    FeatureResult result = FeatureResult(mean, variance, skewness, kurtosis, power, entropy);
+
+    if (result.getFeatureVector().size() != 6)
+    {
+        return FeatureResult();
+    }
+
+    return result;
+}
+
+
+FeatureResult MyEventReceiver::onGeometricValues(CImg<unsigned char>* img)
+{
+    ColorRGB backgroundColor = this->geometricService->getBackgroundColor(img);
+
+    int defectPixels = this->geometricService->countDefectPixels(img, backgroundColor);
+    double rotioRoiArea = defectPixels / ((double)img->width()) * ((double)img->height());
+    double rotioWidthLength = ((double)img->width()) / ((double)img->height());
+    int scope = this->geometricService->calculateScope(img, backgroundColor);
+    Point2D defectFocus = this->geometricService->calculateCentroid(img, backgroundColor);
+    double rectangularity = this->geometricService->calculateRectangularity(img, backgroundColor);
+
+    FeatureResult result = FeatureResult(defectPixels, rotioRoiArea, rotioWidthLength, scope, defectFocus.x, defectFocus.y, rectangularity);
+
+    if (result.getFeatureVector().size() != 7)
+    {
+        return FeatureResult();
+    }
+
+    return result;
 }
 
 void MyEventReceiver::onSelectFile(core::stringc fileName)

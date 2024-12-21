@@ -33,6 +33,8 @@
 #include "TempFileNameService.h"
 
 #include "KNearestNeighborsService.h"
+#include "DecisionTreeService.h"
+#include "SvmService.h"
 
 #include "../AnomalyGeneration/DefectGenerationService.h"
 
@@ -80,8 +82,11 @@ public:
     DaubechiesFourWaveletService* daubechiesFourWaveletService;
 #endif
     BiorWavletService* biorWavletService;
+    Yolov10Service* yolov10Service;
 
     KNearestNeighborsService* kNearestNeighborsService;
+    DecisionTreeService* decisionTreeService;
+    SvmService* svmService;
 
 public:
     DependencyInjectionService();

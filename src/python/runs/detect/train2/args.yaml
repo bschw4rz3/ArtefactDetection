@@ -1,7 +1,7 @@
 task: detect
 mode: train
-model: yoloWeights/yolov10n.pt
-data: yoloWeights/custom_data.yaml
+model: D:\Repository\ArtefactDetection\yoloWeights\yolov10m.pt
+data: D:\Repository\ArtefactDetection\yoloWeights/custom_data.yaml
 epochs: 1000
 time: null
 patience: 100
@@ -9,6 +9,7 @@ batch: 16
 imgsz: 640
 save: true
 save_period: -1
+val_period: 1
 cache: false
 device: null
 workers: 8
@@ -66,7 +67,7 @@ keras: false
 optimize: false
 int8: false
 dynamic: false
-simplify: true
+simplify: false
 opset: null
 workspace: 4
 nms: false
@@ -98,7 +99,6 @@ bgr: 0.0
 mosaic: 1.0
 mixup: 0.0
 copy_paste: 0.0
-copy_paste_mode: flip
 auto_augment: randaugment
 erasing: 0.4
 crop_fraction: 1.0

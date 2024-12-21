@@ -17,35 +17,48 @@ int main()
 
     graphicEngine.initiateOpenGL(L"Part Cover", windowSize);
     graphicEngine.loadFont(L"fonthaettenschweiler.bmp");
-    graphicEngine.addSubwindow(GUI_ID_OPERATION_PANNEL, Point2D(windowSize.x - 180, 0), Point2D(windowSize.x, 580), L"Operationpannel");
+    graphicEngine.addSubwindow(GUI_ID_OPERATION_PANNEL, Point2D(windowSize.x - 180, 0), Point2D(windowSize.x, 1040), L"Operationpannel");
 
-    graphicEngine.addLabel(0, Point2D(10, 30), 50, L"Methode:", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addLabel(0, Point2D(10, 30), 200, L"None Featureextration:", GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SUPERPIXELS, Point2D(10, 50), L"Super Pixels", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SOBEL, Point2D(10, 70), L"Sobel Operator", false, GUI_ID_OPERATION_PANNEL);
     graphicEngine.addCheckbox(GUI_ID_CHECKBOX_IMPROVED_SOBEL, Point2D(10, 90), L"Improved Sobel", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION, Point2D(10, 110), L"Discrete Fourier Transformation", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HU_MOMENT, Point2D(10, 130), L"Hu Moment", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SDSF, Point2D(10, 150), L"SdSf", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_LBP, Point2D(10, 170), L"LBP", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_COMPLETED_LBP, Point2D(10, 190), L"Completed LBP", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GLCM, Point2D(10, 210), L"GLCM", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HOG, Point2D(10, 230), L"HOG", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GABOR, Point2D(10, 250), L"GaborFilter", false, GUI_ID_OPERATION_PANNEL);
-#ifndef _USE_PYTHON_SCRIPTS
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_WAVELET, Point2D(10, 270), L"Wavelet", false, GUI_ID_OPERATION_PANNEL);
-#endif // !_USE_PYTHON_SCRIPTS
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV, Point2D(10, 290), L"Discrete Fourier Transformation (CV)", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR, Point2D(10, 310), L"Fourier Discriptor", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET, Point2D(10, 330), L"Daubechies four wavelet", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_MORLET_WAVELET, Point2D(10, 350), L"Morelet wavelet", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_MORLET_WAVELET_FFT, Point2D(10, 370), L"Morelet FFT", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HAAR_WAVLET, Point2D(10, 390), L"Haarwavlet", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DAUBECHIES_SECOND, Point2D(10, 410), L"Daubechies 2. Wavlet", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_BIOR_WAVLET, Point2D(10, 430), L"Bior Wavlet", false, GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_UNKNOWN, Point2D(10, 450), L"Unknown", false, GUI_ID_OPERATION_PANNEL);
 
-    graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 525), 70, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
-    graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(90, 525), 70, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addLabel(0, Point2D(10, 130), 200, L"Lost and Found:", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GRAYSCALE_BASED_METHODS, Point2D(10, 150), L"Grayscale-Based Methods", false, GUI_ID_OPERATION_PANNEL);
+
+    graphicEngine.addLabel(0, Point2D(10, 190), 200, L"Geometric feature:", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GEOMETRIC_MEASURES, Point2D(10, 210), L"Geometric measures", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION, Point2D(10, 230), L"Discrete Fourier Transformation", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HU_MOMENT, Point2D(10, 250), L"Hu Moment", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_SDSF, Point2D(10, 270), L"SdSf", false, GUI_ID_OPERATION_PANNEL);
+
+    graphicEngine.addLabel(0, Point2D(10, 310), 200, L"Textur-Based feature:", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_LBP, Point2D(10, 330), L"LBP", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_COMPLETED_LBP, Point2D(10, 350), L"Completed LBP", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GLCM, Point2D(10, 370), L"GLCM", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HOG, Point2D(10, 390), L"HOG", false, GUI_ID_OPERATION_PANNEL);
+
+    graphicEngine.addLabel(0, Point2D(10, 430), 200, L"Transform-Based Methods:", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_FOURIER_DISCRIPTOR, Point2D(10, 450), L"Fourier Discriptor", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DISCRETE_FOURIER_TRANSFORMATION_CV, Point2D(10, 470), L"Discrete Fourier Transformation (CV)", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_GABOR, Point2D(10, 490), L"GaborFilter", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_HAAR_WAVLET, Point2D(10, 510), L"Haarwavlet", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DAUBECHIES_SECOND, Point2D(10, 530), L"Daubechies 2. Wavelet", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_DAUBECHIES_FOUR_WAVELET, Point2D(10, 550), L"Daubechies 4. Wavelet", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_MORLET_WAVELET_FFT, Point2D(10, 570), L"Morelet Wavelet", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_BIOR_WAVLET, Point2D(10, 590), L"Bior Wavlet", false, GUI_ID_OPERATION_PANNEL);
+#ifndef _USE_PYTHON_SCRIPTS
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_MORLET_WAVELET, Point2D(10, 610), L"Morelet wavelet", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_WAVELET, Point2D(10, 630), L"Wavelet", false, GUI_ID_OPERATION_PANNEL);
+#endif // !_USE_PYTHON_SCRIPTS
+
+    graphicEngine.addLabel(0, Point2D(10, 630), 200, L"ANN-Methods:", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_YOLO_10, Point2D(10, 650), L"YOLOv10", false, GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_GENERATE_YOLO_TRAININGSDATA, Point2D(100, 650), 50, L"G. Trainingsdata", L"", GUI_ID_OPERATION_PANNEL);
+
+    graphicEngine.addButton(GUI_ID_BUTTON_CHOOSE_FILE, Point2D(10, 690), 70, L"Open File", L"Öffnet ein neues File", GUI_ID_OPERATION_PANNEL);
+    graphicEngine.addButton(GUI_ID_BUTTON_CACLULATE, Point2D(90, 690), 70, L"Calculate", L"Startet die ausgewählte Methode", GUI_ID_OPERATION_PANNEL);
 
     int pannelX = 10;
     int pannelY = 30;
@@ -123,7 +136,7 @@ int main()
     graphicEngine.addLabel(GUI_ID_VALUE_HU_OPENCV_6, Point2D(pannelX + 115, pannelY + 120), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
     graphicEngine.addLabel(GUI_ID_VALUE_HU_OPENCV_7, Point2D(pannelX + 115, pannelY + 140), 120, L"", GUI_ID_HU_MOMENT_PANNEL);
 
-    graphicEngine.addSubwindow(GUI_ID_HU_GLCM_PANNEL, Point2D(windowSize.x - 180, 570), Point2D(windowSize.x, 720), L"GLCM values");
+    graphicEngine.addSubwindow(GUI_ID_HU_GLCM_PANNEL, Point2D(windowSize.x - 360, 480 + 200), Point2D(windowSize.x - 180, 480 + 350), L"GLCM values");
 
     graphicEngine.addLabel(GUI_ID_LABEL_GLCM_ENERGY, Point2D(pannelX, pannelY), 120, L"Energy: ", GUI_ID_HU_GLCM_PANNEL);
     graphicEngine.addLabel(GUI_ID_LABEL_GLCM_CONTRAST, Point2D(pannelX, pannelY + 20), 120, L"Contrast: ", GUI_ID_HU_GLCM_PANNEL);
@@ -142,9 +155,12 @@ int main()
     graphicEngine.addSubwindow(GUI_ID_CLASSIFY_PANNEL, Point2D(500, 0), Point2D(windowSize.x - 360, 1060), L"Classify");
 
     graphicEngine.addLabel(GUI_ID_LABEL_CHECKBOX_CLASSIFY, Point2D(pannelX, pannelY + 10), 60, L"Classify method:", GUI_ID_CLASSIFY_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR, Point2D(pannelX, pannelY + 30), L"k-Nearest-Neighbor", false, GUI_ID_CLASSIFY_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE, Point2D(pannelX, pannelY + 50), L"support vector machine", false, GUI_ID_CLASSIFY_PANNEL);
-    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE, Point2D(pannelX, pannelY + 70), L"decision trees", false, GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_DEFAULT, Point2D(pannelX, pannelY + 30), L"Default", true, GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR, Point2D(pannelX, pannelY + 50), L"k-Nearest-Neighbor", false, GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE, Point2D(pannelX, pannelY + 70), L"support vector machine", false, GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addCheckbox(GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE, Point2D(pannelX, pannelY + 90), L"decision trees", false, GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addLabel(-1, Point2D(pannelX, pannelY + 130), 60, L"Time needed:", GUI_ID_CLASSIFY_PANNEL);
+    graphicEngine.addLabel(GUI_ID_LABEL_TIME_NEEDED, Point2D(pannelX+60, pannelY + 130), 80, L"-       ", GUI_ID_CLASSIFY_PANNEL);
 
     graphicEngine.addLabel(GUI_ID_LABEL_CLASSIFY_INDEX, Point2D(pannelX + 100, pannelY + 10), 60, L"", GUI_ID_CLASSIFY_PANNEL);
     graphicEngine.addButton(GUI_ID_BUTTON_GENERATE_TRAININGS_DATA, Point2D(pannelX + 180, pannelY + 30), 200, L"Generate trainings data", L"Generiere neu Trainingsdaten", GUI_ID_CLASSIFY_PANNEL);

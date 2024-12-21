@@ -146,6 +146,7 @@
     <ClCompile Include="DataPointSav.cpp" />
     <ClCompile Include="DaubechiesFourWaveletService.cpp" />
     <ClCompile Include="DaubechiesSecondWaveletService.cpp" />
+    <ClCompile Include="DecisionTreeService.cpp" />
     <ClCompile Include="DependencyInjectionService.cpp" />
     <ClCompile Include="DirectoryService.cpp" />
     <ClCompile Include="DiscreteFourierDescriptorService.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="StringService.cpp" />
     <ClCompile Include="SubregionResult.h" />
     <ClCompile Include="SuperPixelService.cpp" />
+    <ClCompile Include="SvmService.cpp" />
     <ClCompile Include="TempFileNameService.cpp" />
     <ClCompile Include="TimeFrequenceResult.h" />
     <ClCompile Include="WaveletTransformCV.cpp" />
@@ -188,6 +190,7 @@
     <ClInclude Include="DataPointSav.h" />
     <ClInclude Include="DaubechiesFourWaveletService.h" />
     <ClInclude Include="DaubechiesSecondWaveletService.h" />
+    <ClInclude Include="DecisionTreeService.h" />
     <ClInclude Include="DependencyInjectionService.h" />
     <ClInclude Include="DFTResult.h" />
     <ClInclude Include="DirectoryService.h" />
@@ -226,6 +229,7 @@
     <ClInclude Include="SuperPixelEntry.h" />
     <ClInclude Include="SuperPixelResult.h" />
     <ClInclude Include="SuperPixelService.h" />
+    <ClInclude Include="SvmService.h" />
     <ClInclude Include="TempFileNameService.h" />
     <ClInclude Include="WaveletResult.h" />
     <ClInclude Include="WaveletTransformCV.h" />

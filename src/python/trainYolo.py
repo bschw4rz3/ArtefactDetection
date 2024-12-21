@@ -1,6 +1,23 @@
 from ultralytics import YOLO
 import numpy as np
+import argparse
 
-model = YOLO("D:\Repository\ArtefactDetection\yoloWeights/yolov10n.pt")
+parser = argparse.ArgumentParser(description="Yolo Trainer")
+parser.add_argument("--resume", action="store_true", help="Whether to resume training from a .pt checkpoint")
+args = parser.parse_args()
 
-results = model.train(data="D:\Repository\ArtefactDetection\yoloWeights/custom_data.yaml", epochs = 1000)
+if args.resume:
+    model = YOLO("D:\\Repository\\ArtefactDetection\\src\\python\\runs\\detect\\train5\\weights\\best.pt")
+    results = model.train(
+      resume=True
+    , cache=True
+    #, device=0
+    )
+else:
+    model = YOLO("D:\Repository\ArtefactDetection\yoloWeights/yolov10n.pt")
+    results = model.train(
+        data="D:\Repository\ArtefactDetection\yoloWeights/custom_data.yaml"
+        ,epochs = 1000 
+        ,cache=True 
+    #   ,device=0
+    )
