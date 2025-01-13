@@ -31,6 +31,7 @@
 #include "FileService.h"
 #include "PythonExecuter.h"
 #include "TempFileNameService.h"
+#include "ImageFixService.h"
 
 #include "KNearestNeighborsService.h"
 #include "DecisionTreeService.h"
@@ -87,6 +88,8 @@ public:
     KNearestNeighborsService* kNearestNeighborsService;
     DecisionTreeService* decisionTreeService;
     SvmService* svmService;
+
+    ImageFixService* imageFixService;
 
 public:
     DependencyInjectionService();

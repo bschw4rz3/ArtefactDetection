@@ -162,6 +162,7 @@
     <ClCompile Include="HOGService.cpp" />
     <ClCompile Include="HOGServiceCV.cpp" />
     <ClCompile Include="HuMomentsService.cpp" />
+    <ClCompile Include="ImageFixService.cpp" />
     <ClCompile Include="ImprovedSobelOperatorService.cpp" />
     <ClCompile Include="KNearestNeighborsService.cpp" />
     <ClCompile Include="LbpService.cpp" />
@@ -182,6 +183,7 @@
     <ClCompile Include="WaveletTransformCV.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BackgoundResult.h" />
     <ClInclude Include="BiorWavletService.h" />
     <ClInclude Include="CImgService.h" />
     <ClInclude Include="ColorService.h" />
@@ -211,6 +213,7 @@
     <ClInclude Include="HOGService.h" />
     <ClInclude Include="HOGServiceCV.h" />
     <ClInclude Include="HuMomentsService.h" />
+    <ClInclude Include="ImageFixService.h" />
     <ClInclude Include="ImprovedSobelOperatorService.h" />
     <ClInclude Include="KeyValuePair.h" />
     <ClInclude Include="KNearestNeighborsService.h" />
@@ -278,6 +281,7 @@
     <CopyFileToFolders Include="..\lib\opencv_world4100d.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <None Include="BackgoundResult" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

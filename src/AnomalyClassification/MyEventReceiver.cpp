@@ -41,6 +41,8 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->decisionTreeService = di->decisionTreeService;
     this->svmService = di->svmService;
 
+    this->imageFixService = di->imageFixService;
+
     this->facet = NULL;
     this->context = NULL;
 
@@ -51,11 +53,14 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->selectedFile = L"";
     this->tempFileIndex = 0;
 
+    //std::string dataRepro = "classicTrainingsdata";
+    std::string dataRepro = "generatedTrainingsdata";
+
     std::filesystem::path cwd = std::filesystem::current_path();
-    this->trainingsdata = cwd.string() + "/../../data/classicTrainingsdata/trainingsdata";
-    this->trainingsDataSavePath = cwd.string() + "/../../data/classicTrainingsdata/trainingsDataSave";
-    this->testdataPath = cwd.string() + "/../../data/classicTrainingsdata/testdata";
-    this->testdataSavePath = cwd.string() + "/../../data/classicTrainingsdata/testdataSave";
+    this->trainingsdata = cwd.string() + "/../../data/"+ dataRepro +"/trainingsdata";
+    this->trainingsDataSavePath = cwd.string() + "/../../data/"+dataRepro+"/trainingsDataSave";
+    this->testdataPath = cwd.string() + "/../../data/"+ dataRepro +"/testdata";
+    this->testdataSavePath = cwd.string() + "/../../data/"+ dataRepro +"/testdataSave";
 }
 
 MyEventReceiver::~MyEventReceiver()
@@ -266,7 +271,7 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
 }
 
 FeatureResult MyEventReceiver::onExecuteFeatureExtraction(std::string fileName, CImg<unsigned char>* img, bool silence)
-{
+{    
     FeatureResult result = FeatureResult(NAN);
 
     if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_SUPERPIXELS))
@@ -1573,8 +1578,13 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
 {
     this->onCreateImagePannel();
     
-    CImg<unsigned char> img(fileName.c_str());
-    
+    CImg<unsigned char> img_unFixed(fileName.c_str());
+
+    std::string tempFileName = this->tempFileNameService->generateFileNamePng();
+    this->imageFixService->fixImage(&img_unFixed, tempFileName);
+
+    CImg<unsigned char> img(tempFileName.c_str());
+
     std::wstring roiString = this->stringSerivce->intToWString(img.width()) + L" x " + this->stringSerivce->intToWString(img.height()) + L" px";
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ROI, roiString.c_str());
 
@@ -1631,7 +1641,7 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     std::wstring entropyString = this->stringSerivce->doubleToWString(entropy);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ENTROPY, entropyString.c_str());
     
-    std::wstring wFileName = this->stringSerivce->toWString(fileName.c_str());
+    std::wstring wFileName = this->stringSerivce->toWString(tempFileName.c_str());
     this->graphicEngine->addImage(GUI_ID_IMAGE_1, Point2D(10, 10), wFileName.c_str(), GUI_ID_IMAGE_1_TAB);
 
     this->selectedFile = wFileName.c_str();

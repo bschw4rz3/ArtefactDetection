@@ -1,0 +1,73 @@
+Image;Expected;Result;Score
+A11.png;artefact;defect;  0%
+A13.png;artefact;defect;  0%
+A15.png;artefact;defect;  0%
+A17.png;artefact;defect;  0%
+A19.png;artefact;defect;  0%
+A2.png;artefact;artefact;100%
+A21.png;artefact;defect;  0%
+A23.png;artefact;defect;  0%
+A25.png;artefact;defect;  0%
+A27.png;artefact;defect;  0%
+A29.png;artefact;defect;  0%
+A4.png;artefact;artefact;100%
+A6.png;artefact;defect;  0%
+A8.png;artefact;defect;  0%
+A9.png;artefact;defect;  0%
+D101.png;defect;defect;100%
+D103.png;defect;defect;100%
+D105.png;defect;defect;100%
+D107.png;defect;defect;100%
+D109.png;defect;defect;100%
+D11.png;defect;defect;100%
+D111.png;defect;defect;100%
+D113.png;defect;defect;100%
+D115.png;defect;defect;100%
+D117.png;defect;defect;100%
+D13.png;defect;defect;100%
+D15.png;defect;defect;100%
+D17.png;defect;defect;100%
+D19.png;defect;defect;100%
+D2.png;defect;defect;100%
+D21.png;defect;defect;100%
+D23.png;defect;defect;100%
+D25.png;defect;defect;100%
+D27.png;defect;defect;100%
+D29.png;defect;defect;100%
+D31.png;defect;defect;100%
+D33.png;defect;defect;100%
+D35.png;defect;defect;100%
+D37.png;defect;defect;100%
+D4.png;defect;defect;100%
+D41.png;defect;defect;100%
+D43.png;defect;defect;100%
+D45.png;defect;defect;100%
+D47.png;defect;defect;100%
+D49.png;defect;defect;100%
+D51.png;defect;defect;100%
+D53.png;defect;defect;100%
+D55.png;defect;defect;100%
+D57.png;defect;defect;100%
+D59.png;defect;defect;100%
+D6.png;defect;defect;100%
+D61.png;defect;defect;100%
+D63.png;defect;defect;100%
+D65.png;defect;defect;100%
+D67.png;defect;defect;100%
+D69.png;defect;defect;100%
+D71.png;defect;artefact;  0%
+D73.png;defect;defect;100%
+D75.png;defect;defect;100%
+D77.png;defect;defect;100%
+D79.png;defect;defect;100%
+D81.png;defect;defect;100%
+D83.png;defect;defect;100%
+D85.png;defect;defect;100%
+D87.png;defect;defect;100%
+D89.png;defect;defect;100%
+D9.png;defect;defect;100%
+D91.png;defect;defect;100%
+D93.png;defect;defect;100%
+D95.png;defect;defect;100%
+D97.png;defect;defect;100%
+D99.png;defect;defect;100%

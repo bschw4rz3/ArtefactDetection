@@ -213,6 +213,9 @@
     <ClCompile Include="SvmService.cpp">
       <Filter>Quelldateien\classifications</Filter>
     </ClCompile>
+    <ClCompile Include="ImageFixService.cpp">
+      <Filter>Quelldateien\services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -368,6 +371,12 @@
     <ClInclude Include="SvmService.h">
       <Filter>Headerdateien\classifications</Filter>
     </ClInclude>
+    <ClInclude Include="BackgoundResult.h">
+      <Filter>Headerdateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageFixService.h">
+      <Filter>Headerdateien\services</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\lib\Irrlicht.dll">
@@ -394,5 +403,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="BackgoundResult" />
   </ItemGroup>
 </Project>

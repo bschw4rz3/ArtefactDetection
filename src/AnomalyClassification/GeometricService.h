@@ -11,6 +11,7 @@
 using namespace cimg_library;
 
 #include "ColorService.h"
+#include "BackgoundResult.h"
 #include "../IrrlichtWrapper/Point2D.h"
 
 class GeometricService
@@ -32,6 +33,7 @@ public:
 	double getPixelPositionWithMinDistance(std::vector<Point2D> contureList, Point2D centerPoint, ColorRGB backgroundColor);
 	double getPixelPositionWithMaxDistance(std::vector<Point2D> contureList, Point2D centerPoint, ColorRGB backgroundColor);
 	double calculateDistance(Point2D point, Point2D center);
+	BackgroundResult getBackgroundList(CImg<unsigned char>* image);
 
 private:
 	bool isboarderPixel(CImg<unsigned char>* image, int x, int y);

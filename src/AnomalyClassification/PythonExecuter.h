@@ -137,7 +137,7 @@ public:
 
 		std::string consoleResult = this->exec(comand.c_str());
 		std::vector<std::string> parts = this->stringService->split(consoleResult, '\n');
-		std::string lastPart = parts[1];
+		std::string lastPart = parts[0];
 
 		std::vector<double> values;
 		std::vector<std::string> strValues = this->stringService->split(lastPart, ',');

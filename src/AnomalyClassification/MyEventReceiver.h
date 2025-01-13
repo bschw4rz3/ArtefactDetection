@@ -247,6 +247,8 @@ private:
     DecisionTreeService* decisionTreeService;
     SvmService* svmService;
 
+    ImageFixService* imageFixService;
+
     std::thread currentAlgorithmThread;
     std::thread currentSimulationThread;
 

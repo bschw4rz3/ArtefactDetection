@@ -5,17 +5,38 @@ GeometricService::GeometricService(ColorService* colorService)
 	this->colorService = colorService;
 }
 
-ColorRGB GeometricService::getBackgroundColor(CImg<unsigned char>* image)
+BackgroundResult GeometricService::getBackgroundList(CImg<unsigned char>* image)
 {
+	std::vector<Point2D> backgroundPositions({
+		Point2D(0, 0), Point2D(image->width() - 1, 0), 
+		Point2D(0, image->height() - 1), 
+		Point2D(image->width() - 1, image->height() - 1), 
+		Point2D(image->width() - 1, image->height() / 2), 
+		Point2D(image->width() / 2, image->height() - 1), 
+		Point2D(0, image->height() / 2), 
+		Point2D(image->width() / 2, 0) });
+
 	std::vector<ColorRGB> colors;
-	std::map<ColorRGB, int> colorCounter;
-	Point2D backgroundPositions[] = { Point2D(0, 0), Point2D(image->width(), 0), Point2D(0, image->height()), Point2D(image->width(), image->height()), Point2D(image->width(), image->height()/2), Point2D(image->width()/2, image->height()), Point2D(0, image->height()/2), Point2D(image->width()/2, 0) };
 
 	for (Point2D position : backgroundPositions)
 	{
 		const unsigned char* bytePixel = image->data(position.x, position.y);
 		ColorRGB color = this->colorService->byte2rgb(bytePixel, image->width(), image->height());
+		colors.push_back(color);
+	}
 
+	return BackgroundResult(backgroundPositions, colors);
+}
+
+ColorRGB GeometricService::getBackgroundColor(CImg<unsigned char>* image)
+{
+	std::vector<ColorRGB> colors;
+	std::map<ColorRGB, int> colorCounter;
+	
+	BackgroundResult backgroundResult = this->getBackgroundList(image);
+
+	for (ColorRGB color : backgroundResult.colorList)
+	{
 		if (colorCounter.find(color) != colorCounter.end())
 		{
 			colorCounter[color]++;
