@@ -175,6 +175,39 @@ bool GeometricService::isboarderPixel(CImg<unsigned char>* image, int x, int y)
 	return false;
 }
 
+Point2D GeometricService::getRoiLength(CImg<unsigned char>* image, ColorRGB backgroundColor)
+{
+	std::vector<Point2D> anomaliePixels = this->getConturePixelPositions(image, backgroundColor);
+
+	double minWidth = INT8_MAX;
+	double maxWidth = 0;
+	double minHeight = INT8_MAX;
+	double maxHeight = 0;
+
+	for (int i = 0; i < anomaliePixels.size(); i++)
+	{
+		if (minWidth > anomaliePixels[i].x)
+		{
+			minWidth = anomaliePixels[i].x;
+		}
+		else if (maxWidth < anomaliePixels[i].x)
+		{
+			maxWidth = anomaliePixels[i].x;
+		}
+
+		if (minHeight > anomaliePixels[i].y)
+		{
+			minHeight = anomaliePixels[i].y;
+		}
+		else if (maxHeight < anomaliePixels[i].y)
+		{
+			maxHeight = anomaliePixels[i].y;
+		}
+	}
+
+	return Point2D(maxWidth-minWidth, maxHeight-minHeight);
+}
+
 std::vector<Point2D> GeometricService::getConturePixelPositions(CImg<unsigned char>* image, ColorRGB backgroundColor)
 {
 	std::vector<Point2D> contureList;

@@ -36,6 +36,7 @@
 #include "KNearestNeighborsService.h"
 #include "DecisionTreeService.h"
 #include "SvmService.h"
+#include "KMeansService.h"
 
 #include "../AnomalyGeneration/DefectGenerationService.h"
 
@@ -88,6 +89,7 @@ public:
     KNearestNeighborsService* kNearestNeighborsService;
     DecisionTreeService* decisionTreeService;
     SvmService* svmService;
+    KMeansService* kmeansService;
 
     ImageFixService* imageFixService;
 

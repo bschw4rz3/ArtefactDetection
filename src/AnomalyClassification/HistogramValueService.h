@@ -41,7 +41,7 @@ public:
 
 private:
 	std::map<ColorRGB, double> getHistogram(CImg<unsigned char>* image);
-	static bool isLastImage(CImg<unsigned char>* image);
+	//static bool isLastImage(CImg<unsigned char>* image);
 	static void resetCache();
 };
 

@@ -164,6 +164,8 @@
     <ClCompile Include="HuMomentsService.cpp" />
     <ClCompile Include="ImageFixService.cpp" />
     <ClCompile Include="ImprovedSobelOperatorService.cpp" />
+    <ClCompile Include="KMeansService.cpp" />
+    <ClCompile Include="KMeansService.h" />
     <ClCompile Include="KNearestNeighborsService.cpp" />
     <ClCompile Include="LbpService.cpp" />
     <ClCompile Include="main.cpp" />
@@ -226,6 +228,7 @@
     <ClInclude Include="MultiplyResult.h" />
     <ClInclude Include="MyEventReceiver.h" />
     <ClInclude Include="ClassicSobelOperatorService.h" />
+    <ClInclude Include="OrientationResult.h" />
     <ClInclude Include="PythonExecuter.h" />
     <ClInclude Include="SdSfService.h" />
     <ClInclude Include="StringSerivce.h" />

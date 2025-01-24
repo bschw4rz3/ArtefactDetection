@@ -40,6 +40,7 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->kNearestNeighborsService = di->kNearestNeighborsService;
     this->decisionTreeService = di->decisionTreeService;
     this->svmService = di->svmService;
+    this->kmeansService = di->kmeansService;
 
     this->imageFixService = di->imageFixService;
 
@@ -53,14 +54,20 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->selectedFile = L"";
     this->tempFileIndex = 0;
 
-    //std::string dataRepro = "classicTrainingsdata";
-    std::string dataRepro = "generatedTrainingsdata";
+    std::string dataRepro = "classicTrainingsdata";
+    //std::string dataRepro = "generatedTrainingsdata";
 
     std::filesystem::path cwd = std::filesystem::current_path();
     this->trainingsdata = cwd.string() + "/../../data/"+ dataRepro +"/trainingsdata";
     this->trainingsDataSavePath = cwd.string() + "/../../data/"+dataRepro+"/trainingsDataSave";
     this->testdataPath = cwd.string() + "/../../data/"+ dataRepro +"/testdata";
     this->testdataSavePath = cwd.string() + "/../../data/"+ dataRepro +"/testdataSave";
+
+    this->fixedTrainingsdata = cwd.string() + "/../../data/" + dataRepro + "/fixedTrainingsdata";
+    this->fixedTestdataPath = cwd.string() + "/../../data/" + dataRepro + "/fixedTestdata";
+
+    mkdir(this->fixedTrainingsdata.c_str());
+    mkdir(this->fixedTestdataPath.c_str());
 }
 
 MyEventReceiver::~MyEventReceiver()
@@ -159,6 +166,16 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                             this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
                         }
                     }
+                    else if (classifyId == GUI_ID_CHECKBOX_CLASSIFY_K_MEANS)
+                    {
+                        std::string result = this->onClassifyKMeans(this->stringSerivce->toString(this->selectedFile), false);
+
+                        if (result == "error")
+                        {
+                            this->showMessage(L"Methode kann nicht angewendet werden.");
+                            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"Error!");
+                        }
+                    }
                     else if (classifyId == GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE)
                     {
                         std::string result = this->onClassifyDecisionTree(this->stringSerivce->toString(this->selectedFile), false);
@@ -237,7 +254,7 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
         }
         case EGET_CHECKBOX_CHANGED:
 
-            if(id == GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE || id == GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR || id == GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE || id == GUI_ID_CHECKBOX_CLASSIFY_DEFAULT)
+            if(id == GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE || id == GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR || id == GUI_ID_CHECKBOX_CLASSIFY_K_MEANS || id == GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE || id == GUI_ID_CHECKBOX_CLASSIFY_DEFAULT)
             {
                 this->graphicEngine->resetCheckBoxsByWindowId(GUI_ID_CLASSIFY_PANNEL);
 
@@ -247,7 +264,7 @@ bool MyEventReceiver::OnEvent(const SEvent& event)
                 if(id == GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR)
                 {
                     this->graphicEngine->setGUIElementText(GUI_ID_LABEL_PARAMETER, L"Parameter K:");
-                    this->graphicEngine->setGUIElementText(GUI_ID_INPUTBOX_PARAMETER, L"4");
+                    this->graphicEngine->setGUIElementText(GUI_ID_INPUTBOX_PARAMETER, L"2");
 
                     this->graphicEngine->setVisibility(GUI_ID_LABEL_PARAMETER, true);
                     this->graphicEngine->setVisibility(GUI_ID_INPUTBOX_PARAMETER, true);
@@ -358,7 +375,7 @@ FeatureResult MyEventReceiver::onExecuteFeatureExtraction(std::string fileName, 
     }
     else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GEOMETRIC_MEASURES))
     {
-        result = this->onGeometricValues(img);
+        result = this->onGeometricValues(img, fileName);
     }
     else if (this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_GRAYSCALE_BASED_METHODS))
     {
@@ -427,6 +444,7 @@ void MyEventReceiver::onClassifyMultiple()
 
     bool isClassMethodDefault = this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_CLASSIFY_DEFAULT);
     int isClassMethodKNN = this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR);
+    int isClassMethodKMeans = this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_CLASSIFY_K_MEANS);
     int isClassMethodDT = this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE);
     int isClassMethodSVM = this->graphicEngine->isCheckboxChecked(GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE);
 
@@ -460,6 +478,10 @@ void MyEventReceiver::onClassifyMultiple()
                 if (isClassMethodDefault)
                 {
                     threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[i]]() { return t->onClassifyDefault(fileName, true); }));
+                }
+                else if (isClassMethodKMeans)
+                {
+                    threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[i]]() { return t->onClassifyKMeans(fileName, true); }));
                 }
                 else if (isClassMethodDT)
                 {
@@ -598,6 +620,13 @@ std::vector<std::vector<double>> MyEventReceiver::calculateFeatureVector(std::st
     else
     {
         CImg<unsigned char> img(selectedImage.c_str());
+
+        if (img.height() != 600 || img.height() != 600)
+        {
+            std::string fileName = this->saveFixedImage(selectedImage);
+            img = CImg<unsigned char>(fileName.c_str());
+        }
+
         FeatureResult featureResult = this->onExecuteFeatureExtraction(selectedImage, &img, true);
 
         if (!featureResult.getSuccess())
@@ -615,6 +644,30 @@ std::vector<std::vector<double>> MyEventReceiver::calculateFeatureVector(std::st
     this->criticalLoadTestData.release();
 
     return testData;
+}
+
+std::string MyEventReceiver::saveFixedImage(std::string selectedImage)
+{
+    CImg<unsigned char> img(selectedImage.c_str());
+
+    std::string fixedFilePath = "";
+    std::string fileName = this->tempFileNameService->getFileName(selectedImage);
+
+    if (this->stringSerivce->contains(selectedImage, "test"))
+    {
+        fixedFilePath = this->fixedTestdataPath + "/" + fileName;
+    }
+    else
+    {
+        fixedFilePath = this->fixedTrainingsdata + "/" + fileName;
+    }
+
+    if (!this->fileService->exists(fixedFilePath))
+    {
+        this->imageFixService->fixImage(&img, fixedFilePath);
+    }
+
+    return fixedFilePath;
 }
 
 std::string MyEventReceiver::onClassifyDefault(std::string selectedImage, bool batchMod)
@@ -714,6 +767,43 @@ std::string MyEventReceiver::onClassifySVM(std::string selectedImage, bool batch
     }
 
     std::vector<DataPoint> classifiedDatPoints = this->svmService->classify(trainingData, testData);
+    int classIndex = classifiedDatPoints[0].label;
+
+    std::string classifyIndex = this->stringSerivce->intToString(classIndex);
+
+    if (classIndex == 0)
+    {
+        classifyIndex = "defect";
+    }
+    else
+    {
+        classifyIndex = "artefact";
+    }
+
+    if (!batchMod)
+    {
+        this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, this->stringSerivce->toWString(classifyIndex).c_str());
+    }
+
+    return classifyIndex;
+}
+
+std::string MyEventReceiver::onClassifyKMeans(std::string selectedImage, bool batchMod)
+{
+    std::vector<DataPoint> trainingData = this->loadTrainingsData(batchMod);
+    std::vector<std::vector<double>> testData = this->calculateFeatureVector(selectedImage, batchMod);
+
+    if (testData.size() == 0)
+    {
+        if (!batchMod)
+        {
+            this->graphicEngine->setGUIElementText(GUI_ID_LABEL_CLASSIFY_INDEX, L"error");
+        }
+
+        return "error";
+    }
+
+    std::vector<DataPoint> classifiedDatPoints = this->kmeansService->classify(trainingData, testData);
     int classIndex = classifiedDatPoints[0].label;
 
     std::string classifyIndex = this->stringSerivce->intToString(classIndex);
@@ -852,10 +942,12 @@ void MyEventReceiver::startFeatureThreads(std::vector<std::future<FeatureResult>
 {
     for (int t = 0; t < threadCount; t++)
     {
-        CImg<unsigned char>* img = new CImg<unsigned char>(fileNames[currentIndex].c_str());
-        images.push_back(img);
+        std::string tempName = this->saveFixedImage(fileNames[currentIndex].c_str());
+        
+        CImg<unsigned char>* result = new CImg<unsigned char>(tempName.c_str());
+        images.push_back(result);
 
-        threadVector.push_back(std::async(std::launch::async, [t = this, fileName = fileNames[currentIndex], i = img]() { return t->onExecuteFeatureExtraction(fileName, i, true); }));
+        threadVector.push_back(std::async(std::launch::async, [t = this, fileName = tempName, i = result]() { return t->onExecuteFeatureExtraction(fileName, i, true); }));
 
         currentIndex++;
     }
@@ -1317,13 +1409,18 @@ FeatureResult MyEventReceiver::onHuMoment(std::string fileName, CImg<unsigned ch
                 this->graphicEngine->setGUIElementText(huMomentOpenCVMoments[i], huString.c_str());
             }
         }
+
+        return FeatureResult(huMoments[1], huMoments[2], huMoments[5], huMoments[6]);
     }
     catch (cv::Exception e)
     {
         std::string message = e.what();
         int b = 0;
     }
-
+    
+    return FeatureResult();
+    
+    /*
     CImg<unsigned char> sobelImage = this->improvedSobelOperatorService->getGradientImage(img);
 
     // Output the chart
@@ -1391,7 +1488,7 @@ FeatureResult MyEventReceiver::onHuMoment(std::string fileName, CImg<unsigned ch
         return FeatureResult();
     }
 
-    return result;
+    return result;*/
 }
 
 FeatureResult MyEventReceiver::onDiscreteFourierTransformation(CImg<unsigned char>* img, bool silence)
@@ -1525,11 +1622,11 @@ FeatureResult MyEventReceiver::onGrayscaleBasedValues(CImg<unsigned char>* img)
 {
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(img);
 
-    double mean = this->histogramValueService->getMean(img);
-    double variance = this->histogramValueService->getVariance(img);
+    //double mean = this->histogramValueService->getMean(img);
+    //double variance = this->histogramValueService->getVariance(img);
     double skewness = this->histogramValueService->getSkewness(img);
     double kurtosis = this->histogramValueService->getKurtosis(img);
-    double power = this->histogramValueService->getPower(img);
+    //double power = this->histogramValueService->getPower(img);
     double entropy = this->histogramValueService->getEntropy(img);
 
     if (isnan(skewness))
@@ -1542,9 +1639,9 @@ FeatureResult MyEventReceiver::onGrayscaleBasedValues(CImg<unsigned char>* img)
         kurtosis = 0;
     }
 
-    FeatureResult result = FeatureResult(mean, variance, skewness, kurtosis, power, entropy);
+    FeatureResult result = FeatureResult(/*mean, variance,*/ skewness, kurtosis, /*power,*/ entropy);
 
-    if (result.getFeatureVector().size() != 6)
+    if (result.getFeatureVector().size() != /*6*/ 3)
     {
         return FeatureResult();
     }
@@ -1553,23 +1650,31 @@ FeatureResult MyEventReceiver::onGrayscaleBasedValues(CImg<unsigned char>* img)
 }
 
 
-FeatureResult MyEventReceiver::onGeometricValues(CImg<unsigned char>* img)
+FeatureResult MyEventReceiver::onGeometricValues(CImg<unsigned char>* img, std::string fileName)
 {
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(img);
+    Point2D roiLength = this->geometricService->getRoiLength(img, backgroundColor);
 
     int defectPixels = this->geometricService->countDefectPixels(img, backgroundColor);
-    double rotioRoiArea = defectPixels / ((double)img->width()) * ((double)img->height());
-    double rotioWidthLength = ((double)img->width()) / ((double)img->height());
+    double lenght = ((double)roiLength.x);
+    double widht = (double)roiLength.y;
+    double rotioRoiArea = defectPixels / ((double)roiLength.x) * ((double)roiLength.y);
+    double rotioWidthLength = ((double)roiLength.x) / ((double)roiLength.y);
     int scope = this->geometricService->calculateScope(img, backgroundColor);
     Point2D defectFocus = this->geometricService->calculateCentroid(img, backgroundColor);
     double rectangularity = this->geometricService->calculateRectangularity(img, backgroundColor);
 
-    FeatureResult result = FeatureResult(defectPixels, rotioRoiArea, rotioWidthLength, scope, defectFocus.x, defectFocus.y, rectangularity);
+    OrientationResult orientationResult = this->calculteOpenCVValues(fileName);
+
+    /*
+    FeatureResult result = FeatureResult(lenght, widht, defectPixels, rotioRoiArea, rotioWidthLength, scope, defectFocus.x, defectFocus.y, rectangularity);
 
     if (result.getFeatureVector().size() != 7)
     {
         return FeatureResult();
-    }
+    }*/
+
+    FeatureResult result = FeatureResult(rotioWidthLength, rotioRoiArea, orientationResult.height);
 
     return result;
 }
@@ -1577,16 +1682,24 @@ FeatureResult MyEventReceiver::onGeometricValues(CImg<unsigned char>* img)
 void MyEventReceiver::onSelectFile(core::stringc fileName)
 {
     this->onCreateImagePannel();
+
+    std::string fixedFileName = this->saveFixedImage(fileName.c_str());
     
-    CImg<unsigned char> img_unFixed(fileName.c_str());
+    OrientationResult orientationResult = this->calculteOpenCVValues(fixedFileName);
 
-    std::string tempFileName = this->tempFileNameService->generateFileNamePng();
-    this->imageFixService->fixImage(&img_unFixed, tempFileName);
+    std::wstring widthString = this->stringSerivce->intToWString(orientationResult.width);
+    std::wstring widthStringUnit = widthString + std::wstring(L" px");
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_WIDTH, widthStringUnit.c_str());
 
-    CImg<unsigned char> img(tempFileName.c_str());
+    std::wstring heightString = this->stringSerivce->intToWString(orientationResult.height);
+    std::wstring heightStringUnit = heightString + std::wstring(L" px");
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_HEIGHT, heightStringUnit.c_str());
 
-    std::wstring roiString = this->stringSerivce->intToWString(img.width()) + L" x " + this->stringSerivce->intToWString(img.height()) + L" px";
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ROI, roiString.c_str());
+    std::wstring angleString = this->stringSerivce->intToWString(orientationResult.angle);
+    std::wstring angleStringUnit = angleString + std::wstring(L" Grad");
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ANGLE, angleStringUnit.c_str());
+
+    CImg<unsigned char> img = CImg<unsigned char>(fixedFileName.c_str());
 
     ColorRGB backgroundColor = this->geometricService->getBackgroundColor(&img);
     std::wstring backgroundColorString = this->stringSerivce->doubleToWString(backgroundColor.r)+L"|"+this->stringSerivce->doubleToWString(backgroundColor.g) + L"|" + this->stringSerivce->doubleToWString(backgroundColor.b);
@@ -1597,13 +1710,17 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     std::wstring defectPixelsStringUnit = defectPixelsString + std::wstring(L" px");
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_AREA, defectPixelsStringUnit.c_str());
 
-    double rotioRoiArea = defectPixels / ((double)img.width()) * ((double)img.height());
-    std::wstring rotioRoiAreaString = this->stringSerivce->doubleToWString(rotioRoiArea);
-    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RATIO_AREA_ROI, rotioRoiAreaString.c_str());
+    Point2D roiLength = this->geometricService->getRoiLength(&img, backgroundColor);
+    std::wstring roiString = this->stringSerivce->intToWString(roiLength.x) + L" x " + this->stringSerivce->intToWString(roiLength.y) + L" px";
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ROI, roiString.c_str());
 
-    double rotioWidthLength = ((double)img.width()) / ((double)img.height());
+    double rotioWidthLength = ((double)roiLength.x) / ((double)roiLength.y);
     std::wstring rotioWidthLengthString = this->stringSerivce->doubleToWString(rotioWidthLength);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RATIO_WIDTH_LENGTH, rotioWidthLengthString.c_str());
+
+    double rotioRoiArea = defectPixels / ((double)roiLength.x) * ((double)roiLength.y);
+    std::wstring rotioRoiAreaString = this->stringSerivce->doubleToWString(rotioRoiArea);
+    this->graphicEngine->setGUIElementText(GUI_ID_VALUE_RATIO_AREA_ROI, rotioRoiAreaString.c_str());
 
     int scope = this->geometricService->calculateScope(&img, backgroundColor);
     std::wstring scropWithUnit = this->stringSerivce->doubleToWString(scope) + L" px";
@@ -1640,11 +1757,68 @@ void MyEventReceiver::onSelectFile(core::stringc fileName)
     double entropy = this->histogramValueService->getEntropy(&img);
     std::wstring entropyString = this->stringSerivce->doubleToWString(entropy);
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_ENTROPY, entropyString.c_str());
-    
-    std::wstring wFileName = this->stringSerivce->toWString(tempFileName.c_str());
+
+    std::wstring wFileName = this->stringSerivce->toWString(fixedFileName.c_str());
     this->graphicEngine->addImage(GUI_ID_IMAGE_1, Point2D(10, 10), wFileName.c_str(), GUI_ID_IMAGE_1_TAB);
 
     this->selectedFile = wFileName.c_str();
+}
+
+OrientationResult MyEventReceiver::calculteOpenCVValues(std::string filePath)
+{
+    // 1. Bild einlesen und binarisieren
+    cv::Mat img = imread(filePath.c_str(), IMREAD_GRAYSCALE);
+    if (img.empty()) {
+        cerr << "Bild konnte nicht geladen werden!" << endl;
+        return OrientationResult(-1, -1, -1);
+    }
+    cv::Mat binary;
+    cv::threshold(img, binary, 128, 255, THRESH_BINARY);
+
+    // 2. Bild invertieren
+    Mat inverted_img;
+    bitwise_not(binary, inverted_img);
+
+    //cv::imshow("Orientierungswinkel", inverted_img);
+    //waitKey(0);
+
+    // 2. Konturen finden
+    std::vector<vector<Point>> contours;
+    cv::findContours(inverted_img, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+    int height = 0;
+    int width = 0;
+    int angle = 0;
+
+    std::vector<Point> contour;
+
+    // 3. Orientierung jeder Kontur berechnen
+    for (size_t i = 0; i < contours.size(); i++) {
+        if (contours[i].size() < 2) continue; // Zu kleine Konturen ignorieren
+        
+        for(size_t j = 0; j < contours[i].size(); j++)
+            contour.push_back(contours[i][j]);
+    }
+
+    if (contour.size() > 0)
+    {
+        cv::RotatedRect rotatedRect = cv::minAreaRect(contour);
+
+        angle = rotatedRect.angle;
+
+        if (rotatedRect.size.width > rotatedRect.size.height)
+        {
+            width = rotatedRect.size.width;
+            height = rotatedRect.size.height;
+        }
+        else
+        {
+            width = rotatedRect.size.height;
+            height = rotatedRect.size.width;
+        }
+    }
+
+    return OrientationResult(width, height, angle);
 }
 
 void MyEventReceiver::superPixelToImage(std::vector<std::vector<SuperPixelEntry>> pixelCluster, int width, int height, std::string tempPath)

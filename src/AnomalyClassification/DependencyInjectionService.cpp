@@ -47,6 +47,7 @@ DependencyInjectionService::DependencyInjectionService()
     this->kNearestNeighborsService = new KNearestNeighborsService();
     this->decisionTreeService = new DecisionTreeService(this->stringSerivce, this->tempFileNameService, this->fileService);
     this->svmService = new SvmService(this->stringSerivce, this->tempFileNameService, this->fileService);
+    this->kmeansService = new KMeansService(this->stringSerivce, this->tempFileNameService, this->fileService);
 
     this->imageFixService = new ImageFixService(this->geometricService, this->colorService, this->tempFileNameService);
 }
@@ -90,6 +91,7 @@ DependencyInjectionService::~DependencyInjectionService()
     delete this->kNearestNeighborsService;
     delete this->decisionTreeService;
     delete this->svmService;
+    delete this->kmeansService;
 
     delete this->imageFixService;
 }

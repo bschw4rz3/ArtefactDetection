@@ -35,6 +35,8 @@ public:
 	double calculateDistance(Point2D point, Point2D center);
 	BackgroundResult getBackgroundList(CImg<unsigned char>* image);
 
+	Point2D getRoiLength(CImg<unsigned char>* image, ColorRGB backgroundColor);
+
 private:
 	bool isboarderPixel(CImg<unsigned char>* image, int x, int y);
 };

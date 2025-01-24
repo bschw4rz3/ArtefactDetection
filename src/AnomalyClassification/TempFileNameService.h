@@ -30,6 +30,7 @@ public:
 	std::string generateFileNameJson();
 
 	void removeTempFiles();
+	std::string getFileName(std::string path);
 
 private:
 	std::string generateFileName();

@@ -14,14 +14,15 @@ HistogramValueService::HistogramValueService(ColorService* colorService)
 
 double HistogramValueService::getMean(CImg<unsigned char>* image)
 {
+	/*
 	if (this->isLastImage(image) && !isnan(HistogramValueService::meanCache))
 	{
 		return HistogramValueService::meanCache;
 	}
 	else if(this->isLastImage(image))
-	{
+	{*/
 		HistogramValueService::resetCache();
-	}
+	//}
 
 	double mean = 0;
 	std::map<ColorRGB, double> histogram = this->getHistogram(image);
@@ -42,14 +43,14 @@ double HistogramValueService::getMean(CImg<unsigned char>* image)
 
 double HistogramValueService::getVariance(CImg<unsigned char>* image)
 {
-	if (this->isLastImage(image) && !isnan(HistogramValueService::varianceCache))
+	/*if (this->isLastImage(image) && !isnan(HistogramValueService::varianceCache))
 	{
 		return HistogramValueService::varianceCache;
 	}
 	else if (this->isLastImage(image))
-	{
+	{*/
 		HistogramValueService::resetCache();
-	}
+	//}
 
 	double variance = 0;
 	double mean = this->getMean(image);
@@ -142,14 +143,14 @@ double HistogramValueService::getEntropy(CImg<unsigned char>* image)
 
 std::map<ColorRGB, double> HistogramValueService::getHistogram(CImg<unsigned char>* image)
 {
-	if (this->isLastImage(image))
+	/*if (this->isLastImage(image))
 	{
 		return HistogramValueService::histogramCache;
 	}
 	else
-	{
+	{*/
 		HistogramValueService::resetCache();
-	}
+	//}
 
 	double totalPixels = 0;
 	std::map<ColorRGB, double> result;
@@ -188,10 +189,11 @@ std::map<ColorRGB, double> HistogramValueService::getHistogram(CImg<unsigned cha
 	return result;
 }
 
+/*
 bool HistogramValueService::isLastImage(CImg<unsigned char>* image)
 {
 	return HistogramValueService::lastImageX == image->width() && HistogramValueService::lastImageY == image->height();
-}
+}*/
 
 void HistogramValueService::resetCache()
 {

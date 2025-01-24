@@ -216,6 +216,12 @@
     <ClCompile Include="ImageFixService.cpp">
       <Filter>Quelldateien\services</Filter>
     </ClCompile>
+    <ClCompile Include="KMeansService.h">
+      <Filter>Headerdateien\classifications</Filter>
+    </ClCompile>
+    <ClCompile Include="KMeansService.cpp">
+      <Filter>Quelldateien\classifications</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventReceiver.h">
@@ -376,6 +382,9 @@
     </ClInclude>
     <ClInclude Include="ImageFixService.h">
       <Filter>Headerdateien\services</Filter>
+    </ClInclude>
+    <ClInclude Include="OrientationResult.h">
+      <Filter>Headerdateien\models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

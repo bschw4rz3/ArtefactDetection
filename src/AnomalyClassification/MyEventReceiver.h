@@ -42,6 +42,7 @@
 #include <iomanip>
 #include <chrono>
 
+#include "OrientationResult.h"
 #include "DecisionTreeService.h"
 #include "../TinyXml2/XMLSerialization.h"
 
@@ -181,6 +182,7 @@ enum {
     GUI_ID_PROCESSBAR_CLASSIFY,
     GUI_ID_CHECKBOX_CLASSIFY_DEFAULT,
     GUI_ID_CHECKBOX_CLASSIFY_K_NEAREST_NEIGHBOR,
+    GUI_ID_CHECKBOX_CLASSIFY_K_MEANS,
     GUI_ID_CHECKBOX_CLASSIFY_SUPPORT_VECTOR_MACHINE,
     GUI_ID_CHECKBOX_CLASSIFY_DECISION_TREE,
     GUI_ID_INPUTBOX_PARAMETER,
@@ -193,6 +195,10 @@ enum {
     GUI_ID_BUTTON_MESSAGE_OK,
 
     GUI_ID_LABEL_TIME_NEEDED,
+
+    GUI_ID_VALUE_WIDTH,
+    GUI_ID_VALUE_HEIGHT,
+    GUI_ID_VALUE_ANGLE
 };
 
 class MyEventReceiver : public EventReceiver
@@ -244,6 +250,7 @@ private:
     Yolov10Service* yolov10Service;
 
     KNearestNeighborsService* kNearestNeighborsService;
+    KMeansService* kmeansService;
     DecisionTreeService* decisionTreeService;
     SvmService* svmService;
 
@@ -268,6 +275,8 @@ private:
     std::string trainingsDataSavePath;
     std::string testdataSavePath;
     std::string testdataPath;
+    std::string fixedTrainingsdata;
+    std::string fixedTestdataPath;
 
     int tempFileIndex;
 
@@ -287,7 +296,7 @@ private:
     void onCalculateSuperPixels(CImg<unsigned char>* img);
     void onCalculateSobelOperator(CImg<unsigned char>* img);
     void onCalculateImprovedSobelOperator(CImg<unsigned char>* img);
-    FeatureResult onGeometricValues(CImg<unsigned char>* img);
+    FeatureResult onGeometricValues(CImg<unsigned char>* img, std::string fileName);
     FeatureResult onGrayscaleBasedValues(CImg<unsigned char>* img);
     FeatureResult onDiscreteFourierTransformation(CImg<unsigned char>* img, bool silence);
     FeatureResult onHuMoment(std::string fileName, CImg<unsigned char>* img, bool silence);
@@ -315,6 +324,7 @@ private:
     void onGenerateTrainingsData();
 
     std::string onClassifyKNearest(std::string selectedImage, bool batchMod);
+    std::string onClassifyKMeans(std::string selectedImage, bool batchMod);
     std::string onClassifyDecisionTree(std::string selectedImage, bool batchMod);
     std::string onClassifySVM(std::string selectedImage, bool batchMod);
     void onClassifyMultiple();
@@ -357,6 +367,9 @@ private:
 
     std::vector<DataPoint> loadTrainingsData(bool batchMod);
     std::vector<std::vector<double>> calculateFeatureVector(std::string selectedImage, bool batchMod);
+
+    std::string saveFixedImage(std::string selectedImage);
+    OrientationResult calculteOpenCVValues(std::string filePath);
 };
 
 #endif
