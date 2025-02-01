@@ -1375,9 +1375,9 @@ FeatureResult MyEventReceiver::onSdSf(CImg<unsigned char>* img, bool slience)
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
-    FeatureResult result = this->calculateFeatureVector(distanceHistogram);
+    FeatureResult result(distanceHistogram["0.20"], distanceHistogram["0.80"]);
 
-    if (result.getFeatureVector().size() != 11)
+    if (result.getFeatureVector().size() != 2)
     {
         throw "Misscalculate feature!";
     }
@@ -2545,10 +2545,14 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::vector<double> vector
     auto maxFrequence = max_element(vector.begin(), vector.end());
     auto minFrequence = min_element(vector.begin(), vector.end());
     double avgFrequence = this->mathSerivce->avg(vector);
+    double skewness = this->mathSerivce->calculateSkewness(vector);
+    double variance = this->mathSerivce->calculateVariance(vector);
+    double energy = this->mathSerivce->calculateEnergy(vector);
+    double kurtosis = this->mathSerivce->calculateKurtosis(vector);
 
-    FeatureResult result = FeatureResult(*minFrequence, *maxFrequence, avgFrequence);
+    FeatureResult result = FeatureResult(*minFrequence, *maxFrequence, avgFrequence, skewness, variance, energy, kurtosis);
 
-    if(result.getFeatureVector().size() != 3)
+    if(result.getFeatureVector().size() != 7)
     {
         this->showMessage(L"Calculation not valid!");
         result = FeatureResult();
@@ -2559,12 +2563,13 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::vector<double> vector
 
 FeatureResult MyEventReceiver::calculateFeatureVector(std::map<std::string, int> map)
 {
+    std::string valueSum = "";
     std::vector<double> vector;
 
     for (std::map<std::string, int>::iterator it = map.begin(); it != map.end(); ++it)
     {
         vector.push_back(it->second);
-
+        valueSum += this->stringSerivce->intToString(it->second) + " & ";
     }
 
     return FeatureResult(vector);

@@ -53,7 +53,7 @@ public:
 
 	double getEntropy()
 	{
-		return this->IDM;
+		return this->entropy;
 	}
 
 	double getMean()

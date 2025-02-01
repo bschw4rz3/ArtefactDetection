@@ -23,7 +23,11 @@ public:
 	double calculateEuler(std::complex<double> time, double w_0);
 
 	long double avg(std::vector<double> v);
-
+	long double calculateSkewness(std::vector<double> data);
+	long double calculateStandardDeviation(const std::vector<double>& data, double mean);
+	long double calculateVariance(const std::vector<double> data);
+	long double calculateEnergy(const std::vector<double>& signal);
+	long double calculateKurtosis(const std::vector<double> data);
 };
 
 #endif

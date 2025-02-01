@@ -59,3 +59,63 @@ long double MathSerivce::avg(std::vector<double> v)
     return firstResult + (secondResult/size);
     
 }
+
+long double MathSerivce::calculateSkewness(std::vector<double> data)
+{
+    double mean = this->avg(data);
+    double stddev = this->calculateStandardDeviation(data, mean);
+
+    double skewness = 0.0;
+    for (double value : data) {
+        skewness += std::pow((value - mean) / stddev, 3);
+    }
+
+    return skewness / data.size();
+}
+
+long double MathSerivce::calculateStandardDeviation(const std::vector<double>& data, double mean) {
+    long double sum = 0.0;
+    for (double value : data) {
+        sum += std::pow(value - mean, 2);
+    }
+    return std::sqrt(sum / data.size());
+}
+
+long double MathSerivce::calculateVariance(const std::vector<double> data) {
+    long double mean = this->avg(data);
+    long double variance = 0.0;
+
+    for (double value : data) {
+        variance += std::pow(value - mean, 2);
+    }
+
+    return variance / data.size(); // Für Stichprobenvarianz statt N -> (N-1)
+}
+
+long double MathSerivce::calculateEnergy(const std::vector<double>& signal) {
+    long double energy = 0.0;
+
+    for (double value : signal) {
+        energy += value * value; // Quadriere die Werte und summiere sie
+    }
+
+    return energy;
+}
+
+long double MathSerivce::calculateKurtosis(const std::vector<double> data) {
+    double mean = this->avg(data);
+    double variance = this->calculateVariance(data);
+
+    if (variance == 0.0) {
+        return 0.0; // Um Division durch Null zu vermeiden
+    }
+
+    double kurtosis = 0.0;
+    for (double value : data) {
+        kurtosis += std::pow((value - mean), 4);
+    }
+
+    kurtosis = (kurtosis / data.size()) / std::pow(variance, 2);
+
+    return kurtosis;
+}
