@@ -1312,9 +1312,10 @@ FeatureResult MyEventReceiver::onGLCM(CImg<unsigned char>* img, bool silence)
     valueString = this->stringSerivce->doubleToWString(result.getMean());
     this->graphicEngine->setGUIElementText(GUI_ID_VALUE_GLCM_MEAN, valueString.c_str());
 
-    FeatureResult featureVector = FeatureResult(result.getEnergy(), result.getContrast(), result.getHomogenity(), result.getIDM(), result.getEntropy(), result.getMean());
+    //FeatureResult featureVector = FeatureResult(result.getEnergy(), result.getContrast(), result.getHomogenity(), result.getIDM(), result.getEntropy(), result.getMean());
+    FeatureResult featureVector = FeatureResult(result.getHomogenity(), result.getEntropy(), result.getMean());
 
-    if(featureVector.getFeatureVector().size() < 6)
+    if(featureVector.getFeatureVector().size() == 3)
     {
         return FeatureResult();
     }
