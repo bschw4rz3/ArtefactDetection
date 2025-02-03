@@ -1006,7 +1006,9 @@ FeatureResult MyEventReceiver::onBiorWavlet(CImg<unsigned char>* img, bool silen
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
     
-    return this->calculateFeatureVector(doubleResult);
+    auto featureResult = this->calculateFeatureVector(doubleResult);
+    std::vector<double> featureVector = featureResult.getFeatureVector();
+    return FeatureResult(featureVector[7], featureVector[8], featureVector[13]);
 }
 
 FeatureResult MyEventReceiver::onDaubechiesFourWavelet(CImg<unsigned char>* img, bool silence)
@@ -1040,7 +1042,10 @@ FeatureResult MyEventReceiver::onDaubechiesFourWavelet(CImg<unsigned char>* img,
     }   
 
 #ifdef _USE_PYTHON_SCRIPTS
-    return this->calculateFeatureVector(result);
+
+    auto featureResult = this->calculateFeatureVector(result);
+    std::vector<double> featureVector = featureResult.getFeatureVector();
+    return FeatureResult(featureVector[9], featureVector[10], featureVector[13]);
 #else
     return this->calculateFeatureVector(this->toDoubleMap(result));
 #endif
@@ -1077,7 +1082,9 @@ FeatureResult MyEventReceiver::onDaubechiesSecond(CImg<unsigned char>* img, bool
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
-    return this->calculateFeatureVector(resultDouble);
+    auto featureResult = this->calculateFeatureVector(resultDouble);
+    std::vector<double> featureVector = featureResult.getFeatureVector();
+    return FeatureResult(featureVector[9], featureVector[10], featureVector[13]);
 }
 
 FeatureResult MyEventReceiver::onHaarWavelet(CImg<unsigned char>* img, bool silence)
@@ -1127,7 +1134,9 @@ FeatureResult MyEventReceiver::onMorletFourWaveletFFT(CImg<unsigned char>* img, 
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
-    return this->calculateFeatureVector(result);
+    auto featureResult = this->calculateFeatureVector(result);
+    std::vector<double> featureVector = featureResult.getFeatureVector();
+    return FeatureResult(featureVector[8], featureVector[11], featureVector[13]);
 }
 
 FeatureResult MyEventReceiver::onMorletFourWavelet(CImg<unsigned char>* img, bool silence)
