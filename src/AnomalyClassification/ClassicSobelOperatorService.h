@@ -15,9 +15,6 @@ using namespace cimg_library;
 class ClassicSobelOperatorService
 {
 private:
-	static int cacheImageWidth;
-	static int cacheImageHeight;
-	static CImg<unsigned char> cacheSobelImage;
 
 	ColorService* colorService;
 

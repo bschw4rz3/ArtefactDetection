@@ -109,10 +109,10 @@ int GeometricService::calculateScope(CImg<unsigned char>* image, ColorRGB backgr
 
 Point2D GeometricService::calculateCentroid(CImg<unsigned char>* image, ColorRGB backgroundColor)
 {
-	double partPixels = 0;
+	long double partPixels = 0;
 
-	double sumX = 0;
-	double sumY = 0;
+	long double sumX = 0;
+	long double sumY = 0;
 
 	for (int x = 0; x < image->width() - 1; x++)
 	{

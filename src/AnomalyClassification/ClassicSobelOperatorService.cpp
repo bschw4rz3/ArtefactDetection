@@ -1,9 +1,5 @@
 #include "ClassicSobelOperatorService.h"
 
-int ClassicSobelOperatorService::cacheImageWidth = 0;
-int ClassicSobelOperatorService::cacheImageHeight = 0;
-CImg<unsigned char> ClassicSobelOperatorService::cacheSobelImage;
-
 ClassicSobelOperatorService::ClassicSobelOperatorService(ColorService* colorService)
 {
 	this->colorService = colorService;
@@ -11,11 +7,6 @@ ClassicSobelOperatorService::ClassicSobelOperatorService(ColorService* colorServ
 
 CImg<unsigned char> ClassicSobelOperatorService::getGradientImage(const CImg<unsigned char>* image)
 {
-	if(image->width() == ClassicSobelOperatorService::cacheImageWidth && image->height() == ClassicSobelOperatorService::cacheImageHeight)
-	{
-		return ClassicSobelOperatorService::cacheSobelImage;
-	}
-
 	// Initialisiert ein 2-dimensionales Array für den Sobel-Operator S_x
 	double S_x[3][3] = { {-1.0, 0.0, 1.0}, {-2.0, 0.0, 2.0}, {-1.0, 0.0, 1.0} };
 
@@ -65,10 +56,6 @@ CImg<unsigned char> ClassicSobelOperatorService::getGradientImage(const CImg<uns
 			this->setPixel(&gradientImage, x, y, ColorRGB(G, G, G));
 		}
 	}
-
-	ClassicSobelOperatorService::cacheImageWidth = image->width();
-	ClassicSobelOperatorService::cacheImageHeight = image->height();
-	ClassicSobelOperatorService::cacheSobelImage = gradientImage;
 
 	return gradientImage; // Gibt das Gradienten-Bild als Rückgabewert der Methode zurück.
 }

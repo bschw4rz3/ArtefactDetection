@@ -253,6 +253,8 @@ std::vector<std::complex<double>> CImgService::getContureByColumnAsComplexVector
 {
     std::vector<std::complex<double>> vector;
 
+    contureImage->save_png("bla.png");
+
     for (int x = 0; x < contureImage->width(); x++)
     {
         for (int y = 0; y < contureImage->height(); y++)

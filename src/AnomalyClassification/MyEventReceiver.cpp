@@ -1101,7 +1101,9 @@ FeatureResult MyEventReceiver::onHaarWavelet(CImg<unsigned char>* img, bool sile
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
-    return this->calculateFeatureVector(result);
+    auto featureResult = this->calculateFeatureVector(result);
+    std::vector<double> featureVector = featureResult.getFeatureVector();
+    return FeatureResult(featureVector[8], featureVector[11], featureVector[13]);
 }
 
 FeatureResult MyEventReceiver::onMorletFourWaveletFFT(CImg<unsigned char>* img, bool silence)
@@ -1191,7 +1193,10 @@ FeatureResult MyEventReceiver::onFourierDiscriptor(CImg<unsigned char>* img, boo
         return FeatureResult();
     }
 
-    return this->calculateFeatureVector(this->toDoubleVector(result.fequence));
+    FeatureResult featureresult = this->calculateFeatureVector(this->toDoubleVector(result.fequence));
+    std::vector<double> featureVector = featureresult.getFeatureVector();
+
+    return FeatureResult(featureVector[2], featureVector[3], featureVector[5], featureVector[6]);
 }
 
 FeatureResult MyEventReceiver::onDiscreteFourierTransformationCV(std::string fileName, bool silence)
@@ -1237,7 +1242,9 @@ FeatureResult MyEventReceiver::onGaborFilter(std::string fileName, bool silence)
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(8, 10), this->stringSerivce->toWString(tempName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
     
-    return this->calculateFeatureVector(fequence);
+    auto featureResult = this->calculateFeatureVector(fequence);
+    std::vector<double> featureVector = featureResult.getFeatureVector();
+    return FeatureResult(featureVector[2], featureVector[6]);
 }
 
 FeatureResult MyEventReceiver::onHOG(CImg<unsigned char>* img, bool silence)
@@ -1258,7 +1265,9 @@ FeatureResult MyEventReceiver::onHOG(CImg<unsigned char>* img, bool silence)
         return FeatureResult();
     }
 
-    return this->calculateFeatureVector(theVector);
+    FeatureResult featureResult = this->calculateFeatureVector(theVector);
+    std::vector<double> featureVector = featureResult.getFeatureVector();
+    return FeatureResult(featureVector[2], featureVector[3], featureVector[5], featureVector[6]);
 }
 
 FeatureResult MyEventReceiver::onGLCM(CImg<unsigned char>* img, bool silence)
@@ -1346,14 +1355,15 @@ FeatureResult MyEventReceiver::onLbp(CImg<unsigned char>* img, bool silence)
     }
 
     FeatureResult fv = this->calculateFeatureVector(result.getUniformityHistogram());
-
+    
     if(fv.getFeatureVector().size() < 3)
     {
         this->showMessage(L"LBP: Too less values in feature vector");
         fv = FeatureResult();
     }
 
-    return fv;
+    //return fv;
+    return FeatureResult(fv.getFeatureVector()[0], fv.getFeatureVector()[2], fv.getFeatureVector()[3]);
 }
 
 FeatureResult MyEventReceiver::onSdSf(CImg<unsigned char>* img, bool slience)
@@ -1529,7 +1539,10 @@ FeatureResult MyEventReceiver::onDiscreteFourierTransformation(CImg<unsigned cha
         this->graphicEngine->addImage(GUI_ID_IMAGE_3_0, Point2D(10, 10), this->stringSerivce->toWString(fileName).c_str(), GUI_ID_IMAGE_3_TAB);
     }
 
-    return this->calculateFeatureVector(this->toDoubleVector(fequence));
+    auto featureresult = this->calculateFeatureVector(this->toDoubleVector(fequence));
+    std::vector<double> featureVector = featureresult.getFeatureVector();
+
+    return FeatureResult(featureVector[0], featureVector[2], featureVector[3], featureVector[6]);
 #else
     FDResult result = this->discreteFourierTransformationSerivce->calculate(img, 2000);
 
@@ -2491,6 +2504,7 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::map<int, std::vector<
 
 FeatureResult MyEventReceiver::calculateFeatureVector(std::map<double, std::vector<double>> heatMap)
 {
+    /*
     double maxFrequence = -INT_MAX;
     double minFrequence = INT_MAX;
     double maxAmplitude = -INT_MAX;
@@ -2498,13 +2512,18 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::map<double, std::vect
     double avgFrequence = 0;
     double avgAmplitude = 0;
     long amplitudeCount = 0;
-    long frequenceCount = 0;
+    long frequenceCount = 0;*/
+
+    std::vector<double> frequenceVector;
+    std::vector<double> amplitudeVector;
 
     for (std::map<double, std::vector<double>>::iterator it = heatMap.begin(); it != heatMap.end(); ++it)
     {
         double frequence = it->first;
-        std::vector<double> timeLine = it->second;
+        frequenceVector.push_back(frequence);
         
+        std::vector<double> timeLine = it->second;
+        /*
         if(frequence < minFrequence)
         {
             minFrequence = frequence;
@@ -2515,26 +2534,49 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::map<double, std::vect
             maxFrequence = frequence;
         }
 
-        avgFrequence += frequence;
+        avgFrequence += frequence;*/
 
         for(int i = 0; i < timeLine.size() ;i++)
         {
-            avgAmplitude += timeLine[i];
-            amplitudeCount++;
+            amplitudeVector.push_back(timeLine[i]);
         }
 
-        frequenceCount++;
+        // frequenceCount++;
     }
 
-    avgAmplitude /= amplitudeCount;
-    avgFrequence /= frequenceCount;
+    // avgAmplitude /= amplitudeCount;
+    // avgFrequence /= frequenceCount;
 
-    FeatureResult result = FeatureResult(minFrequence, maxFrequence, avgFrequence, minAmplitude, maxAmplitude, avgAmplitude);
+    auto minFrequence = min_element(frequenceVector.begin(), frequenceVector.end());
+    auto maxFrequence = max_element(frequenceVector.begin(), frequenceVector.end());
+    double avgFrequence = this->mathSerivce->avg(frequenceVector);
+    double skewnessFrequence = this->mathSerivce->calculateSkewness(frequenceVector);
+    double varianceFrequence = this->mathSerivce->calculateVariance(frequenceVector);
+    double energyFrequence = this->mathSerivce->calculateEnergy(frequenceVector);
+    double kurtosisFrequence = this->mathSerivce->calculateKurtosis(frequenceVector);
 
-    if(result.getFeatureVector().size() != 6)
+    auto minAmplitude = min_element(amplitudeVector.begin(), amplitudeVector.end());
+    auto maxAmplitude = max_element(amplitudeVector.begin(), amplitudeVector.end());
+    double avgAmplitude = this->mathSerivce->avg(amplitudeVector);
+    double skewnessAmplitude = this->mathSerivce->calculateSkewness(amplitudeVector);
+    double varianceAmplitude = this->mathSerivce->calculateVariance(amplitudeVector);
+    double energyAmplitude = this->mathSerivce->calculateEnergy(amplitudeVector);
+    double kurtosisAmplitude = this->mathSerivce->calculateKurtosis(amplitudeVector);
+
+    FeatureResult result = FeatureResult(*minFrequence, *maxFrequence, avgFrequence, skewnessFrequence, varianceFrequence, energyFrequence, kurtosisFrequence, 
+                                         *minAmplitude, *maxAmplitude, avgAmplitude, skewnessAmplitude, varianceAmplitude, energyAmplitude, kurtosisAmplitude);
+
+    if(result.getFeatureVector().size() != 14)
     {
         this->showMessage(L"Calculation not valid!");
         return FeatureResult();
+    }
+
+    std::string valueString = "";
+    std::vector<double> featureVector = result.getFeatureVector();
+    for (int i = 0; i < featureVector.size(); i++)
+    {
+        valueString += this->stringSerivce->doubleToString(featureVector[i]) + " & ";
     }
 
     return result;
@@ -2542,8 +2584,8 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::map<double, std::vect
 
 FeatureResult MyEventReceiver::calculateFeatureVector(std::vector<double> vector)
 {
-    auto maxFrequence = max_element(vector.begin(), vector.end());
     auto minFrequence = min_element(vector.begin(), vector.end());
+    auto maxFrequence = max_element(vector.begin(), vector.end());
     double avgFrequence = this->mathSerivce->avg(vector);
     double skewness = this->mathSerivce->calculateSkewness(vector);
     double variance = this->mathSerivce->calculateVariance(vector);
@@ -2556,6 +2598,13 @@ FeatureResult MyEventReceiver::calculateFeatureVector(std::vector<double> vector
     {
         this->showMessage(L"Calculation not valid!");
         result = FeatureResult();
+    }
+
+    std::string valueString = "";
+    std::vector<double> featureVector = result.getFeatureVector();
+    for (int i = 0; i < featureVector.size(); i++)
+    {
+        valueString += this->stringSerivce->doubleToString(featureVector[i]) + " & ";
     }
 
     return result;

@@ -22,10 +22,6 @@ private:
 	static int lastImageX;
 	static int lastImageY;
 
-	static double meanCache;
-	static double varianceCache;
-	static std::map<ColorRGB, double> histogramCache;
-
 	ColorService* colorService;
 
 public:
@@ -41,8 +37,6 @@ public:
 
 private:
 	std::map<ColorRGB, double> getHistogram(CImg<unsigned char>* image);
-	//static bool isLastImage(CImg<unsigned char>* image);
-	static void resetCache();
 };
 
 #endif
