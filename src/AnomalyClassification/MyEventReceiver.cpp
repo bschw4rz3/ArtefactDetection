@@ -463,6 +463,8 @@ void MyEventReceiver::onClassifyMultiple()
     std::string csvResultTable = "Image;Expected;Result;Score\n";
     std::vector<std::vector<std::wstring>> resultTable;
 
+    std::string featureCsv = "";
+
     for (int classIndex = 0; classIndex < 2; classIndex++)
     {
         std::vector<std::string> fileNames = this->directoryService->getFileNames(filePaths[classIndex]);
@@ -534,6 +536,22 @@ void MyEventReceiver::onClassifyMultiple()
                                   this->stringSerivce->toString(percentStr) + "\n";
 
                 totalCounter++;
+
+                std::vector<std::vector<double>> testData = this->calculateFeatureVector(fileNames[i - (threadCount - t)], true);
+
+                if (testData.size() == 1)
+                {
+                    featureCsv += this->stringSerivce->intToString(classIndex) + ";";
+
+                    for (int j = 0; j < testData[0].size(); j++)
+                    {
+                        double featureValue = testData[0][j];
+                        featureCsv += this->stringSerivce->doubleToString(featureValue) + ";";
+                    }
+
+                    this->stringSerivce->trim(featureCsv, std::vector<char> {';'});
+                    featureCsv += "\n";
+                }
             }
         }
     }
@@ -547,6 +565,24 @@ void MyEventReceiver::onClassifyMultiple()
 
     std::wstring percentStr = this->stringSerivce->doubleToWString(this->mathSerivce->roundDigits(100 / totalCounter * successCounter, 2));
     this->graphicEngine->addRow(GUI_ID_BUTTON_CLASSIFY_TABLE, std::vector<std::wstring> { L"Sum", L"", L"", percentStr+L"%"});
+
+    std::vector<DataPoint> trainingData = this->loadTrainingsData(true);
+    
+    for (int i = 0; i < trainingData.size(); i++)
+    {
+        featureCsv += this->stringSerivce->intToString(trainingData[i].label) + ";";
+
+        for (int j = 0; j < trainingData[i].features.size(); j++)
+        {
+            double featureValue = trainingData[i].features[j];
+            featureCsv += this->stringSerivce->doubleToString(featureValue) + ";";
+        }
+        
+        this->stringSerivce->trim(featureCsv, std::vector<char> {';'});
+        featureCsv += "\n";
+    }
+
+    this->fileService->saveFile(featureCsv, "feature.csv");
 }
 
 std::vector<DataPoint> MyEventReceiver::loadTrainingsData(bool batchMod)
@@ -1315,7 +1351,7 @@ FeatureResult MyEventReceiver::onGLCM(CImg<unsigned char>* img, bool silence)
     //FeatureResult featureVector = FeatureResult(result.getEnergy(), result.getContrast(), result.getHomogenity(), result.getIDM(), result.getEntropy(), result.getMean());
     FeatureResult featureVector = FeatureResult(result.getHomogenity(), result.getEntropy(), result.getMean());
 
-    if(featureVector.getFeatureVector().size() == 3)
+    if(featureVector.getFeatureVector().size() != 3)
     {
         return FeatureResult();
     }
