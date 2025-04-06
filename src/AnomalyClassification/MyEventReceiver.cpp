@@ -54,8 +54,9 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->selectedFile = L"";
     this->tempFileIndex = 0;
 
-    std::string dataRepro = "classicTrainingsdata";
-    //std::string dataRepro = "generatedTrainingsdata";
+    //std::string dataRepro = "classicTrainingsdata";
+    std::string dataRepro = "generatedTrainingsdata";
+    //std::string dataRepro = "modifiedTrainingsdata";
 
     std::filesystem::path cwd = std::filesystem::current_path();
     this->trainingsdata = cwd.string() + "/../../data/"+ dataRepro +"/trainingsdata";
@@ -452,8 +453,8 @@ void MyEventReceiver::onClassifyMultiple()
     this->graphicEngine->clearTable(GUI_ID_BUTTON_CLASSIFY_TABLE);
 
     std::vector<std::string> classNames;
-    classNames.push_back("artefact");
     classNames.push_back("defect");
+    classNames.push_back("artefact");
 
     std::vector<std::string> filePaths;
 

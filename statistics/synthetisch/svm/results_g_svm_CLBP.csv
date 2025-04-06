@@ -1,34 +1,4 @@
 Image;Expected;Result;Score
-A1.png;artefact;defect;  0%
-A10.png;artefact;defect;  0%
-A11.png;artefact;defect;  0%
-A12.png;artefact;defect;  0%
-A13.png;artefact;defect;  0%
-A14.png;artefact;defect;  0%
-A15.png;artefact;defect;  0%
-A16.png;artefact;defect;  0%
-A17.png;artefact;defect;  0%
-A18.png;artefact;defect;  0%
-A19.png;artefact;defect;  0%
-A2.png;artefact;defect;  0%
-A20.png;artefact;defect;  0%
-A21.png;artefact;defect;  0%
-A22.png;artefact;defect;  0%
-A23.png;artefact;defect;  0%
-A24.png;artefact;defect;  0%
-A25.png;artefact;defect;  0%
-A26.png;artefact;defect;  0%
-A27.png;artefact;defect;  0%
-A28.png;artefact;defect;  0%
-A29.png;artefact;defect;  0%
-A3.png;artefact;defect;  0%
-A30.png;artefact;defect;  0%
-A4.png;artefact;defect;  0%
-A5.png;artefact;defect;  0%
-A6.png;artefact;defect;  0%
-A7.png;artefact;defect;  0%
-A8.png;artefact;defect;  0%
-A9.png;artefact;defect;  0%
 D1.png;defect;defect;100%
 D10.png;defect;defect;100%
 D100.png;defect;defect;100%
@@ -39,7 +9,7 @@ D104.png;defect;defect;100%
 D105.png;defect;defect;100%
 D106.png;defect;defect;100%
 D107.png;defect;defect;100%
-D108.png;defect;artefact;  0%
+D108.png;defect;defect;100%
 D109.png;defect;defect;100%
 D11.png;defect;defect;100%
 D110.png;defect;defect;100%
@@ -48,15 +18,15 @@ D112.png;defect;defect;100%
 D113.png;defect;defect;100%
 D114.png;defect;defect;100%
 D115.png;defect;defect;100%
-D116.png;defect;artefact;  0%
+D116.png;defect;defect;100%
 D117.png;defect;defect;100%
 D12.png;defect;defect;100%
 D13.png;defect;defect;100%
 D14.png;defect;defect;100%
 D15.png;defect;defect;100%
 D16.png;defect;defect;100%
-D17.png;defect;artefact;  0%
-D18.png;defect;artefact;  0%
+D17.png;defect;defect;100%
+D18.png;defect;defect;100%
 D19.png;defect;defect;100%
 D2.png;defect;defect;100%
 D20.png;defect;defect;100%
@@ -135,11 +105,41 @@ D89.png;defect;defect;100%
 D9.png;defect;defect;100%
 D90.png;defect;defect;100%
 D91.png;defect;defect;100%
-D92.png;defect;artefact;  0%
+D92.png;defect;defect;100%
 D93.png;defect;defect;100%
 D94.png;defect;defect;100%
-D95.png;defect;artefact;  0%
+D95.png;defect;defect;100%
 D96.png;defect;defect;100%
 D97.png;defect;defect;100%
 D98.png;defect;defect;100%
 D99.png;defect;defect;100%
+A1.png;artefact;defect;  0%
+A10.png;artefact;defect;  0%
+A11.png;artefact;defect;  0%
+A12.png;artefact;defect;  0%
+A13.png;artefact;defect;  0%
+A14.png;artefact;defect;  0%
+A15.png;artefact;defect;  0%
+A16.png;artefact;defect;  0%
+A17.png;artefact;defect;  0%
+A18.png;artefact;defect;  0%
+A19.png;artefact;defect;  0%
+A2.png;artefact;defect;  0%
+A20.png;artefact;defect;  0%
+A21.png;artefact;defect;  0%
+A22.png;artefact;defect;  0%
+A23.png;artefact;defect;  0%
+A24.png;artefact;defect;  0%
+A25.png;artefact;defect;  0%
+A26.png;artefact;defect;  0%
+A27.png;artefact;defect;  0%
+A28.png;artefact;defect;  0%
+A29.png;artefact;defect;  0%
+A3.png;artefact;defect;  0%
+A30.png;artefact;defect;  0%
+A4.png;artefact;defect;  0%
+A5.png;artefact;defect;  0%
+A6.png;artefact;defect;  0%
+A7.png;artefact;defect;  0%
+A8.png;artefact;defect;  0%
+A9.png;artefact;defect;  0%

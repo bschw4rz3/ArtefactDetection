@@ -8,7 +8,9 @@ filePath = sys.argv[1];
 #model = YOLO('D:\\Repository\\ArtefactDetection\\src\\python\\runs\\detect\\train22\\weights\\best.pt')
 #model = YOLO('D:\\Repository\\ArtefactDetection\\src\\python\\runs\\detect\\train8\\weights\\best.pt')
 
-model = YOLO('D:\\Repository\\ArtefactDetection\\src\\python\\runs_10m_classic\\detect\\train\\weights\\best.pt')
+#model = YOLO('D:\\Repository\\ArtefactDetection\\data\\yolo\\classic\\data\\runs\\detect\\train\\weights\\best.pt')
+#model = YOLO('D:\\Repository\\ArtefactDetection\\data\\yolo\\synthetisch\\data\\runs\\detect\\train\\weights\\best.pt')
+model = YOLO('D:\\Repository\\ArtefactDetection\\data\\yolo\\modified\\data\\runs\\detect\\train\\weights\\best.pt')
 
 results = model(source=f'{filePath}', conf=0.25, verbose=False)
 

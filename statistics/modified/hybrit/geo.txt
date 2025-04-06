@@ -1,0 +1,273 @@
+PS D:\Repository\ArtefactDetection\src\python> python hybrit.py run D:\Repository\ArtefactDetection\statistics\modified\features\feature_m_KNN_gray.csv
+2025-02-22 16:31:41.403657: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-02-22 16:31:42.626851: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-02-22 16:31:46.345387: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING:absl:Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+Modell geladen.
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step
+Vorhersagen: [0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Erwartungen: [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+Übereinstimmung: 71.83%
+PS D:\Repository\ArtefactDetection\src\python> python hybrit.py train D:\Repository\ArtefactDetection\statistics\modified\features\feature_m_KNN_geo.csv
+2025-02-23 06:19:49.555010: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-02-23 06:19:52.418685: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+C:\Users\Björn\AppData\Roaming\Python\Python39\site-packages\keras\src\layers\core\dense.py:87: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+2025-02-23 06:20:05.292636: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Epoch 1/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 22s 1s/step - accuracy: 0.1562 - loss: 0.3732
+Epoch 1: val_loss improved from inf to 0.30762, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - accuracy: 0.1659 - loss: 0.3734 - val_accuracy: 0.1957 - val_loss: 0.3076
+Epoch 2/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.2812 - loss: 0.3241
+Epoch 2: val_loss improved from 0.30762 to 0.24423, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.3032 - loss: 0.2876 - val_accuracy: 0.6902 - val_loss: 0.2442
+Epoch 3/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.5625 - loss: 0.2471
+Epoch 3: val_loss improved from 0.24423 to 0.19932, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.7184 - loss: 0.2352 - val_accuracy: 0.8641 - val_loss: 0.1993
+Epoch 4/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.8438 - loss: 0.1941
+Epoch 4: val_loss improved from 0.19932 to 0.16992, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8518 - loss: 0.1944 - val_accuracy: 0.8750 - val_loss: 0.1699
+Epoch 5/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.7188 - loss: 0.2042
+Epoch 5: val_loss improved from 0.16992 to 0.14818, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8373 - loss: 0.1760 - val_accuracy: 0.8641 - val_loss: 0.1482
+Epoch 6/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.9688 - loss: 0.1214
+Epoch 6: val_loss improved from 0.14818 to 0.13216, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.8465 - loss: 0.1534 - val_accuracy: 0.8696 - val_loss: 0.1322
+Epoch 7/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - accuracy: 0.8438 - loss: 0.1391
+Epoch 7: val_loss improved from 0.13216 to 0.12060, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8436 - loss: 0.1438 - val_accuracy: 0.8696 - val_loss: 0.1206
+Epoch 8/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - accuracy: 0.9375 - loss: 0.1034
+Epoch 8: val_loss improved from 0.12060 to 0.11213, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8608 - loss: 0.1263 - val_accuracy: 0.8750 - val_loss: 0.1121
+Epoch 9/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.8438 - loss: 0.1516
+Epoch 9: val_loss improved from 0.11213 to 0.10640, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8326 - loss: 0.1364 - val_accuracy: 0.8750 - val_loss: 0.1064
+Epoch 10/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 28ms/step - accuracy: 0.8750 - loss: 0.0980
+Epoch 10: val_loss improved from 0.10640 to 0.10236, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8571 - loss: 0.1215 - val_accuracy: 0.8804 - val_loss: 0.1024
+Epoch 11/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.9375 - loss: 0.0759
+Epoch 11: val_loss improved from 0.10236 to 0.09950, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8688 - loss: 0.1099 - val_accuracy: 0.8804 - val_loss: 0.0995
+Epoch 12/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8438 - loss: 0.1080
+Epoch 12: val_loss improved from 0.09950 to 0.09761, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8423 - loss: 0.1205 - val_accuracy: 0.8804 - val_loss: 0.0976
+Epoch 13/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8750 - loss: 0.1172
+Epoch 13: val_loss improved from 0.09761 to 0.09541, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8575 - loss: 0.1151 - val_accuracy: 0.8804 - val_loss: 0.0954
+Epoch 14/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8750 - loss: 0.1084
+Epoch 14: val_loss improved from 0.09541 to 0.09415, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8410 - loss: 0.1243 - val_accuracy: 0.8804 - val_loss: 0.0942
+Epoch 15/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.7500 - loss: 0.1630
+Epoch 15: val_loss improved from 0.09415 to 0.09264, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8487 - loss: 0.1142 - val_accuracy: 0.8804 - val_loss: 0.0926
+Epoch 16/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 32ms/step - accuracy: 0.8750 - loss: 0.0810
+Epoch 16: val_loss improved from 0.09264 to 0.09167, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8538 - loss: 0.1074 - val_accuracy: 0.8804 - val_loss: 0.0917
+Epoch 17/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.9375 - loss: 0.0706
+Epoch 17: val_loss improved from 0.09167 to 0.09100, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8830 - loss: 0.0953 - val_accuracy: 0.8804 - val_loss: 0.0910
+Epoch 18/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.9062 - loss: 0.0587
+Epoch 18: val_loss improved from 0.09100 to 0.09004, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8736 - loss: 0.0972 - val_accuracy: 0.8804 - val_loss: 0.0900
+Epoch 19/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.9062 - loss: 0.0858
+Epoch 19: val_loss improved from 0.09004 to 0.08927, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8557 - loss: 0.1071 - val_accuracy: 0.8859 - val_loss: 0.0893
+Epoch 20/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - accuracy: 0.7812 - loss: 0.1488
+Epoch 20: val_loss improved from 0.08927 to 0.08870, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8414 - loss: 0.1133 - val_accuracy: 0.8859 - val_loss: 0.0887
+Epoch 21/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8750 - loss: 0.1139
+Epoch 21: val_loss improved from 0.08870 to 0.08847, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8717 - loss: 0.1035 - val_accuracy: 0.8804 - val_loss: 0.0885
+Epoch 22/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.8438 - loss: 0.1200
+Epoch 22: val_loss improved from 0.08847 to 0.08800, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8720 - loss: 0.1076 - val_accuracy: 0.8804 - val_loss: 0.0880
+Epoch 23/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.8125 - loss: 0.1189
+Epoch 23: val_loss improved from 0.08800 to 0.08737, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8610 - loss: 0.1053 - val_accuracy: 0.8804 - val_loss: 0.0874
+Epoch 24/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.8750 - loss: 0.0980
+Epoch 24: val_loss improved from 0.08737 to 0.08718, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8750 - loss: 0.0992 - val_accuracy: 0.8859 - val_loss: 0.0872
+Epoch 25/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.9062 - loss: 0.0929
+Epoch 25: val_loss improved from 0.08718 to 0.08653, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8900 - loss: 0.0952 - val_accuracy: 0.8804 - val_loss: 0.0865
+Epoch 26/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 36ms/step - accuracy: 0.8438 - loss: 0.1381
+Epoch 26: val_loss improved from 0.08653 to 0.08617, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8640 - loss: 0.1130 - val_accuracy: 0.8859 - val_loss: 0.0862
+Epoch 27/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 36ms/step - accuracy: 0.8750 - loss: 0.1106
+Epoch 27: val_loss improved from 0.08617 to 0.08594, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8627 - loss: 0.1080 - val_accuracy: 0.8859 - val_loss: 0.0859
+Epoch 28/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8750 - loss: 0.0983
+Epoch 28: val_loss improved from 0.08594 to 0.08573, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8772 - loss: 0.1012 - val_accuracy: 0.8859 - val_loss: 0.0857
+Epoch 29/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8750 - loss: 0.1028
+Epoch 29: val_loss improved from 0.08573 to 0.08514, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8686 - loss: 0.1061 - val_accuracy: 0.8859 - val_loss: 0.0851
+Epoch 30/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - accuracy: 0.7812 - loss: 0.1753
+Epoch 30: val_loss did not improve from 0.08514
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8770 - loss: 0.1056 - val_accuracy: 0.8804 - val_loss: 0.0851
+Epoch 31/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 32ms/step - accuracy: 0.9375 - loss: 0.0669
+Epoch 31: val_loss improved from 0.08514 to 0.08487, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8960 - loss: 0.0886 - val_accuracy: 0.8859 - val_loss: 0.0849
+Epoch 32/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.9375 - loss: 0.0558
+Epoch 32: val_loss improved from 0.08487 to 0.08472, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8959 - loss: 0.0872 - val_accuracy: 0.8913 - val_loss: 0.0847
+Epoch 33/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.9375 - loss: 0.0640
+Epoch 33: val_loss improved from 0.08472 to 0.08427, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8890 - loss: 0.0951 - val_accuracy: 0.8913 - val_loss: 0.0843
+Epoch 34/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.7812 - loss: 0.1286
+Epoch 34: val_loss improved from 0.08427 to 0.08407, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8711 - loss: 0.1001 - val_accuracy: 0.8913 - val_loss: 0.0841
+Epoch 35/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 1.0000 - loss: 0.0272
+Epoch 35: val_loss did not improve from 0.08407
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8903 - loss: 0.0926 - val_accuracy: 0.8913 - val_loss: 0.0842
+Epoch 36/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 28ms/step - accuracy: 0.8750 - loss: 0.1024
+Epoch 36: val_loss improved from 0.08407 to 0.08379, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8750 - loss: 0.1021 - val_accuracy: 0.8913 - val_loss: 0.0838
+Epoch 37/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 32ms/step - accuracy: 0.9062 - loss: 0.0749
+Epoch 37: val_loss did not improve from 0.08379
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8762 - loss: 0.0965 - val_accuracy: 0.8913 - val_loss: 0.0838
+Epoch 38/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.9062 - loss: 0.0975
+Epoch 38: val_loss improved from 0.08379 to 0.08368, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8607 - loss: 0.1118 - val_accuracy: 0.8913 - val_loss: 0.0837
+Epoch 39/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 30ms/step - accuracy: 0.8438 - loss: 0.1208
+Epoch 39: val_loss improved from 0.08368 to 0.08349, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8693 - loss: 0.1028 - val_accuracy: 0.8913 - val_loss: 0.0835
+Epoch 40/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.7500 - loss: 0.1603
+Epoch 40: val_loss improved from 0.08349 to 0.08342, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8764 - loss: 0.0945 - val_accuracy: 0.8913 - val_loss: 0.0834
+Epoch 41/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8750 - loss: 0.0901
+Epoch 41: val_loss did not improve from 0.08342
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8872 - loss: 0.0927 - val_accuracy: 0.8913 - val_loss: 0.0835
+Epoch 42/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8750 - loss: 0.0984
+Epoch 42: val_loss improved from 0.08342 to 0.08306, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8939 - loss: 0.0874 - val_accuracy: 0.8967 - val_loss: 0.0831
+Epoch 43/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8438 - loss: 0.1086
+Epoch 43: val_loss improved from 0.08306 to 0.08287, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8779 - loss: 0.0968 - val_accuracy: 0.8913 - val_loss: 0.0829
+Epoch 44/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.9062 - loss: 0.0605
+Epoch 44: val_loss did not improve from 0.08287
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8930 - loss: 0.0822 - val_accuracy: 0.8967 - val_loss: 0.0829
+Epoch 45/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.9688 - loss: 0.0513
+Epoch 45: val_loss did not improve from 0.08287
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8829 - loss: 0.0950 - val_accuracy: 0.8913 - val_loss: 0.0830
+Epoch 46/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8750 - loss: 0.0893
+Epoch 46: val_loss improved from 0.08287 to 0.08265, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8851 - loss: 0.0901 - val_accuracy: 0.8913 - val_loss: 0.0826
+Epoch 47/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8438 - loss: 0.1385
+Epoch 47: val_loss improved from 0.08265 to 0.08251, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8830 - loss: 0.0978 - val_accuracy: 0.8967 - val_loss: 0.0825
+Epoch 48/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - accuracy: 0.9688 - loss: 0.0351
+Epoch 48: val_loss improved from 0.08251 to 0.08219, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9034 - loss: 0.0794 - val_accuracy: 0.8967 - val_loss: 0.0822
+Epoch 49/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.9062 - loss: 0.0606
+Epoch 49: val_loss did not improve from 0.08219
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8838 - loss: 0.0871 - val_accuracy: 0.8913 - val_loss: 0.0823
+Epoch 50/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.7812 - loss: 0.1646
+Epoch 50: val_loss improved from 0.08219 to 0.08208, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8561 - loss: 0.1118 - val_accuracy: 0.8913 - val_loss: 0.0821
+Epoch 51/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.8438 - loss: 0.1082
+Epoch 51: val_loss improved from 0.08208 to 0.08201, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8706 - loss: 0.1009 - val_accuracy: 0.8913 - val_loss: 0.0820
+Epoch 52/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - accuracy: 0.9062 - loss: 0.0652
+Epoch 52: val_loss did not improve from 0.08201
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8888 - loss: 0.0867 - val_accuracy: 0.8859 - val_loss: 0.0821
+Epoch 53/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.9688 - loss: 0.0443
+Epoch 53: val_loss improved from 0.08201 to 0.08179, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8887 - loss: 0.0890 - val_accuracy: 0.8967 - val_loss: 0.0818
+Epoch 54/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.9688 - loss: 0.0422
+Epoch 54: val_loss did not improve from 0.08179
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8853 - loss: 0.0916 - val_accuracy: 0.8967 - val_loss: 0.0822
+Epoch 55/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.9062 - loss: 0.0789
+Epoch 55: val_loss improved from 0.08179 to 0.08161, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8844 - loss: 0.0886 - val_accuracy: 0.8859 - val_loss: 0.0816
+Epoch 56/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8750 - loss: 0.1042
+Epoch 56: val_loss did not improve from 0.08161
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8853 - loss: 0.0903 - val_accuracy: 0.8859 - val_loss: 0.0817
+Epoch 57/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - accuracy: 0.8438 - loss: 0.1075
+Epoch 57: val_loss improved from 0.08161 to 0.08119, saving model to temp.keras
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8652 - loss: 0.0982 - val_accuracy: 0.8859 - val_loss: 0.0812
+Epoch 58/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - accuracy: 0.8125 - loss: 0.1295
+Epoch 58: val_loss did not improve from 0.08119
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8594 - loss: 0.1059 - val_accuracy: 0.8859 - val_loss: 0.0816
+Epoch 59/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - accuracy: 0.9062 - loss: 0.0733
+Epoch 59: val_loss did not improve from 0.08119
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8529 - loss: 0.1038 - val_accuracy: 0.8859 - val_loss: 0.0813
+Epoch 60/1000
+ 1/23 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - accuracy: 0.9688 - loss: 0.0492
+Epoch 60: val_loss did not improve from 0.08119
+23/23 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8988 - loss: 0.0804 - val_accuracy: 0.8804 - val_loss: 0.0815
+WARNING:absl:You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`.
+Modell gespeichert unter binary_classifier_model.h5
+PS D:\Repository\ArtefactDetection\src\python> python hybrit.py run D:\Repository\ArtefactDetection\statistics\modified\features\feature_m_KNN_gray.csv
+2025-02-23 06:20:27.228476: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-02-23 06:20:28.412542: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-02-23 06:20:32.031257: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING:absl:Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+Modell geladen.
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step
+Vorhersagen: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Erwartungen: [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+Übereinstimmung: 78.87%
