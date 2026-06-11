@@ -404,9 +404,6 @@ FodyWeavers.xsd
 src/lib/opencv_world4100d.dll
 
 python3_12/**
-data/classicTrainingsdata/**
-data/generatedTrainingsdata/**
-data/stichprobe/**
 
 src/python/runs/**
 src/python/runs_10n/**
