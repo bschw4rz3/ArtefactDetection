@@ -417,5 +417,4 @@ src/python/runs_10n_2/**
 src/python/runs_Part/**
 yoloWeights/** 
 
-data/**
-data_/**
+all_data/**
