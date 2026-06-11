@@ -55,8 +55,8 @@ MyEventReceiver::MyEventReceiver(GraphicEngineExtended* graphicEngine, Dependenc
     this->tempFileIndex = 0;
 
     //std::string dataRepro = "classicTrainingsdata";
-    std::string dataRepro = "generatedTrainingsdata";
-    //std::string dataRepro = "modifiedTrainingsdata";
+    //std::string dataRepro = "generatedTrainingsdata";
+    std::string dataRepro = "modifiedTrainingsdata";
 
     std::filesystem::path cwd = std::filesystem::current_path();
     this->trainingsdata = cwd.string() + "/../../data/"+ dataRepro +"/trainingsdata";

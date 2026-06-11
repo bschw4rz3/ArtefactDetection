@@ -16,7 +16,7 @@ if args.resume:
 else:
     model = YOLO("D:\Repository\ArtefactDetection\data\yolo/yolov10n.pt")
     results = model.train(
-        data="D:\Repository\ArtefactDetection\data\yolo\modified\custom_data.yaml"
+        data="D:\Repository\ArtefactDetection\data\yolo\classic\custom_data.yaml"
         ,epochs = 1000 
         ,cache=True 
     #   ,device=0

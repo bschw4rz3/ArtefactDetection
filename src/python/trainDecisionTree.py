@@ -17,8 +17,8 @@ taringsArray = readInputNpMultiple(sys.argv[1], False)
 testArray = readInputNpMultiple(sys.argv[2], False)
 targetArray = readInputNpMultiple(sys.argv[3], False, True)
 
-var_dump(targetArray);
-exit
+#var_dump(targetArray);
+#exit
 
 #Aufteilung der Daten in Trainings- und Testsets
 #X_train, X_test, y_train, y_test = train_test_split(inputArray, targetArray, test_size=0.0, random_state=42)
